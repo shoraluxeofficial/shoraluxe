@@ -1,0 +1,152 @@
+.testimonials-section {
+  width: 100%;
+  padding: 3rem 2rem;
+  background-color: var(--bg-main);
+  overflow: hidden;
+}
+
+.testi-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.testi-header {
+  margin-bottom: 4rem;
+}
+
+.testi-tag {
+  color: var(--brand-gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.testi-heading {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  color: #111;
+  margin-top: 1rem;
+}
+
+/* SLIDER ENGINE */
+.testi-slider {
+  position: relative;
+  height: 450px; /* Base height for all cards */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.testi-card {
+  position: absolute;
+  width: 100%;
+  max-width: 700px;
+  background: #fff;
+  padding: 4rem;
+  border-radius: 40px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  opacity: 0;
+  transform: translateX(100px) scale(0.9);
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  pointer-events: none;
+}
+
+.testi-card.active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.testi-card.prev {
+  opacity: 0;
+  transform: translateX(-100px) scale(0.9);
+  z-index: 1;
+}
+
+/* INTERALS */
+.testi-quote-icon {
+  margin-bottom: -1rem;
+}
+
+.testi-rating {
+  display: flex;
+  gap: 4px;
+}
+
+.testi-text {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  color: #333;
+  line-height: 1.5;
+  font-style: italic;
+  max-width: 550px;
+}
+
+.testi-user {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.testi-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--brand-gold);
+}
+
+.testi-meta {
+  text-align: left;
+}
+
+.testi-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.testi-location {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* DOTS */
+.testi-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.testi-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s;
+}
+
+.testi-dot.active {
+  background: var(--brand-gold);
+  width: 30px;
+  border-radius: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .testi-heading { font-size: 2.2rem; }
+  .testi-card { padding: 3rem 2rem; border-radius: 30px; }
+  .testi-text { font-size: 1.25rem; }
+}

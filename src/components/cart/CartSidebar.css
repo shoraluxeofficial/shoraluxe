@@ -1,0 +1,283 @@
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.cart-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cart-sidebar {
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  max-width: 440px;
+  height: 100vh;
+  background: #fdfcf9;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cart-sidebar.open {
+  right: 0;
+}
+
+.cart-header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-header h2 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.close-cart-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-cart-btn:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.cart-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* EMPTY STATE */
+.cart-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #666;
+}
+
+.cart-empty h3 {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: #111;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.cart-empty p {
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  max-width: 250px;
+}
+
+.cart-shop-btn {
+  padding: 1rem 2rem;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+/* FULL STATE */
+.shipping-promo {
+  background: rgba(97, 28, 40, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: #333;
+  text-align: center;
+}
+
+.shipping-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.shipping-progress {
+  height: 100%;
+  background: #611C28; /* Burgundy */
+  transition: width 0.3s ease;
+}
+
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-item-img {
+  width: 90px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f4f4f4;
+}
+
+.cart-item-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cart-item-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 0.2rem;
+  line-height: 1.3;
+}
+
+.cart-item-price {
+  font-weight: 700;
+  color: #111;
+}
+
+.cart-item-size {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: auto;
+}
+
+.cart-item-control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.cart-qty-ctrl {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  height: 32px;
+}
+
+.cart-qty-ctrl button {
+  width: 32px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #555;
+}
+
+.cart-qty-ctrl span {
+  width: 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.cart-remove-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  color: #888;
+  cursor: pointer;
+}
+
+/* FOOTER */
+.cart-footer {
+  padding: 1.5rem 2rem 2rem;
+  background: #fff;
+  border-top: 1px solid #eee;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.02);
+}
+
+.cart-subtotal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.cart-subtotal-val {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.cart-tax-note {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+.btn-luxe-checkout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  height: 56px;
+  background: #611C28; /* Burgundy */
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+.btn-luxe-checkout:hover {
+  background: #4a151f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(97,28,40,0.2);
+}

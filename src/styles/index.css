@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  /* Primary Logo Reds (Velvet/Satin Palette) */
+  --logo-red-dark: #3B0616;       /* Deepest shadow */
+  --logo-red-base: #6D0E2C;       /* Main brand body */
+  --logo-red-glow: #B11D4B;       /* Brighter highlight */
+  
+  /* Metallic Palette for SHORA LUXE */
+  --metallic-gold: linear-gradient(135deg, #C5A028 0%, #F9E29C 50%, #C5A028 100%);
+  --metallic-silver: linear-gradient(135deg, #A8A9AD 0%, #D1D2D4 50%, #A8A9AD 100%);
+
+  /* Satin Gradient Background */
+  --satin-red-bg: radial-gradient(circle at center, var(--logo-red-glow) 0%, var(--logo-red-base) 40%, var(--logo-red-dark) 100%);
+
+  /* Legacy mapping for compatibility */
+  --brand-burgundy: var(--logo-red-base);
+  --brand-burgundy-dark: var(--logo-red-dark);
+  --brand-burgundy-mid: #751331;
+  --brand-gold: #C5A028;
+  --brand-silver: #D1D2D4;
+
+  /* Utility Colors */
+  --primary-color: var(--brand-burgundy);
+  --accent-color: var(--brand-gold);
+  --bg-main: #F7F3EB; /* Rich Luxury Cream */
+  --bg-dark: var(--brand-burgundy);
+  --text-main: #1A1A1A;
+  --text-light: #666666;
+  --text-on-dark: var(--brand-silver);
+  
+  /* Fonts */
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Inter', sans-serif;
+  
+  /* UI Elements */
+  --bg-card: #FFFFFF;
+  --border-color: #EEEEEE;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  padding-top: 145px; /* Increased to 145px to create a visible gap from the fixed navbar */
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Custom Scrollbar for horizontal lists */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.section-heading-underlined {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 12px;
+}
+
+.section-heading-underlined::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--metallic-gold);
+  border-radius: 2px;
+}
+
+.section-heading-underlined.left-aligned {
+  display: block;
+}
+
+.section-heading-underlined.left-aligned::after {
+  left: 0;
+  transform: none;
+}

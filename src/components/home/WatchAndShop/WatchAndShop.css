@@ -1,0 +1,212 @@
+.watch-section {
+  width: 100%;
+  padding: 3rem 0;
+  background-color: var(--bg-main);
+}
+
+.watch-inner {
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.watch-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.watch-main-heading {
+  font-family: var(--font-serif);
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.watch-controls {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 1rem;
+}
+
+.watch-scroll-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.watch-scroll-btn:hover {
+  background: var(--logo-red-base);
+  color: #fff;
+  border-color: var(--logo-red-base);
+}
+
+/* CARDS GRID */
+.watch-grid {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 0 2rem;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.watch-grid::-webkit-scrollbar { display: none; }
+
+.story-card {
+  flex: 0 0 280px;
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+}
+
+.story-media-wrap {
+  position: relative;
+  aspect-ratio: 9 / 14;
+  overflow: hidden;
+}
+
+.story-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* OVERLAYS */
+.story-discount-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: var(--logo-red-base);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.story-views-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.story-overlay-content {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  width: 100%;
+  padding: 0 15px;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.story-actions {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  display: flex;
+  gap: 15px;
+  color: #fff;
+}
+
+.story-icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  transition: transform 0.2s;
+}
+
+.story-icon-btn:hover {
+  transform: scale(1.2);
+}
+
+/* INFO SECTION */
+.story-info {
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.story-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.story-pricing {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.story-current-price {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.story-original-price {
+  font-size: 0.85rem;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.story-buy-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--logo-red-base);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  transition: opacity 0.3s;
+}
+
+.story-buy-btn:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .watch-main-heading { font-size: 1.8rem; }
+  .story-card { flex: 0 0 240px; }
+}
