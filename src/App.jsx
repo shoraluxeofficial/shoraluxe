@@ -9,6 +9,7 @@ import AdminBanners from './pages/Admin/Banners/AdminBanners';
 import AdminReviews from './pages/Admin/Reviews/AdminReviews';
 import AdminCustomers from './pages/Admin/Customers/AdminCustomers';
 import AdminSettings from './pages/Admin/Settings/AdminSettings';
+import AdminHomepage from './pages/Admin/Homepage/HomepageManager';
 import AdminLogin from './pages/Admin/Login/AdminLogin';
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail/ProductDetail';
@@ -52,6 +53,7 @@ function App() {
               <Route path="reviews" element={<AdminReviews />} />
               <Route path="customers" element={<AdminCustomers />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="homepage" element={<AdminHomepage />} />
             </Route>
           </Routes>
         </div>

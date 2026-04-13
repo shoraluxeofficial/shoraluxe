@@ -4,15 +4,15 @@ import './Categories.css';
 const categoryData = [
   {
     name: 'Face Washes',
-    img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/WhatsApp Image 2026-04-13 at 6.26.32 PM (1).jpeg',
   },
   {
     name: 'Face Serums',
-    img: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/WhatsApp Image 2026-04-13 at 6.26.31 PM (1).jpeg',
   },
   {
     name: 'Moisturizers',
-    img: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/WhatsApp Image 2026-04-13 at 6.26.31 PM (1).jpeg',
   },
   {
     name: 'Sunscreens',

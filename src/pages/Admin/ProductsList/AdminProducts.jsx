@@ -238,11 +238,9 @@ const AdminProducts = () => {
           <p className="admin-page-subtitle">{products.length} total products in catalogue</p>
         </div>
         <div className="admin-page-header-actions" style={{ display: 'flex', gap: '1rem' }}>
-          {products.length === 0 && !loading && (
-            <button className="admin-btn-secondary" onClick={syncLocalData} disabled={syncing}>
-              {syncing ? 'Syncing...' : 'Sync Local Products'}
-            </button>
-          )}
+          <button className="admin-btn-secondary" onClick={syncLocalData} disabled={syncing}>
+            {syncing ? 'Syncing...' : 'Sync All 16 Products'}
+          </button>
           <button className="admin-btn-primary" onClick={openAdd}>
             <PackagePlus size={18} />
             Add New Product

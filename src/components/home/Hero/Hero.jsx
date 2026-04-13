@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
 import './Hero.css';
 
-const bannerData = [
+const defaultBanners = [
   { id: 1, url: '/shop', img: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1600&auto=format&fit=crop', alt: 'Premium Care' },
-  { id: 2, url: '/shop', img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1600&auto=format&fit=crop', alt: 'Luxury Serums' },
-  { id: 3, url: '/shop', img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=1600&auto=format&fit=crop', alt: 'Radiance Boost' },
-  { id: 4, url: '/shop', img: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=1600&auto=format&fit=crop', alt: 'Natural Essence' }
+  { id: 2, url: '/shop', img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1600&auto=format&fit=crop', alt: 'Luxury Serums' }
 ];
 
 const Hero = () => {
+  const [bannerData, setBannerData] = useState(defaultBanners);
   const [currentIndex, setCurrentIndex] = useState(0);
   const timeoutRef = useRef(null);
 
@@ -20,6 +20,21 @@ const Hero = () => {
   };
 
   useEffect(() => {
+    const fetchBanners = async () => {
+        const { data, error } = await supabase
+            .from('homepage_sections')
+            .select('content')
+            .eq('section_name', 'hero')
+            .single();
+        
+        if (data && data.content && data.content.length > 0) {
+            setBannerData(data.content);
+        }
+    };
+    fetchBanners();
+  }, []);
+
+  useEffect(() => {
     resetTimeout();
     timeoutRef.current = setTimeout(
       () => setCurrentIndex((prevIndex) => (prevIndex + 1) % bannerData.length),
@@ -27,7 +42,7 @@ const Hero = () => {
     );
 
     return () => resetTimeout();
-  }, [currentIndex]);
+  }, [currentIndex, bannerData.length]);
 
   const goToPrev = (e) => {
     e.preventDefault();

@@ -8,7 +8,8 @@ import {
   LogOut, 
   Image as ImageIcon,
   MessageSquare,
-  ClipboardList
+  ClipboardList,
+  Home as HomeIcon
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -19,6 +20,7 @@ const AdminLayout = () => {
     { path: '/admin', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
     { path: '/admin/products', icon: <ShoppingBag size={20} />, label: 'Products' },
     { path: '/admin/orders', icon: <ClipboardList size={20} />, label: 'Orders' },
+    { path: '/admin/homepage', icon: <HomeIcon size={20} />, label: 'Home Page CMS' },
     { path: '/admin/banners', icon: <ImageIcon size={20} />, label: 'Hero Banners' },
     { path: '/admin/reviews', icon: <MessageSquare size={20} />, label: 'Testimonials' },
     { path: '/admin/customers', icon: <Users size={20} />, label: 'Customers' },
