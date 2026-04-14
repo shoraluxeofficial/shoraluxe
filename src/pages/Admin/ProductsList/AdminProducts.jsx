@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search, X, ImagePlus, PackagePlus, ChevronDown } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
+import { useNotify } from '../../../components/common/Notification/Notification';
 import './AdminProducts.css';
 
 const EMPTY_FORM = {
@@ -36,46 +37,50 @@ const STATUSES = ['active', 'draft', 'out-of-stock'];
 const AdminProducts = () => {
   const { products, addProduct, deleteProduct, updateProduct, loading, fetchProducts } = useShop();
   const [syncing, setSyncing] = useState(false);
+  const { notify } = useNotify();
 
   const syncLocalData = async () => {
-    if (!window.confirm("This will upload all 16 local products to Supabase. Continue?")) return;
-    setSyncing(true);
-    try {
-      const { productsData } = await import('../../../data/products');
-      for (const product of productsData) {
-        const payload = {
-          brand: product.brand,
-          title: product.title,
-          price: product.price,
-          original_price: product.originalPrice,
-          discount: product.discount,
-          offer: product.offer,
-          badge: product.badge,
-          size: product.size,
-          benefit: product.benefit,
-          skin_type: product.skinType,
-          img: product.img,
-          gallery: product.gallery,
-          description: product.description,
-          how_to_use: product.howToUse,
-          ingredients: product.ingredients,
-          best_for: product.bestFor,
-          rating: product.rating,
-          reviews_count: product.reviewsCount,
-          is_new: product.isNew || false,
-          is_bestseller: product.isBestseller || false,
-          is_sale: product.isSale || false,
-          status: 'active'
-        };
-        await addProduct(payload);
+    notify('This will upload all 16 local products to Supabase. Continue?', 'confirm', {
+      onConfirm: async () => {
+        setSyncing(true);
+        try {
+          const { productsData } = await import('../../../data/products');
+          for (const product of productsData) {
+            const payload = {
+              brand: product.brand,
+              title: product.title,
+              price: product.price,
+              original_price: product.originalPrice,
+              discount: product.discount,
+              offer: product.offer,
+              badge: product.badge,
+              size: product.size,
+              benefit: product.benefit,
+              skin_type: product.skinType,
+              img: product.img,
+              gallery: product.gallery,
+              description: product.description,
+              how_to_use: product.howToUse,
+              ingredients: product.ingredients,
+              best_for: product.bestFor,
+              rating: product.rating,
+              reviews_count: product.reviewsCount,
+              is_new: product.isNew || false,
+              is_bestseller: product.isBestseller || false,
+              is_sale: product.isSale || false,
+              status: 'active'
+            };
+            await addProduct(payload);
+          }
+          notify('Success! 16 products synced to Supabase.', 'success');
+          fetchProducts();
+        } catch (err) {
+          notify('Error syncing data: ' + err.message, 'error');
+        } finally {
+          setSyncing(false);
+        }
       }
-      alert("Success! 16 products synced to Supabase.");
-      fetchProducts();
-    } catch (err) {
-      alert("Error syncing data: " + err.message);
-    } finally {
-      setSyncing(false);
-    }
+    });
   };
 
   const [showModal, setShowModal] = useState(false);

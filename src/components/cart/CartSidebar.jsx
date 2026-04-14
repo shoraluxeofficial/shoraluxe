@@ -1,7 +1,8 @@
 import React from 'react';
 import { X, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
-import { Link } from 'react-router-dom';
+import { useTracking } from '../common/TrackingNotification/TrackingNotification';
+import { Link, useNavigate } from 'react-router-dom';
 import './CartSidebar.css';
 
 const CartSidebar = () => {
@@ -14,9 +15,21 @@ const CartSidebar = () => {
     cartTotal 
   } = useShop();
 
+  const { user } = useTracking();
+  const navigate = useNavigate();
+
   const handleOverlayClick = (e) => {
     if (e.target.classList.contains('cart-overlay')) {
       setIsCartOpen(false);
+    }
+  };
+
+  const handleCheckoutClick = () => {
+    setIsCartOpen(false);
+    if (!user) {
+      navigate('/account?redirect=checkout');
+    } else {
+      navigate('/checkout');
     }
   };
 
@@ -83,10 +96,10 @@ const CartSidebar = () => {
               <span className="cart-subtotal-val">₹{cartTotal.toLocaleString('en-IN')}</span>
             </div>
             <p className="cart-tax-note">Taxes and shipping calculated at checkout.</p>
-            <Link to="/checkout" className="btn-luxe-checkout">
+            <button onClick={handleCheckoutClick} className="btn-luxe-checkout">
               Proceed to Checkout
               <ArrowRight size={20} />
-            </Link>
+            </button>
           </div>
         )}
       </aside>

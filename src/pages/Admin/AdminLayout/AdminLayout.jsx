@@ -1,5 +1,6 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNotify } from '../../../components/common/Notification/Notification';
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -9,17 +10,32 @@ import {
   Image as ImageIcon,
   MessageSquare,
   ClipboardList,
+  IndianRupee,
+  ShieldCheck,
   Home as HomeIcon
 } from 'lucide-react';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { notify } = useNotify();
+
+  const handleLogout = () => {
+    notify('Are you sure you want to sign out?', 'confirm', {
+      onConfirm: () => {
+        localStorage.removeItem('shoraluxe_admin_auth');
+        navigate('/admin-login');
+      }
+    });
+  };
 
   const menuItems = [
     { path: '/admin', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
     { path: '/admin/products', icon: <ShoppingBag size={20} />, label: 'Products' },
     { path: '/admin/orders', icon: <ClipboardList size={20} />, label: 'Orders' },
+    { path: '/admin/revenue', icon: <IndianRupee size={20} />, label: 'Revenue' },
+    { path: '/admin/security', icon: <ShieldCheck size={20} />, label: 'Firewall' },
     { path: '/admin/homepage', icon: <HomeIcon size={20} />, label: 'Home Page CMS' },
     { path: '/admin/banners', icon: <ImageIcon size={20} />, label: 'Hero Banners' },
     { path: '/admin/reviews', icon: <MessageSquare size={20} />, label: 'Testimonials' },
@@ -49,15 +65,13 @@ const AdminLayout = () => {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <Link 
-            to="/" 
+          <button 
             className="admin-logout-link" 
-            title="Back to Store"
-            onClick={() => localStorage.removeItem('shoraluxe_admin_auth')}
+            onClick={handleLogout}
           >
             <LogOut size={20} />
-            <span>Sign Out Storage</span>
-          </Link>
+            <span>Sign Out</span>
+          </button>
         </div>
       </aside>
 

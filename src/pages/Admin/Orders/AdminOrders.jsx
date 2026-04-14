@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Eye, Truck, CheckCircle, XCircle, Clock, CreditCard, ChevronDown, ExternalLink } from 'lucide-react';
+import { Search, Filter, Eye, Truck, CheckCircle, XCircle, Clock, CreditCard, ExternalLink, Download } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
+import { useNotify } from '../../../components/common/Notification/Notification';
 import './AdminOrders.css';
 
 const AdminOrders = () => {
@@ -9,6 +10,7 @@ const AdminOrders = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const { notify } = useNotify();
 
   useEffect(() => {
     fetchOrders();
@@ -51,8 +53,38 @@ const AdminOrders = () => {
         setSelectedOrder(prev => ({ ...prev, order_status: newStatus }));
       }
     } catch (err) {
-      alert("Failed to update status: " + err.message);
+      notify('Failed to update status: ' + err.message, 'error');
     }
+  };
+
+  const downloadCSV = () => {
+    if (orders.length === 0) return notify('No orders to download.', 'error');
+    
+    const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Email', 'Payment Method', 'Payment Status', 'Order Status', 'Total Amount (INR)', 'Tracking AWB'];
+    
+    const csvRows = orders.map(o => {
+      return [
+        o.id,
+        new Date(o.placed_at).toLocaleDateString('en-IN'),
+        `"${o.customer_name}"`,
+        o.customer_phone,
+        o.customer_email || 'N/A',
+        o.payment_method,
+        o.payment_status,
+        o.order_status,
+        o.total_amount,
+        o.shiprocket_awb || 'N/A'
+      ].join(',');
+    });
+    
+    const csvContent = [headers.join(','), ...csvRows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Shoraluxe_Orders_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   const filteredOrders = orders.filter(o => 
@@ -82,14 +114,19 @@ const AdminOrders = () => {
           <h1 className="admin-page-title">Orders Management</h1>
           <p className="admin-page-subtitle">Track payments, shipping, and real-time customer orders</p>
         </div>
-        <div className="admin-stats-mini">
-          <div className="mini-stat">
-            <span className="label">Total Orders</span>
-            <span className="value">{orders.length}</span>
-          </div>
-          <div className="mini-stat">
-            <span className="label">Revenue</span>
-            <span className="value">₹{orders.filter(o => o.payment_status === 'paid').reduce((acc, curr) => acc + curr.total_amount, 0).toLocaleString('en-IN')}</span>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button className="admin-btn-primary" onClick={downloadCSV} style={{ background: '#10b981' }}>
+            <Download size={18} /> Export CSV
+          </button>
+          <div className="admin-stats-mini">
+            <div className="mini-stat">
+              <span className="label">Total Orders</span>
+              <span className="value">{orders.length}</span>
+            </div>
+            <div className="mini-stat">
+              <span className="label">Revenue</span>
+              <span className="value">₹{orders.filter(o => o.payment_status === 'paid').reduce((acc, curr) => acc + curr.total_amount, 0).toLocaleString('en-IN')}</span>
+            </div>
           </div>
         </div>
       </div>

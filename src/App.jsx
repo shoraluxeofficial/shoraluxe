@@ -10,9 +10,16 @@ import AdminReviews from './pages/Admin/Reviews/AdminReviews';
 import AdminCustomers from './pages/Admin/Customers/AdminCustomers';
 import AdminSettings from './pages/Admin/Settings/AdminSettings';
 import AdminHomepage from './pages/Admin/Homepage/HomepageManager';
+import AdminRevenue from './pages/Admin/Revenue/AdminRevenue';
+import AdminSecurity from './pages/Admin/Security/AdminSecurity';
 import AdminLogin from './pages/Admin/Login/AdminLogin';
 import Home from './pages/Home';
+import Shop from './pages/Shop/Shop';
 import ProductDetail from './pages/ProductDetail/ProductDetail';
+import Checkout from './pages/Checkout/Checkout';
+import QuizSection from './components/home/QuizSection/QuizSection';
+import OrderTracking from './pages/OrderTracking/OrderTracking';
+import UserLogin from './pages/UserLogin/UserLogin';
 import { ShopProvider } from './context/ShopContext';
 import './styles/App.css';
 
@@ -34,7 +41,12 @@ function App() {
             {/* USER STOREFRONT ROUTES */}
             <Route path="/" element={<UserLayout />}>
               <Route index element={<Home />} />
+              <Route path="shop" element={<Shop />} />
               <Route path="product/:id" element={<ProductDetail />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="quiz" element={<QuizSection />} />
+              <Route path="track-order" element={<OrderTracking />} />
+              <Route path="account" element={<UserLogin />} />
             </Route>
 
             {/* SECURE ADMIN LOGIN */}
@@ -52,6 +64,8 @@ function App() {
               <Route path="banners" element={<AdminBanners />} />
               <Route path="reviews" element={<AdminReviews />} />
               <Route path="customers" element={<AdminCustomers />} />
+              <Route path="revenue" element={<AdminRevenue />} />
+              <Route path="security" element={<AdminSecurity />} />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="homepage" element={<AdminHomepage />} />
             </Route>

@@ -148,6 +148,24 @@ export const ShopProvider = ({ children }) => {
     }
   };
 
+  // Popup Ad State
+  const [popupConfig, setPopupConfig] = useState(() => {
+    const saved = localStorage.getItem('shoraluxe_popup_config');
+    return saved ? JSON.parse(saved) : {
+      active: true,
+      image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800',
+      title: 'Exclusive Launch 🎁',
+      subtitle: 'Unlock 20% off your entire first skincare routine right now!',
+      buttonText: 'Claim Offer',
+      link: '/#products'
+    };
+  });
+
+  const updatePopupConfig = (config) => {
+    setPopupConfig(config);
+    localStorage.setItem('shoraluxe_popup_config', JSON.stringify(config));
+  };
+
   return (
     <ShopContext.Provider value={{
       products,
@@ -163,7 +181,9 @@ export const ShopProvider = ({ children }) => {
       isCartOpen,
       setIsCartOpen,
       cartTotal,
-      cartCount
+      cartCount,
+      popupConfig,
+      updatePopupConfig
     }}>
       {children}
     </ShopContext.Provider>

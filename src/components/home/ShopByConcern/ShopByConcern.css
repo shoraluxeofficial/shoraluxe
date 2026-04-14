@@ -171,3 +171,13 @@
   .concern-main-heading { font-size: 2.22rem; }
   .concern-item-title { font-size: 1.4rem; }
 }
+
+@media (max-width: 768px) {
+  .concern-section { padding: 2rem 1rem; }
+  .concern-main-heading { font-size: 1.8rem; margin-bottom: 2rem; }
+  .concern-item-title { font-size: 1.2rem; }
+  .concern-list-side { padding: 2rem 1rem; }
+  .concern-image-side { height: 250px; }
+  .concern-row { padding: 1rem 0; }
+  .img-overlay-brand { font-size: 2rem; right: 20px; bottom: 20px; }
+}

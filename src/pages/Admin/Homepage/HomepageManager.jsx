@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Image as ImageIcon, Layout, MoveUp, MoveDown, CheckCircle } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
+import { useNotify } from '../../../components/common/Notification/Notification';
 import './HomepageManager.css';
 
 const HomepageManager = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('hero');
+    const { notify } = useNotify();
     const [sections, setSections] = useState({
         hero: [],
         cta: { heading: '', text: '', tag: '', buttonText: '', bgImage: '' },
@@ -53,10 +55,10 @@ const HomepageManager = () => {
                 }, { onConflict: 'section_name' });
 
             if (error) throw error;
-            alert(`${sectionName.toUpperCase()} section updated successfully!`);
+            notify(`${sectionName.toUpperCase()} section updated successfully!`, 'success');
         } catch (error) {
             console.error('Error saving data:', error);
-            alert('Failed to save. Make sure "homepage_sections" table exists in Supabase.');
+            notify('Failed to save. Make sure "homepage_sections" table exists in Supabase.', 'error');
         }
     };
 

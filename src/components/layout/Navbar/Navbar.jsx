@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, ShoppingBag, Heart, MapPin, User, Menu, X, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useShop } from '../../../context/ShopContext';
 import './Navbar.css';
 
@@ -39,23 +40,22 @@ const Navbar = () => {
           {/* Center Navigation - RESTORED LINKS */}
           <nav className="desktop-main-nav desktop-only">
             <ul className="main-nav-list">
-              <li><a href="/">Home</a></li>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/shop">Shop All</Link></li>
               <li className="nav-dropdown-wrapper">
                 <a href="#" className="nav-dropdown-trigger">
                   Shop by Concern <ChevronDown size={14} className="dropdown-arrow" />
                 </a>
                 <ul className="nav-dropdown-menu">
-                  <li><a href="#">Age-Protection</a></li>
-                  <li><a href="#">Acne & Blemishes</a></li>
-                  <li><a href="#">Oily & Congested Skin</a></li>
-                  <li><a href="#">Dry & Dehydrated</a></li>
-                  <li><a href="#">Brightening & Depigmentation</a></li>
-                  <li><a href="#">Suncare</a></li>
-                  <li><a href="#">Skin Barrier Repair</a></li>
+                  <li><Link to="/shop?concern=age-protection">Age-Protection</Link></li>
+                  <li><Link to="/shop?concern=acne">Acne & Blemishes</Link></li>
+                  <li><Link to="/shop?concern=oily">Oily & Congested Skin</Link></li>
+                  <li><Link to="/shop?concern=dry">Dry & Dehydrated</Link></li>
+                  <li><Link to="/shop?concern=brightening">Brightening & Depigmentation</Link></li>
+                  <li><Link to="/shop?concern=suncare">Suncare</Link></li>
                 </ul>
               </li>
-              <li><a href="#">Order Tracking</a></li>
-              <li><a href="#">Glow Up Quiz</a></li>
+              <li><Link to="/quiz">Glow Up Quiz</Link></li>
             </ul>
           </nav>
 
@@ -64,9 +64,9 @@ const Navbar = () => {
             <button className="action-icon-btn" onClick={() => setSearchOpen(!searchOpen)}>
               <Search size={22} strokeWidth={1.5} />
             </button>
-            <a href="#" className="action-icon-btn account-btn desktop-only">
+            <Link to="/account" className="action-icon-btn account-btn desktop-only">
               <User size={22} strokeWidth={1.5} />
-            </a>
+            </Link>
             <button className="action-icon-btn" onClick={() => setIsCartOpen(true)}>
               <ShoppingBag size={22} strokeWidth={1.5} />
               {cartCount > 0 && <span className="cart-badge-count">{cartCount}</span>}
@@ -95,11 +95,11 @@ const Navbar = () => {
       {menuOpen && (
         <div className="mobile-drawer">
           <ul className="mobile-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="#">Shop by Concern</a></li>
-            <li><a href="#">Order Tracking</a></li>
-            <li><a href="#">Glow Up Quiz</a></li>
-            <li><a href="#">My Account</a></li>
+            <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
+            <li><Link to="/shop" onClick={() => setMenuOpen(false)}>Shop All</Link></li>
+            <li><Link to="/track-order" onClick={() => setMenuOpen(false)}>Order Tracking</Link></li>
+            <li><Link to="/quiz" onClick={() => setMenuOpen(false)}>Glow Up Quiz</Link></li>
+            <li><Link to="/account" onClick={() => setMenuOpen(false)}>My Account</Link></li>
           </ul>
         </div>
       )}
