@@ -1,15 +1,13 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Package, Truck, CheckCircle, X } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
+import { useShop } from '../../../context/ShopContext';
 import './TrackingNotification.css';
 
 const TrackingContext = createContext();
 
 export const TrackingProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('shoraluxe_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const { user, setUser } = useShop();
   const [notifications, setNotifications] = useState([]);
 
   // Subscribe to real-time order updates for the logged-in user

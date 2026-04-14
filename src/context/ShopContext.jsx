@@ -10,10 +10,16 @@ export const ShopProvider = ({ children }) => {
   const [products, setProducts] = useState(fallbackProducts);
   const [loading, setLoading] = useState(true);
 
+  // Auth State
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('shoraluxe_user');
+    return (saved && saved !== 'undefined') ? JSON.parse(saved) : null;
+  });
+
   // Cart State
   const [cartItems, setCartItems] = useState(() => {
     const saved = localStorage.getItem('shoraluxe_cart');
-    return saved ? JSON.parse(saved) : [];
+    return (saved && saved !== 'undefined') ? JSON.parse(saved) : [];
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -72,6 +78,14 @@ export const ShopProvider = ({ children }) => {
 
   // Actions: Cart
   const addToCart = (product, quantity = 1) => {
+    const user = localStorage.getItem('shoraluxe_user');
+    
+    if (!user) {
+      // Not logged in -> Redirect to login
+      window.location.href = '/account?redirect=' + window.location.pathname;
+      return;
+    }
+
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
@@ -93,6 +107,11 @@ export const ShopProvider = ({ children }) => {
     setCartItems(prev => prev.map(item => 
       item.id === productId ? { ...item, quantity: newQty } : item
     ));
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem('shoraluxe_cart');
   };
 
   const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -168,6 +187,8 @@ export const ShopProvider = ({ children }) => {
 
   return (
     <ShopContext.Provider value={{
+      user,
+      setUser,
       products,
       loading,
       fetchProducts,
@@ -178,6 +199,7 @@ export const ShopProvider = ({ children }) => {
       addToCart,
       removeFromCart,
       updateQuantity,
+      clearCart,
       isCartOpen,
       setIsCartOpen,
       cartTotal,

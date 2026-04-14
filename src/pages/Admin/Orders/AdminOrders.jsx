@@ -216,11 +216,13 @@ const AdminOrders = () => {
                 <div className="detail-grid">
                   <div><label>Name</label><p>{selectedOrder.customer_name}</p></div>
                   <div><label>Phone</label><p>{selectedOrder.customer_phone}</p></div>
+                  <div><label>Alt. Phone</label><p>{selectedOrder.shipping_address.alternate_phone || 'N/A'}</p></div>
                   <div><label>Email</label><p>{selectedOrder.customer_email}</p></div>
                   <div className="full-width">
-                    <label>Shipping Address</label>
-                    <p>
-                      {selectedOrder.shipping_address.address_line1}, {selectedOrder.shipping_address.address_line2 && selectedOrder.shipping_address.address_line2 + ', '}<br/>
+                    <label>Shipping Address ({selectedOrder.shipping_address.address_type?.toUpperCase()})</label>
+                    <p style={{ lineHeight: '1.6' }}>
+                      <strong>{selectedOrder.shipping_address.flat_no}</strong>, {selectedOrder.shipping_address.address_line1}<br/>
+                      {selectedOrder.shipping_address.landmark && <span style={{ color: '#6d0e2c', fontSize: '0.85rem' }}>📍 Landmark: {selectedOrder.shipping_address.landmark}<br/></span>}
                       {selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state} - {selectedOrder.shipping_address.pincode}
                     </p>
                   </div>

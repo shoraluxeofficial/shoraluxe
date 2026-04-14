@@ -20,7 +20,6 @@ import Checkout from './pages/Checkout/Checkout';
 import QuizSection from './components/home/QuizSection/QuizSection';
 import OrderTracking from './pages/OrderTracking/OrderTracking';
 import UserLogin from './pages/UserLogin/UserLogin';
-import { ShopProvider } from './context/ShopContext';
 import './styles/App.css';
 
 // Guard component preventing unauthorized access to the admin panel
@@ -34,8 +33,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <ShopProvider>
-      <Router>
+    <Router>
         <div className="app-container">
           <Routes>
             {/* USER STOREFRONT ROUTES */}
@@ -72,7 +70,6 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </ShopProvider>
   );
 }
 

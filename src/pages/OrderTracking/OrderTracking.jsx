@@ -121,6 +121,24 @@ const OrderTracking = () => {
                 );
               })}
             </div>
+            {/* NEW: SHIPPING & PAYMENT SUMMARY */}
+            <div className="tracking-details-grid">
+               <div className="track-detail-card">
+                  <h4><MapPin size={16} /> Shipping To</h4>
+                  <p><strong>{order.customer_name}</strong></p>
+                  <p>{order.shipping_address?.flat_no}, {order.shipping_address?.address_line1}</p>
+                  <p>{order.shipping_address?.city}, {order.shipping_address?.state} - {order.shipping_address?.pincode}</p>
+                  {order.shipping_address?.landmark && <p className="landmark-text">📍 {order.shipping_address.landmark}</p>}
+               </div>
+               <div className="track-detail-card">
+                  <h4><CreditCard size={16} /> Payment Info</h4>
+                  <div className={`pay-status-pill ${order.payment_status}`}>
+                     {order.payment_status === 'paid' ? 'Verified Payment' : 'Payment Pending'}
+                  </div>
+                  <p className="pay-method-text">Via {order.payment_method?.toUpperCase()}</p>
+                  <p className="order-total-text">Total: ₹{order.total_amount?.toLocaleString('en-IN')}</p>
+               </div>
+            </div>
 
             {/* AWB Number */}
             {order.tracking_awb && (

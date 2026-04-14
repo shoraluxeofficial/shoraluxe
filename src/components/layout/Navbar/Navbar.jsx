@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
-import { Search, ShoppingBag, Heart, MapPin, User, Menu, X, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Search, ShoppingBag, Heart, MapPin, User, Menu, X, ChevronDown, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useShop } from '../../../context/ShopContext';
 import './Navbar.css';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { cartCount, setIsCartOpen } = useShop();
+  const { cartCount, setIsCartOpen, user, setUser } = useShop();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('shoraluxe_user');
+    localStorage.removeItem('auth_token');
+    setUser(null);
+    navigate('/');
+  };
 
   return (
     <div className="navbar-wrapper">
@@ -64,9 +72,30 @@ const Navbar = () => {
             <button className="action-icon-btn" onClick={() => setSearchOpen(!searchOpen)}>
               <Search size={22} strokeWidth={1.5} />
             </button>
-            <Link to="/account" className="action-icon-btn account-btn desktop-only">
-              <User size={22} strokeWidth={1.5} />
-            </Link>
+            <div className="nav-user-area">
+              {user ? (
+                <div className="nav-profile-dropdown">
+                  <div className="nav-profile-trigger">
+                    <div className="nav-avatar">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <span className="nav-user-name">Hi, {user?.name ? user.name.split(' ')[0] : 'User'}</span>
+                    <ChevronDown size={14} />
+                  </div>
+                  <ul className="profile-submenu">
+                    <li><Link to="/account">My Profile</Link></li>
+                    <li><Link to="/track-order">Track Orders</Link></li>
+                    <li className="logout-item" onClick={handleLogout}>
+                      <LogOut size={14} /> Logout
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <Link to="/account" className="action-icon-btn account-btn">
+                  <User size={22} strokeWidth={1.5} />
+                </Link>
+              )}
+            </div>
             <button className="action-icon-btn" onClick={() => setIsCartOpen(true)}>
               <ShoppingBag size={22} strokeWidth={1.5} />
               {cartCount > 0 && <span className="cart-badge-count">{cartCount}</span>}

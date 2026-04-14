@@ -332,5 +332,160 @@
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .user-brand-panel { display: none; }
-  .user-form-panel { padding: 2rem 1.5rem; min-height: 100vh; }
+  .user-form-panel { padding: 2rem 1.5rem; min-height: 100vh; align-items: flex-start; }
 }
+
+/* OTP & Passcode Styles */
+.country-code {
+  position: absolute;
+  left: 1rem;
+  font-weight: 700;
+  color: #374151;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.otp-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.otp-macro-input {
+  width: 100%;
+  max-width: 300px;
+  font-size: 2rem;
+  letter-spacing: 1rem;
+  text-align: center;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s;
+  background: #fff;
+  color: #111827;
+  font-weight: 700;
+}
+
+.otp-macro-input:focus {
+  border-color: #6d0e2c;
+  box-shadow: 0 0 0 4px rgba(109, 14, 44, 0.1);
+}
+
+.passcode-input {
+  letter-spacing: 1.5rem;
+}
+
+.resend-block {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: #6d0e2c;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resend-btn:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.anim-slide-in {
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* TOAST NOTIFICATION */
+.shora-toast {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 9999;
+  border-left: 5px solid #059669;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.toast-content span {
+  font-weight: 700;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.shora-toast button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.shora-toast button:hover {
+  color: #374151;
+}
+
+.anim-fade-in {
+  animation: toastFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-icon-bg {
+  background: #059669;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.brand-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+@keyframes toastFadeIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.text-center { text-align: center; }

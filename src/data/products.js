@@ -1,5 +1,33 @@
 export const productsData = [
   {
+    id: 999,
+    brand: 'SHORALUXE',
+    title: 'Shoraluxe Live Payment Test | Verify Connection',
+    price: 2,
+    originalPrice: 100,
+    discount: '98% off',
+    offer: 'Limited Test Session',
+    rating: 5.0,
+    reviewsCount: 1,
+    img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800',
+    gallery: [
+      'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800'
+    ],
+    badge: 'TEST',
+    isNew: true,
+    size: '1 Unit',
+    benefit: 'Verify Payment Success',
+    skinType: 'All Systems',
+    description: 'This is a special test product priced at ₹2 for verifying the live Razorpay integration. Use this to complete a real transaction and ensure your setup is perfect.',
+    howToUse: [
+      'Add this product to cart.',
+      'Go to checkout and fill details.',
+      'Complete the payment using UPI or Card.'
+    ],
+    ingredients: '100% Secure, 100% Real',
+    bestFor: 'Final technical verification before store launch.'
+  },
+  {
     id: 1,
     brand: 'SHORALUXE',
     title: 'Sunscreen Cream SPF 50+++ | Broad-spectrum sunscreen for daily UV defense',

@@ -330,3 +330,110 @@
     display: none;
   }
 }
+
+/* USER AREA & AVATAR */
+.nav-user-area {
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+}
+
+.nav-profile-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 30px;
+  background: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.nav-profile-trigger:hover {
+  background: #f1f3f5;
+}
+
+.nav-avatar {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #6d0e2c 0%, #3d0618 100%);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-user-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* PROFILE DROPDOWN MENU */
+.profile-submenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 180px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  padding: 8px 0;
+  margin-top: 10px;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+  border: 1px solid #eee;
+}
+
+.nav-profile-dropdown:hover .profile-submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.profile-submenu li a,
+.profile-submenu li.logout-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: #444;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.profile-submenu li a:hover,
+.profile-submenu li.logout-item:hover {
+  background: #f8f9fa;
+  color: #6d0e2c;
+}
+
+.logout-item {
+  border-top: 1px solid #f1f3f5;
+  margin-top: 4px;
+  padding-top: 12px !important;
+  color: #dc3545 !important;
+  font-weight: 600;
+}
+
+.logout-item:hover {
+  background: #fff5f5 !important;
+}
+
+@media (max-width: 768px) {
+  .nav-user-name { display: none; }
+  .profile-submenu { right: -50px; }
+}
