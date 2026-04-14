@@ -10,7 +10,7 @@ const Checkout = () => {
   const { cartItems, cartTotal, setIsCartOpen, user, clearCart } = useShop();
   const navigate = useNavigate();
   const { notify } = useNotify();
-  const API_URL = 'http://localhost:5000/api/payment';
+  const API_URL = import.meta.env.PROD ? '/api/payment' : 'http://localhost:5000/api/payment';
   
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

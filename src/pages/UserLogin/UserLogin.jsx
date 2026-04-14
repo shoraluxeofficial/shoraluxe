@@ -7,7 +7,7 @@ import { auth } from '../../lib/firebase';
 import { useShop } from '../../context/ShopContext';
 import './UserLogin.css';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = import.meta.env.PROD ? '/api/auth' : 'http://localhost:5000/api/auth';
 
 const UserLogin = () => {
   const [step, setStep] = useState(1); // 1: Phone, 2: OTP, 3: Register Details, 4: Returning Login
