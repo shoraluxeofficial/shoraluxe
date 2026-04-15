@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Image as ImageIcon, Layout, MoveUp, MoveDown, CheckCircle, Upload } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { uploadFile } from '../../../lib/upload';
