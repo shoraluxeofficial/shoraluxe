@@ -1,12 +1,19 @@
 import React from 'react';
+import { supabase } from '../../../lib/supabase';
 import './VideoBanners.css';
 
-const videos = [
+const defaultVideos = [
   {
     id: 1,
-    url: 'https://cdn.shopify.com/videos/c/o/v/6f0e395447a147e8b8c5e9f89542b5ff.mp4', // Placeholder high-end skincare video
+    url: 'https://cdn.shopify.com/videos/c/o/v/6f0e395447a147e8b8c5e9f89542b5ff.mp4',
     title: 'Pure Texture',
     desc: 'The science of silky hydration.'
+  },
+  {
+    id: 3,
+    url: 'https://cdn.shopify.com/videos/c/o/v/9f194e96dae263bf1528e25c4db17c18.mp4',
+    title: 'Radiant Glow',
+    desc: 'Unlock your natural luminosity safely.'
   },
   {
     id: 2,
@@ -17,6 +24,39 @@ const videos = [
 ];
 
 const VideoBanners = () => {
+  const [banners, setBanners] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetchBanners();
+  }, []);
+
+  const fetchBanners = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('homepage_sections')
+        .select('content')
+        .eq('section_name', 'videoBanners')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+
+      if (data && data.content && data.content.length > 0) {
+        setBanners(data.content);
+      } else {
+        setBanners(defaultVideos);
+      }
+    } catch (error) {
+      console.error('Error fetching video banners:', error);
+      setBanners(defaultVideos);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return null;
+
   return (
     <section className="video-banners-section">
       <div className="section-intro">
@@ -24,8 +64,8 @@ const VideoBanners = () => {
       </div>
       
       <div className="video-scroll-container">
-        {videos.map((v) => (
-          <div key={v.id} className="video-banner-item">
+        {banners.map((v, index) => (
+          <div key={v.id || index} className="video-banner-item">
             <video 
               autoPlay 
               muted 

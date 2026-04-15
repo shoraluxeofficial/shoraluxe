@@ -13,7 +13,8 @@ const HomepageManager = () => {
         cta: { heading: '', text: '', tag: '', buttonText: '', bgImage: '' },
         quiz: { heading: '', text: '', buttonText: '' },
         brandPromise: [],
-        testimonials: []
+        testimonials: [],
+        videoBanners: []
     });
 
     useEffect(() => {
@@ -34,6 +35,12 @@ const HomepageManager = () => {
                 data.forEach(item => {
                     formattedData[item.section_name] = item.content;
                 });
+                
+                // Ensure videoBanners exists in formattedData
+                if (!formattedData.videoBanners) {
+                  formattedData.videoBanners = [];
+                }
+                
                 setSections(formattedData);
             }
         } catch (error) {
@@ -86,13 +93,13 @@ const HomepageManager = () => {
 
             <div className="cms-container">
                 <div className="cms-tabs">
-                    {['hero', 'cta', 'quiz', 'brandPromise', 'testimonials'].map(tab => (
+                    {['hero', 'cta', 'quiz', 'videoBanners', 'testimonials'].map(tab => (
                         <button 
                             key={tab} 
                             className={`cms-tab-btn ${activeTab === tab ? 'active' : ''}`}
                             onClick={() => setActiveTab(tab)}
                         >
-                            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                            {tab === 'videoBanners' ? 'Video Banners' : tab.charAt(0).toUpperCase() + tab.slice(1)}
                         </button>
                     ))}
                 </div>
@@ -198,6 +205,61 @@ const HomepageManager = () => {
                                     <textarea value={sections.quiz.text} onChange={(e) => updateSection('text', e.target.value)} />
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'videoBanners' && (
+                        <div className="cms-section-editor">
+                            <h3>Video Banners (Shoraluxe In Motion)</h3>
+                            <div className="hero-items-list">
+                                {sections.videoBanners.map((video, index) => (
+                                    <div key={index} className="admin-card cms-item-card">
+                                        <div className="cms-item-index">{index + 1}</div>
+                                        <div className="cms-fields">
+                                            <input 
+                                                type="text" 
+                                                placeholder="Video URL (.mp4)" 
+                                                value={video.url} 
+                                                onChange={(e) => {
+                                                    const newVideos = [...sections.videoBanners];
+                                                    newVideos[index].url = e.target.value;
+                                                    setSections(prev => ({ ...prev, videoBanners: newVideos }));
+                                                }}
+                                            />
+                                            <input 
+                                                type="text" 
+                                                placeholder="Title" 
+                                                value={video.title} 
+                                                onChange={(e) => {
+                                                    const newVideos = [...sections.videoBanners];
+                                                    newVideos[index].title = e.target.value;
+                                                    setSections(prev => ({ ...prev, videoBanners: newVideos }));
+                                                }}
+                                            />
+                                            <input 
+                                                type="text" 
+                                                placeholder="Description" 
+                                                value={video.desc} 
+                                                onChange={(e) => {
+                                                    const newVideos = [...sections.videoBanners];
+                                                    newVideos[index].desc = e.target.value;
+                                                    setSections(prev => ({ ...prev, videoBanners: newVideos }));
+                                                }}
+                                            />
+                                        </div>
+                                        <button className="delete-btn" onClick={() => {
+                                            setSections(prev => ({ ...prev, videoBanners: prev.videoBanners.filter((_, i) => i !== index) }));
+                                        }}>
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="admin-btn-secondary" onClick={() => {
+                                setSections(prev => ({ ...prev, videoBanners: [...prev.videoBanners, { url: '', title: '', desc: '' }] }));
+                            }}>
+                                <Plus size={16} /> Add New Video Section
+                            </button>
                         </div>
                     )}
 

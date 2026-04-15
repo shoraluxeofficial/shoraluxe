@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { FaInstagram, FaFacebook, FaYoutube, FaTwitter } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaYoutube, FaTwitter, FaCcVisa, FaCcMastercard, FaCcPaypal, FaCcApplePay, FaGooglePay } from 'react-icons/fa';
+import { SiRazorpay } from 'react-icons/si';
 import './Footer.css';
 
 const Footer = () => {
@@ -8,11 +9,11 @@ const Footer = () => {
     <footer className="footer-v2">
       {/* BACKGROUND VIDEO */}
       <div className="footer-video-bg">
-        <video 
-          autoPlay 
-          muted 
-          loop 
-          playsInline 
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
           className="f-bg-video"
         >
           <source src="https://cdn.shopify.com/videos/c/o/v/6f0e395447a147e8b8c5e9f89542b5ff.mp4" type="video/mp4" />
@@ -62,17 +63,6 @@ const Footer = () => {
               <a href="#" className="f-nav-item">Privacy & Terms</a>
             </nav>
           </div>
-
-          <div className="f-col newsletter-focus">
-            <h4 className="f-col-title">Join the Inner Circle</h4>
-            <div className="f-subscribe-wrap">
-              <input type="email" placeholder="YOUR EMAIL" className="f-subscribe-input" />
-              <button className="f-subscribe-submit">
-                <ArrowRight size={20} />
-              </button>
-            </div>
-            <p className="f-subscribe-note">Become a member for exclusive access to skin secrets and early launches.</p>
-          </div>
         </div>
 
         {/* BOTTOM METADATA */}
@@ -80,8 +70,19 @@ const Footer = () => {
           <div className="f-bottom-left">
             <span>© 2026 SHORALUXE PRIVATE LIMITED.</span>
           </div>
+          <div className="f-payments-aura">
+            <img src="/Visa.png" className="payment-logo" alt="Visa" />
+            <img src="/Master Card.png" className="payment-logo" alt="Mastercard" />
+            <img src="/american express.png" className="payment-logo" alt="American Express" />
+            <img src="/rupay.png" className="payment-logo" alt="RuPay" />
+            <img src="/Google_Pay_Logo.svg.png" className="payment-logo" alt="Google Pay" />
+            <img src="/Phonepe.png" className="payment-logo" alt="PhonePe" />
+            <img src="/Paytm.jfif" className="payment-logo" alt="Paytm" />
+            <img src="/Upi.png" className="payment-logo" alt="UPI" />
+            <img src="/Razorpay.png" className="payment-logo" alt="Razorpay" />
+          </div>
           <div className="f-bottom-right">
-            <span>Mumbai • New Delhi • Dubai • London</span>
+            <span>All Over India Delivery avilable </span>
           </div>
         </div>
       </div>

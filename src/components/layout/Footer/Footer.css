@@ -2,10 +2,18 @@
   width: 100%;
   position: relative;
   background-color: #1a050b; /* Deep burgundy/black */
+  
+  /* Elegant 3D diamond/carbon texture overlay */
+  background-image: 
+    linear-gradient(45deg, rgba(255,255,255,0.015) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.015) 75%, rgba(255,255,255,0.015)), 
+    linear-gradient(45deg, rgba(255,255,255,0.015) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.015) 75%, rgba(255,255,255,0.015));
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+
   overflow: hidden;
-  padding: 4rem 0 2rem; /* Reduced from 6rem 0 3rem */
+  padding: 4rem 0 2rem;
   color: #fff;
-  border-top-left-radius: 80px; /* Elegant curve top */
+  border-top-left-radius: 80px;
   border-top-right-radius: 80px;
   margin-top: 1rem;
   box-shadow: 0 -30px 60px rgba(0,0,0,0.1);
@@ -84,9 +92,9 @@
 /* MIDDLE GRID */
 .footer-grid-v2 {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+  grid-template-columns: 2fr 1fr 1fr; /* Properly balanced for 3 sections */
   gap: 3rem;
-  margin-bottom: 3rem; /* Reduced from 6rem */
+  margin-bottom: 3rem;
   align-items: flex-start;
 }
 
@@ -213,6 +221,45 @@
   color: rgba(255, 255, 255, 0.3);
   letter-spacing: 2px;
   text-transform: uppercase;
+  gap: 2rem;
+}
+
+.f-payments-aura {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; /* Prevent crashing on smaller screens */
+  gap: 0.8rem;
+  padding: 0 1rem;
+  flex: 1; /* Allow it to take up available space between the ends */
+}
+
+.payment-logo {
+  height: 22px; /* Smaller inner height */
+  width: auto;
+  object-fit: contain;
+  background-color: #ffffff; /* Uniform white badge for all */
+  padding: 4px 8px; /* Breathing room */
+  border-radius: 4px; /* Clean structured look */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+}
+
+.payment-logo:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.payment-text {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #fff;
+  /* Exactly matching the green-to-orange gradient from screenshot */
+  background: linear-gradient(90deg, #2A9D49 0%, #E69D3B 100%);
+  padding: 6px 14px;
+  border-radius: 6px;
+  white-space: nowrap;
 }
 
 /* RESPONSIVE */
@@ -230,4 +277,15 @@
   .footer-mission-text { font-size: 1.6rem; margin-top: -4vw; }
   .footer-grid-v2 { grid-template-columns: 1fr; gap: 2.5rem; }
   .newsletter-focus { padding: 1.5rem; }
+  .footer-bottom-v2 {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+    padding-bottom: 2rem;
+  }
+  .f-payments-aura {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
 }

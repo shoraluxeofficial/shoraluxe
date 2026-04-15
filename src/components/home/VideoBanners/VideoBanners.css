@@ -23,7 +23,7 @@
 .video-scroll-container::-webkit-scrollbar { display: none; }
 
 .video-banner-item {
-  flex: 0 0 calc(50% - 1rem);
+  flex: 0 0 calc(33.333% - 1.33rem);
   height: 600px;
   position: relative;
   border-radius: 30px;
