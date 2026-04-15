@@ -8,12 +8,18 @@ const PopupAd = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Show popup 1.5 seconds after page loads if it is active
+    // Show popup 2.5 seconds after page loads, but only once per day
     if (popupConfig?.active) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 2500);
-      return () => clearTimeout(timer);
+      const today = new Date().toDateString();
+      const lastShownDate = localStorage.getItem('shoraluxe_popup_date');
+
+      if (lastShownDate !== today) {
+        const timer = setTimeout(() => {
+          setIsOpen(true);
+          localStorage.setItem('shoraluxe_popup_date', today);
+        }, 2500);
+        return () => clearTimeout(timer);
+      }
     }
   }, [popupConfig?.active]);
 

@@ -4,8 +4,9 @@ import { supabase } from '../../../lib/supabase';
 import './Hero.css';
 
 const defaultBanners = [
-  { id: 1, url: '/shop', img: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1600&auto=format&fit=crop', alt: 'Premium Care' },
-  { id: 2, url: '/shop', img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1600&auto=format&fit=crop', alt: 'Luxury Serums' }
+  { id: 1, url: '/shop', img: '/Banners/1000000387.jpg.jpeg', alt: 'Premium Care' },
+  { id: 2, url: '/shop', img: '/Banners/1000000389 (1).jpg.jpeg', alt: 'Luxury Serums' },
+  { id: 3, url: '/shop', img: '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp', alt: 'Special Offer' }
 ];
 
 const Hero = () => {
