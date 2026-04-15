@@ -63,6 +63,7 @@ const Navbar = () => {
                   <li><Link to="/shop?concern=suncare">Suncare</Link></li>
                 </ul>
               </li>
+              <li><Link to="/track-order">Track Order</Link></li>
               <li><Link to="/quiz">Glow Up Quiz</Link></li>
             </ul>
           </nav>
@@ -126,7 +127,7 @@ const Navbar = () => {
           <ul className="mobile-links">
             <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
             <li><Link to="/shop" onClick={() => setMenuOpen(false)}>Shop All</Link></li>
-            <li><Link to="/track-order" onClick={() => setMenuOpen(false)}>Order Tracking</Link></li>
+            <li><Link to="/track-order" onClick={() => setMenuOpen(false)}>Track Order</Link></li>
             <li><Link to="/quiz" onClick={() => setMenuOpen(false)}>Glow Up Quiz</Link></li>
             <li><Link to="/account" onClick={() => setMenuOpen(false)}>My Account</Link></li>
           </ul>

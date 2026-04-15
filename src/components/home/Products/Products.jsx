@@ -8,6 +8,9 @@ const Products = () => {
   const scrollRef = useRef(null);
   const { products, addToCart } = useShop();
 
+  // Exclude test product (id 999) and cap to 16 real products
+  const displayProducts = products.filter(p => p.id !== 999).slice(0, 16);
+
   const handleAddToCart = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
@@ -34,13 +37,13 @@ const Products = () => {
             <button className="scroll-btn" onClick={() => scroll('right')} aria-label="Scroll right">
               <ChevronRight size={20} />
             </button>
-            <a href="#" className="view-all-link">View All</a>
+            <Link to="/shop" className="view-all-link">View All</Link>
           </div>
         </div>
 
         <div className="products-row-wrapper">
           <div className="products-row hide-scrollbar" ref={scrollRef}>
-            {products.map((product) => (
+            {displayProducts.map((product) => (
               <Link to={`/product/${product.id}`} key={product.id} className="product-card-link">
                 <div className="product-card">
                   {/* Image */}

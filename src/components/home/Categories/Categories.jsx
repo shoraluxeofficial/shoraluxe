@@ -8,7 +8,7 @@ const categoryData = [
   },
   {
     name: 'Face Serums',
-    img: '/Prodcuts/WhatsApp Image 2026-04-13 at 6.26.31 PM (1).jpeg',
+    img: '/Prodcuts/Face serums.jpg',
   },
   {
     name: 'Moisturizers',
@@ -16,23 +16,23 @@ const categoryData = [
   },
   {
     name: 'Sunscreens',
-    img: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca418?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/Sunscreens.jpg',
   },
   {
     name: 'Body Washes',
-    img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/Body Washs.jpg',
   },
   {
     name: 'Day Creams',
-    img: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/Day Creams.jpg',
   },
   {
     name: 'Night Creams',
-    img: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/Night Creams.jpg',
   },
   {
     name: 'Body Lotions',
-    img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=200',
+    img: '/Prodcuts/Body Lotions.jpg',
   },
 ];
 
