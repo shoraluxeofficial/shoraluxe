@@ -1,13 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { Save, Plus, Trash2, Image as ImageIcon, Layout, MoveUp, MoveDown, CheckCircle } from 'lucide-react';
+import { Save, Plus, Trash2, Image as ImageIcon, Layout, MoveUp, MoveDown, CheckCircle, Upload } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
+import { uploadFile } from '../../../lib/upload';
 import { useNotify } from '../../../components/common/Notification/Notification';
 import './HomepageManager.css';
 
 const HomepageManager = () => {
     const [loading, setLoading] = useState(true);
+    const [uploading, setUploading] = useState(null); // Track index + field being uploaded
     const [activeTab, setActiveTab] = useState('hero');
     const { notify } = useNotify();
+
+    const handleFileUploadUI = async (e, section, index, field) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            setUploading(`${section}-${index}-${field}`);
+            const url = await uploadFile(file, 'brand-assets', section);
+            
+            const newSections = { ...sections };
+            if (Array.isArray(newSections[section])) {
+                newSections[section][index][field] = url;
+            } else {
+                newSections[section][field] = url;
+            }
+            
+            setSections(newSections);
+            notify('File uploaded successfully!', 'success');
+        } catch (error) {
+            console.error('Upload failed:', error);
+            notify('Upload failed. Ensure Supabase bucket "brand-assets" is public.', 'error');
+        } finally {
+            setUploading(null);
+        }
+    };
     const [sections, setSections] = useState({
         hero: [],
         cta: { heading: '', text: '', tag: '', buttonText: '', bgImage: '' },
@@ -113,16 +139,27 @@ const HomepageManager = () => {
                                     <div key={index} className="admin-card cms-item-card">
                                         <div className="cms-item-index">{index + 1}</div>
                                         <div className="cms-fields">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Image URL" 
-                                                value={banner.img} 
-                                                onChange={(e) => {
-                                                    const newHero = [...sections.hero];
-                                                    newHero[index].img = e.target.value;
-                                                    setSections(prev => ({ ...prev, hero: newHero }));
-                                                }}
-                                            />
+                                            <div className="cms-input-with-upload">
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Image URL" 
+                                                    value={banner.img} 
+                                                    onChange={(e) => {
+                                                        const newHero = [...sections.hero];
+                                                        newHero[index].img = e.target.value;
+                                                        setSections(prev => ({ ...prev, hero: newHero }));
+                                                    }}
+                                                />
+                                                <label className={`upload-minimal-btn ${uploading === `hero-${index}-img` ? 'uploading' : ''}`}>
+                                                    <input 
+                                                        type="file" 
+                                                        accept="image/*" 
+                                                        onChange={(e) => handleFileUploadUI(e, 'hero', index, 'img')} 
+                                                        hidden 
+                                                    />
+                                                    <Upload size={14} />
+                                                </label>
+                                            </div>
                                             <input 
                                                 type="text" 
                                                 placeholder="Link URL" 
@@ -216,16 +253,27 @@ const HomepageManager = () => {
                                     <div key={index} className="admin-card cms-item-card">
                                         <div className="cms-item-index">{index + 1}</div>
                                         <div className="cms-fields">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Video URL (.mp4)" 
-                                                value={video.url} 
-                                                onChange={(e) => {
-                                                    const newVideos = [...sections.videoBanners];
-                                                    newVideos[index].url = e.target.value;
-                                                    setSections(prev => ({ ...prev, videoBanners: newVideos }));
-                                                }}
-                                            />
+                                            <div className="cms-input-with-upload">
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Video URL (.mp4)" 
+                                                    value={video.url} 
+                                                    onChange={(e) => {
+                                                        const newVideos = [...sections.videoBanners];
+                                                        newVideos[index].url = e.target.value;
+                                                        setSections(prev => ({ ...prev, videoBanners: newVideos }));
+                                                    }}
+                                                />
+                                                <label className={`upload-minimal-btn ${uploading === `videoBanners-${index}-url` ? 'uploading' : ''}`}>
+                                                    <input 
+                                                        type="file" 
+                                                        accept="video/mp4,video/quicktime" 
+                                                        onChange={(e) => handleFileUploadUI(e, 'videoBanners', index, 'url')} 
+                                                        hidden 
+                                                    />
+                                                    <Upload size={14} />
+                                                </label>
+                                            </div>
                                             <input 
                                                 type="text" 
                                                 placeholder="Title" 

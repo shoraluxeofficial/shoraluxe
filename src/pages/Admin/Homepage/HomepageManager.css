@@ -158,3 +158,47 @@
     color: #6b7280;
     font-weight: 500;
 }
+
+/* UPLOAD BUTTON STYLING */
+.cms-input-with-upload {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cms-input-with-upload input {
+    flex-grow: 1;
+}
+
+.upload-minimal-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.upload-minimal-btn:hover {
+    background: #e5e7eb;
+    color: #111827;
+    border-color: #d1d5db;
+}
+
+.upload-minimal-btn.uploading {
+    animation: uploadPulse 1.5s infinite;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+@keyframes uploadPulse {
+    0% { background-color: #f3f4f6; }
+    50% { background-color: #dcfce7; }
+    100% { background-color: #f3f4f6; }
+}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, X, ImagePlus, PackagePlus, ChevronDown } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X, ImagePlus, PackagePlus, ChevronDown, Upload } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
 import { useNotify } from '../../../components/common/Notification/Notification';
+import { uploadFile } from '../../../lib/upload';
 import './AdminProducts.css';
 
 const EMPTY_FORM = {
@@ -37,7 +38,25 @@ const STATUSES = ['active', 'draft', 'out-of-stock'];
 const AdminProducts = () => {
   const { products, addProduct, deleteProduct, updateProduct, loading, fetchProducts } = useShop();
   const [syncing, setSyncing] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { notify } = useNotify();
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const url = await uploadFile(file, 'brand-assets', 'products');
+      setForm(prev => ({ ...prev, img: url }));
+      notify('Product image uploaded successfully!', 'success');
+    } catch (err) {
+      console.error('Upload error:', err);
+      notify('Upload failed. Ensure "brand-assets" bucket exists.', 'error');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const syncLocalData = async () => {
     notify('This will upload all 16 local products to Supabase. Continue?', 'confirm', {
@@ -499,6 +518,10 @@ const AdminProducts = () => {
                           placeholder="https://images.unsplash.com/..."
                           className={errors.img ? 'input-error' : ''}
                         />
+                        <label className={`upload-minimal-btn ${uploading ? 'uploading' : ''}`} style={{ border: 'none', background: '#f3f4f6', cursor: 'pointer', padding: '0.5rem', borderRadius: '6px' }}>
+                          <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
+                          <Upload size={16} />
+                        </label>
                       </div>
                       {errors.img && <span className="pf-error">{errors.img}</span>}
                       {form.img && (
