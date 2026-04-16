@@ -1,12 +1,12 @@
 import React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useNotify } from '../../../components/common/Notification/Notification';
-import { 
-  LayoutDashboard, 
-  ShoppingBag, 
-  Users, 
-  Settings, 
-  LogOut, 
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Users,
+  Settings,
+  LogOut,
   Image as ImageIcon,
   MessageSquare,
   ClipboardList,
@@ -50,12 +50,12 @@ const AdminLayout = () => {
         <div className="admin-logo-box">
           <h2>SHORALUXE <span>ADMIN</span></h2>
         </div>
-        
+
         <nav className="admin-nav-menu">
           {menuItems.map((item) => (
-            <Link 
-              key={item.path} 
-              to={item.path} 
+            <Link
+              key={item.path}
+              to={item.path}
               className={`admin-nav-link ${location.pathname === item.path ? 'active' : ''}`}
             >
               {item.icon}
@@ -65,8 +65,8 @@ const AdminLayout = () => {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <button 
-            className="admin-logout-link" 
+          <button
+            className="admin-logout-link"
             onClick={handleLogout}
           >
             <LogOut size={20} />

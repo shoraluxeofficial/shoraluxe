@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter, Eye, Truck, CheckCircle, XCircle, Clock, CreditCard, ExternalLink, Download } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { useNotify } from '../../../components/common/Notification/Notification';
+import ConfirmModal from '../../../components/common/ConfirmModal/ConfirmModal';
 import './AdminOrders.css';
 
 const AdminOrders = () => {
@@ -10,6 +11,7 @@ const AdminOrders = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [cancelConfirm, setCancelConfirm] = useState(null);
   const { notify } = useNotify();
 
   useEffect(() => {
@@ -251,13 +253,25 @@ const AdminOrders = () => {
                   <button onClick={() => updateOrderStatus(selectedOrder.id, 'confirmed')} disabled={selectedOrder.order_status === 'confirmed'} className="btn-confirm">Mark Confirmed</button>
                   <button onClick={() => updateOrderStatus(selectedOrder.id, 'shipped')} disabled={selectedOrder.order_status === 'shipped'} className="btn-ship">Mark Shipped</button>
                   <button onClick={() => updateOrderStatus(selectedOrder.id, 'delivered')} disabled={selectedOrder.order_status === 'delivered'} className="btn-deliver">Mark Delivered</button>
-                  <button onClick={() => updateOrderStatus(selectedOrder.id, 'cancelled')} disabled={selectedOrder.order_status === 'cancelled'} className="btn-cancel">Cancel Order</button>
+                  <button onClick={() => setCancelConfirm(selectedOrder.id)} disabled={selectedOrder.order_status === 'cancelled'} className="btn-cancel">Cancel Order</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      <ConfirmModal 
+        isOpen={!!cancelConfirm}
+        title="Cancel This Order?"
+        message="This will mark the order as cancelled and notify the customer. This action is permanent."
+        confirmText="Yes, Cancel"
+        onConfirm={async () => {
+          await updateOrderStatus(cancelConfirm, 'cancelled');
+          setCancelConfirm(null);
+        }}
+        onCancel={() => setCancelConfirm(null)}
+      />
     </div>
   );
 };

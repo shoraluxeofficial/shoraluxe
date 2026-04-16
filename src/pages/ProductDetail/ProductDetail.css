@@ -54,6 +54,7 @@
 /* LEFT: VERTICAL GALLERY */
 .pd-gallery-container {
   display: flex;
+  flex-direction: column-reverse;
   gap: 1.5rem;
   position: sticky;
   top: 100px;
@@ -61,13 +62,14 @@
 
 .pd-thumbs-vertical {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 1rem;
-  width: 80px;
+  width: 100%;
 }
 
 .pd-thumb-v {
-  width: 100%;
+  width: 80px;
   aspect-ratio: 1/1;
   border-radius: 8px;
   overflow: hidden;
@@ -234,6 +236,40 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: #222;
+}
+
+/* SIZE SELECTOR */
+.pd-size-selector {
+  margin-bottom: 2rem;
+}
+
+.size-options {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.size-btn {
+  background: #fff;
+  border: 1px solid #eaeaea;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #444;
+  transition: all 0.2s ease-in-out;
+}
+
+.size-btn:hover {
+  border-color: #611C28;
+}
+
+.size-btn.active {
+  background: #611C28;
+  color: #fff;
+  border-color: #611C28;
 }
 
 /* OFFERS */

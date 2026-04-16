@@ -82,7 +82,7 @@ const Footer = () => {
             <img src="/Razorpay.png" className="payment-logo" alt="Razorpay" />
           </div>
           <div className="f-bottom-right">
-            <span>All Over India Delivery avilable </span>
+            <span>Delivering Luxury Across India</span>
           </div>
         </div>
       </div>

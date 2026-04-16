@@ -28,7 +28,7 @@ const Hero = () => {
             .eq('section_name', 'hero')
             .single();
         
-        if (data && data.content && data.content.length > 0) {
+        if (data && data.content) {
             setBannerData(data.content);
         }
     };

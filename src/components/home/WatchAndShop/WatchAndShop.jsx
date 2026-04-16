@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Send, Eye } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
 import './WatchAndShop.css';
 
 const storiesData = [
@@ -57,6 +58,31 @@ const storiesData = [
 
 const WatchAndShop = () => {
   const scrollRef = useRef(null);
+  const [stories, setStories] = React.useState(storiesData);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetchStories();
+  }, []);
+
+  const fetchStories = async () => {
+    try {
+      setLoading(true);
+      const { data } = await supabase
+        .from('homepage_sections')
+        .select('content')
+        .eq('section_name', 'watchAndShop')
+        .single();
+      
+      if (data && data.content) {
+        setStories(data.content);
+      }
+    } catch (err) {
+      console.error('Error fetching watch & shop:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const scroll = (direction) => {
     if (scrollRef.current) {
@@ -67,6 +93,8 @@ const WatchAndShop = () => {
       });
     }
   };
+
+  if (loading) return null;
 
   return (
     <section className="watch-section">
@@ -80,10 +108,26 @@ const WatchAndShop = () => {
         </div>
 
         <div className="watch-grid" ref={scrollRef}>
-          {storiesData.map((story) => (
-            <div key={story.id} className="story-card">
+          {stories.map((story, index) => (
+            <div key={index} className="story-card">
               <div className="story-media-wrap">
-                <img src={story.img} alt={story.title} className="story-img" />
+                {story.video ? (
+                   <video 
+                     className="story-video"
+                     src={story.video}
+                     poster={story.img}
+                     muted
+                     loop
+                     playsInline
+                     onMouseEnter={e => e.target.play()}
+                     onMouseLeave={e => {
+                       e.target.pause();
+                       e.target.currentTime = 0;
+                     }}
+                   />
+                ) : (
+                   <img src={story.img} alt={story.title} className="story-img" />
+                )}
                 
                 {/* Top Badge: Discount */}
                 <div className="story-discount-badge">{story.discount}</div>
@@ -91,7 +135,7 @@ const WatchAndShop = () => {
                 {/* Top Right: Views */}
                 <div className="story-views-badge">
                   <Eye size={12} />
-                  <span>{story.views}</span>
+                  <span>{story.views || (Math.floor(Math.random() * 500) + 500)}</span>
                 </div>
 
                 {/* Overlay Text */}
@@ -110,7 +154,7 @@ const WatchAndShop = () => {
                 <h3 className="story-title">{story.title}</h3>
                 <div className="story-pricing">
                   <span className="story-current-price">₹ {story.price}</span>
-                  <span className="story-original-price">₹ {story.originalPrice}</span>
+                  {story.originalPrice && <span className="story-original-price">₹ {story.originalPrice}</span>}
                 </div>
                 <button className="story-buy-btn">Buy Now</button>
               </div>

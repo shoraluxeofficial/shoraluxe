@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Star, Check, X } from 'lucide-react';
+import ConfirmModal from '../../../components/common/ConfirmModal/ConfirmModal';
 
 const initialReviews = [
   { id: 1, name: 'Priya S.', rating: 5, text: 'Absolutely love the Retinol Night Cream! My skin has never felt smoother.', product: 'Retinol Night Cream', approved: true },
@@ -9,6 +10,7 @@ const initialReviews = [
 
 const AdminReviews = () => {
   const [reviews, setReviews] = useState(initialReviews);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const toggleApproval = (id) => {
     setReviews(prev => prev.map(r => r.id === id ? { ...r, approved: !r.approved } : r));
@@ -16,6 +18,7 @@ const AdminReviews = () => {
 
   const deleteReview = (id) => {
     setReviews(prev => prev.filter(r => r.id !== id));
+    setDeleteConfirm(null);
   };
 
   return (
@@ -46,12 +49,20 @@ const AdminReviews = () => {
                 <button className="t-action-btn edit" title={review.approved ? 'Unapprove' : 'Approve'} onClick={() => toggleApproval(review.id)}>
                   {review.approved ? <X size={16} /> : <Check size={16} />}
                 </button>
-                <button className="t-action-btn delete" onClick={() => deleteReview(review.id)}><Trash2 size={16} /></button>
+                <button className="t-action-btn delete" onClick={() => setDeleteConfirm(review.id)}><Trash2 size={16} /></button>
               </div>
             </div>
           </div>
         ))}
       </div>
+      
+      <ConfirmModal 
+        isOpen={!!deleteConfirm}
+        title="Delete Testimonial?"
+        message="This review will be permanently removed from your dashboard."
+        onConfirm={() => deleteReview(deleteConfirm)}
+        onCancel={() => setDeleteConfirm(null)}
+      />
     </div>
   );
 };

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowRight, ArrowLeft, Droplet, Sun, Clock, AlertCircle, Sparkles, 
   ShoppingBag, CloudRain, Flame, Activity, Cloud, Star, Target, Shield, Heart, Moon 
 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
+import { supabase } from '../../../lib/supabase';
 import './QuizSection.css';
 
 const QUIZ_QUESTIONS = [
@@ -116,7 +117,28 @@ const QUIZ_QUESTIONS = [
 const QuizSection = () => {
   const { products, addToCart, cartItems, updateQuantity, removeFromCart, setIsCartOpen } = useShop();
 
+  const [landingContent, setLandingContent] = useState({
+    heading: 'Build Your Perfect Routine, Instantly.',
+    text: 'Answer a few quick questions. Watch your personalized Shoraluxe product stack build itself in real-time as we analyze your unique skin profile.',
+    buttonText: 'Start The Quiz'
+  });
+
   const [viewState, setViewState] = useState('start');
+
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      const { data: sectionData } = await supabase
+        .from('homepage_sections')
+        .select('content')
+        .eq('section_name', 'quiz')
+        .single();
+      
+      if (sectionData && sectionData.content) {
+        setLandingContent(sectionData.content);
+      }
+    };
+    fetchQuizData();
+  }, []);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -228,10 +250,10 @@ const QuizSection = () => {
         <div className="ql-container">
           <div className="ql-content">
             <span className="glow-badge"><Sparkles size={14}/> Live AI Analysis</span>
-            <h2>Build Your Perfect Routine, Instantly.</h2>
-            <p>Answer a few quick questions. Watch your personalized Shoraluxe product stack build itself in real-time as we analyze your unique skin profile.</p>
+            <h2>{landingContent.heading}</h2>
+            <p>{landingContent.text}</p>
             <button className="q-start-btn pulse-glow" onClick={startQuiz}>
-              Start Matchmaker <ArrowRight size={20} />
+              {landingContent.buttonText} <ArrowRight size={20} />
             </button>
           </div>
           <div className="ql-image-wrap">
@@ -239,8 +261,6 @@ const QuizSection = () => {
             <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600" alt="Shora Luxe Mode" />
             
             {/* Visual flair floating cards */}
-            <div className="floating-flair f1"><Droplet size={20}/> Hydration</div>
-            <div className="floating-flair f2"><Sparkles size={20}/> Clarity</div>
           </div>
         </div>
       </section>

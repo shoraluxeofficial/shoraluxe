@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Search, X, ImagePlus, PackagePlus, ChevronDown, Upload } from 'lucide-react';
+import imageCompression from 'browser-image-compression';
 import { useShop } from '../../../context/ShopContext';
 import { useNotify } from '../../../components/common/Notification/Notification';
+import ConfirmModal from '../../../components/common/ConfirmModal/ConfirmModal';
 import { uploadFile } from '../../../lib/upload';
 import './AdminProducts.css';
 
@@ -39,7 +41,18 @@ const AdminProducts = () => {
   const { products, addProduct, deleteProduct, updateProduct, loading, fetchProducts } = useShop();
   const [syncing, setSyncing] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [saveConfirm, setSaveConfirm] = useState(false);
   const { notify } = useNotify();
+
+  const compressImage = async (file) => {
+    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true };
+    try {
+      return await imageCompression(file, options);
+    } catch (error) {
+      console.error("Compression failed, using original file.", error);
+      return file;
+    }
+  };
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -47,14 +60,49 @@ const AdminProducts = () => {
 
     try {
       setUploading(true);
-      const url = await uploadFile(file, 'brand-assets', 'products');
+      const compressedFile = await compressImage(file);
+      const url = await uploadFile(compressedFile, 'brand-assets', 'products');
       setForm(prev => ({ ...prev, img: url }));
-      notify('Product image uploaded successfully!', 'success');
+      notify('Product image uploaded and compressed successfully!', 'success');
     } catch (err) {
       console.error('Upload error:', err);
       notify('Upload failed. Ensure "brand-assets" bucket exists.', 'error');
     } finally {
       setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleGalleryUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    if (files.length > 20) {
+      notify('Maximum 20 images allowed at a time.', 'error');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const uploadedUrls = [];
+      for (let i = 0; i < files.length; i++) {
+        const compressedFile = await compressImage(files[i]);
+        const url = await uploadFile(compressedFile, 'brand-assets', 'products');
+        uploadedUrls.push(url);
+      }
+
+      setForm(prev => {
+        const existing = prev.gallery ? prev.gallery.split('\n').filter(Boolean) : [];
+        const combined = [...existing, ...uploadedUrls];
+        return { ...prev, gallery: combined.join('\n') };
+      });
+      notify(`${files.length} gallery images uploaded & compressed!`, 'success');
+    } catch (err) {
+      console.error('Gallery upload error:', err);
+      notify('Gallery upload failed.', 'error');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
     }
   };
 
@@ -180,6 +228,62 @@ const AdminProducts = () => {
   };
 
   // ── SUBMIT ────────────────────────────────────────────────────────────────
+  const processSubmit = async () => {
+    setSyncing(true);
+    try {
+      const discountCalc = form.discount || (form.originalPrice && form.price
+        ? `${Math.round((1 - form.price / form.originalPrice) * 100)}% off`
+        : '');
+
+      const payload = {
+        brand: form.brand,
+        title: form.title.trim(),
+        price: Number(form.price),
+        original_price: Number(form.originalPrice),
+        discount: discountCalc,
+        offer: (form.offer || '').trim(),
+        badge: form.badge || null,
+        size: (form.size || '').trim(),
+        benefit: (form.benefit || '').trim(),
+        skin_type: form.skinType,
+        img: form.img.trim(),
+        gallery: Array.isArray(form.gallery) ? form.gallery : form.gallery?.split('\n').map(g => g.trim()).filter(Boolean) || [],
+        description: form.description.trim(),
+        how_to_use: Array.isArray(form.howToUse) ? form.howToUse : form.howToUse?.split('\n').map(s => s.trim()).filter(Boolean) || [],
+        ingredients: (form.ingredients || '').trim(),
+        best_for: (form.bestFor || '').trim(),
+        rating: form.rating ? Number(form.rating) : 4.5,
+        reviews_count: form.reviewsCount ? Number(form.reviewsCount) : 0,
+        is_new: form.badge === 'NEW',
+        is_bestseller: form.badge === 'BESTSELLER',
+        is_sale: form.badge === 'SALE',
+        stock: form.stock ? Number(form.stock) : 0,
+        status: form.status || 'active',
+        updated_at: new Date()
+      };
+
+      let res;
+      if (editingId !== null) {
+        res = await updateProduct(editingId, payload);
+      } else {
+        res = await addProduct({ ...payload, created_at: new Date() });
+      }
+
+      if (res.success) {
+        notify(`Product ${editingId ? 'updated' : 'added'} successfully!`, 'success');
+        closeModal();
+      } else {
+        notify('Error: ' + res.error, 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      notify('Failed to save product.', 'error');
+    } finally {
+      setSyncing(false);
+      setSaveConfirm(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errs = validate();
@@ -190,43 +294,7 @@ const AdminProducts = () => {
       else if (errs.img || errs.description) setActiveTab('media');
       return;
     }
-
-    const discountCalc = form.discount || (form.originalPrice && form.price
-      ? `${Math.round((1 - form.price / form.originalPrice) * 100)}% off`
-      : '');
-
-    const payload = {
-      brand: form.brand,
-      title: form.title.trim(),
-      price: Number(form.price),
-      original_price: Number(form.originalPrice),
-      discount: discountCalc,
-      offer: form.offer.trim(),
-      badge: form.badge || null,
-      size: form.size.trim(),
-      benefit: form.benefit.trim(),
-      skin_type: form.skinType,
-      img: form.img.trim(),
-      gallery: form.gallery.split('\n').map(g => g.trim()).filter(Boolean),
-      description: form.description.trim(),
-      how_to_use: form.howToUse.split('\n').map(s => s.trim()).filter(Boolean),
-      ingredients: form.ingredients.trim(),
-      best_for: form.bestFor.trim(),
-      rating: form.rating ? Number(form.rating) : 4.5,
-      reviews_count: form.reviewsCount ? Number(form.reviewsCount) : 0,
-      is_new: form.badge === 'NEW',
-      is_bestseller: form.badge === 'BESTSELLER',
-      is_sale: form.badge === 'SALE',
-      stock: form.stock ? Number(form.stock) : 0,
-      status: form.status,
-    };
-
-    if (editingId !== null) {
-      updateProduct(editingId, payload);
-    } else {
-      addProduct(payload);
-    }
-    closeModal();
+    setSaveConfirm(true);
   };
 
   // ── FIELD CHANGE ──────────────────────────────────────────────────────────
@@ -246,11 +314,11 @@ const AdminProducts = () => {
 
   // ── TABS CONFIG ───────────────────────────────────────────────────────────
   const tabs = [
-    { id: 'basic',    label: '① Basic Info' },
-    { id: 'media',    label: '② Media & Images' },
-    { id: 'details',  label: '③ Product Details' },
-    { id: 'content',  label: '④ Content & SEO' },
-    { id: 'inventory',label: '⑤ Inventory & Status' },
+    { id: 'basic', label: '1. General Info' },
+    { id: 'media', label: '2. Images' },
+    { id: 'details', label: '3. Descriptions' },
+    { id: 'content', label: '4. Highlights & Badges' },
+    { id: 'inventory', label: '5. Inventory' },
   ];
 
   return (
@@ -354,20 +422,28 @@ const AdminProducts = () => {
         </div>
       </div>
 
-      {/* ── DELETE CONFIRM ───────────────────────────────────────────────── */}
-      {deleteConfirm && (
-        <div className="pf-overlay" onClick={() => setDeleteConfirm(null)}>
-          <div className="delete-confirm-box" onClick={e => e.stopPropagation()}>
-            <Trash2 size={40} color="#ef4444" />
-            <h3>Delete Product?</h3>
-            <p>This action cannot be undone. The product will be permanently removed from the catalogue.</p>
-            <div className="confirm-actions">
-              <button className="admin-btn-ghost" onClick={() => setDeleteConfirm(null)}>Cancel</button>
-              <button className="admin-btn-danger" onClick={() => { deleteProduct(deleteConfirm); setDeleteConfirm(null); }}>Yes, Delete</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={!!deleteConfirm}
+        title="Delete Product?"
+        message="This action cannot be undone. The product will be permanently removed from the catalogue."
+        confirmText="Yes, Delete"
+        onConfirm={async () => {
+          const res = await deleteProduct(deleteConfirm);
+          if (res.success) notify('Product permanently deleted.', 'success');
+          setDeleteConfirm(null);
+        }}
+        onCancel={() => setDeleteConfirm(null)}
+      />
+
+      <ConfirmModal
+        isOpen={saveConfirm}
+        title={editingId ? "Update Product?" : "Add New Product?"}
+        message={editingId ? "Are you sure you want to save these changes? They will be live on the store immediately." : "This will add the new product to your live catalogue."}
+        confirmText="Yes, Save"
+        type="warning"
+        onConfirm={processSubmit}
+        onCancel={() => setSaveConfirm(false)}
+      />
 
       {/* ── ADD / EDIT MODAL ─────────────────────────────────────────────── */}
       {showModal && (
@@ -382,355 +458,369 @@ const AdminProducts = () => {
               <button className="pf-close-btn" onClick={closeModal}><X size={22} /></button>
             </div>
 
-            {/* Tab Navigation */}
-            <div className="pf-tabs">
-              {tabs.map(t => (
-                <button
-                  key={t.id}
-                  className={`pf-tab ${activeTab === t.id ? 'active' : ''}`}
-                  onClick={() => setActiveTab(t.id)}
-                  type="button"
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
+            {/* 2-Column Layout */}
+            <div className="pf-modal-layout">
+              {/* Left Sidebar */}
+              <div className="pf-sidebar">
+                {tabs.map(t => (
+                  <button
+                    key={t.id}
+                    className={`pf-sidebar-tab ${activeTab === t.id ? 'active' : ''}`}
+                    onClick={() => setActiveTab(t.id)}
+                    type="button"
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
 
-            {/* Form */}
-            <form className="pf-form" onSubmit={handleSubmit}>
-              <div className="pf-body">
+              {/* Right Content */}
+              <form className="pf-form" onSubmit={handleSubmit}>
+                <div className="pf-body">
 
-                {/* ── TAB 1: BASIC INFO ──────────────────────────────────── */}
-                {activeTab === 'basic' && (
-                  <div className="pf-section">
-                    <div className="pf-section-title">Basic Information</div>
+                  {/* ── TAB 1: BASIC INFO ──────────────────────────────────── */}
+                  {activeTab === 'basic' && (
+                    <div className="pf-section">
+                      <div className="pf-section-title">General Information</div>
 
-                    <div className="pf-row">
-                      <div className="pf-field">
-                        <label>Brand Name <span className="req">*</span></label>
-                        <input type="text" value={form.brand} onChange={e => set('brand', e.target.value)} placeholder="e.g. SHORALUXE" />
+                      <div className="pf-row">
+                        <div className="pf-field">
+                          <label>Brand Name <span className="req">*</span></label>
+                          <input type="text" value={form.brand} onChange={e => set('brand', e.target.value)} placeholder="e.g. SHORALUXE" />
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="pf-field full">
-                      <label>Product Title / Name <span className="req">*</span></label>
-                      <input
-                        type="text"
-                        value={form.title}
-                        onChange={e => set('title', e.target.value)}
-                        placeholder="e.g. Sunscreen Cream SPF 50+++ | Broad-spectrum UV defense"
-                        className={errors.title ? 'input-error' : ''}
-                      />
-                      {errors.title && <span className="pf-error">{errors.title}</span>}
-                      <span className="pf-hint">Use a pipe (|) separator to add a subtitle for SEO benefit.</span>
-                    </div>
-
-                    <div className="pf-row three">
-                      <div className="pf-field">
-                        <label>Selling Price (₹) <span className="req">*</span></label>
-                        <input
-                          type="number" min="0" step="0.01"
-                          value={form.price}
-                          onChange={e => set('price', e.target.value)}
-                          placeholder="489"
-                          className={errors.price ? 'input-error' : ''}
-                        />
-                        {errors.price && <span className="pf-error">{errors.price}</span>}
-                      </div>
-                      <div className="pf-field">
-                        <label>MRP / Original Price (₹) <span className="req">*</span></label>
-                        <input
-                          type="number" min="0" step="0.01"
-                          value={form.originalPrice}
-                          onChange={e => set('originalPrice', e.target.value)}
-                          placeholder="599"
-                          className={errors.originalPrice ? 'input-error' : ''}
-                        />
-                        {errors.originalPrice && <span className="pf-error">{errors.originalPrice}</span>}
-                      </div>
-                      <div className="pf-field">
-                        <label>Discount Label</label>
+                      <div className="pf-field full">
+                        <label>Product Name <span className="req">*</span></label>
                         <input
                           type="text"
-                          value={form.discount}
-                          onChange={e => set('discount', e.target.value)}
-                          placeholder="Auto-calculated if left blank"
+                          value={form.title}
+                          onChange={e => set('title', e.target.value)}
+                          placeholder="e.g. Sunscreen SPF 50+++"
+                          className={errors.title ? 'input-error' : ''}
                         />
-                        <span className="pf-hint">e.g. "18% off" – auto-filled if blank.</span>
+                        {errors.title && <span className="pf-error">{errors.title}</span>}
+                        <span className="pf-hint">Optional: Add a | symbol and subtitle for better SEO (e.g. Cleanser | Glowing Skin).</span>
+                      </div>
+
+                      <div className="pf-row three">
+                        <div className="pf-field">
+                          <label>Selling Price (₹) <span className="req">*</span></label>
+                          <input
+                            type="number" min="0" step="0.01"
+                            value={form.price}
+                            onChange={e => set('price', e.target.value)}
+                            placeholder="499"
+                            className={errors.price ? 'input-error' : ''}
+                          />
+                          {errors.price && <span className="pf-error">{errors.price}</span>}
+                        </div>
+                        <div className="pf-field">
+                          <label>MRP (₹) <span className="req">*</span></label>
+                          <input
+                            type="number" min="0" step="0.01"
+                            value={form.originalPrice}
+                            onChange={e => set('originalPrice', e.target.value)}
+                            placeholder="599"
+                            className={errors.originalPrice ? 'input-error' : ''}
+                          />
+                          {errors.originalPrice && <span className="pf-error">{errors.originalPrice}</span>}
+                        </div>
+                        <div className="pf-field">
+                          <label>Discount Tag</label>
+                          <input
+                            type="text"
+                            value={form.discount}
+                            onChange={e => set('discount', e.target.value)}
+                            placeholder="Auto-calculated if left blank"
+                          />
+                          <span className="pf-hint">e.g. "18% off" – auto-filled if blank.</span>
+                        </div>
+                      </div>
+
+                      <div className="pf-row">
+                        <div className="pf-field">
+                          <label>Special Offer / Promo Text</label>
+                          <input type="text" value={form.offer} onChange={e => set('offer', e.target.value)} placeholder="e.g. Free Hydrating Gel on orders above ₹999" />
+                        </div>
+                        <div className="pf-field">
+                          <label>Product Badge</label>
+                          <select value={form.badge} onChange={e => set('badge', e.target.value)}>
+                            <option value="">None</option>
+                            {BADGES.filter(Boolean).map(b => <option key={b} value={b}>{b}</option>)}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="pf-row">
+                        <div className="pf-field">
+                          <label>Skin Type Category <span className="req">*</span></label>
+                          <select
+                            value={form.skinType}
+                            onChange={e => set('skinType', e.target.value)}
+                            className={errors.skinType ? 'input-error' : ''}
+                          >
+                            <option value="">Choose a category</option>
+                            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                          </select>
+                          {errors.skinType && <span className="pf-error">{errors.skinType}</span>}
+                        </div>
+                      </div>
+
+                      <div className="pf-row">
+                        <div className="pf-field">
+                          <label>Available Sizes & Options</label>
+                          <input type="text" value={form.size} onChange={e => set('size', e.target.value)} placeholder="e.g. 50ml, 100ml" />
+                          <span className="pf-hint">Use commas (,) for multiple sizes. Use colons (:) for custom pricing (e.g. 100ml:899, Combo:1200).</span>
+                        </div>
+                        <div className="pf-field">
+                          <label>Quick Feature Highlight</label>
+                          <input type="text" value={form.benefit} onChange={e => set('benefit', e.target.value)} placeholder="e.g. Instant Glow & Repair" />
+                        </div>
                       </div>
                     </div>
+                  )}
 
-                    <div className="pf-row">
-                      <div className="pf-field">
-                        <label>Special Offer / Promo Text</label>
-                        <input type="text" value={form.offer} onChange={e => set('offer', e.target.value)} placeholder="e.g. Free Hydrating Gel on orders above ₹999" />
-                      </div>
-                      <div className="pf-field">
-                        <label>Product Badge</label>
-                        <select value={form.badge} onChange={e => set('badge', e.target.value)}>
-                          <option value="">None</option>
-                          {BADGES.filter(Boolean).map(b => <option key={b} value={b}>{b}</option>)}
-                        </select>
-                      </div>
-                    </div>
+                  {/* ── TAB 2: MEDIA ──────────────────────────────────────── */}
+                  {activeTab === 'media' && (
+                    <div className="pf-section">
+                      <div className="pf-section-title">Product Imagery</div>
 
-                    <div className="pf-row">
-                      <div className="pf-field">
-                        <label>Category / Skin Type <span className="req">*</span></label>
-                        <select
-                          value={form.skinType}
-                          onChange={e => set('skinType', e.target.value)}
-                          className={errors.skinType ? 'input-error' : ''}
-                        >
-                          <option value="">Select skin type / category</option>
-                          {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                        {errors.skinType && <span className="pf-error">{errors.skinType}</span>}
+                      <div className="pf-field full">
+                        <label>Primary Showcase Image <span className="req">*</span></label>
+                        <div className="pf-img-input-wrap">
+                          <ImagePlus size={18} color="#6b7280" />
+                          <input
+                            type="url"
+                            value={form.img}
+                            onChange={e => set('img', e.target.value)}
+                            placeholder="or upload directly..."
+                            className={errors.img ? 'input-error' : ''}
+                          />
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            disabled={uploading}
+                            style={{ padding: '0.4rem', border: '1px solid #e5e7eb', borderRadius: '6px', background: '#fff', fontSize: '0.85rem', width: '250px' }}
+                          />
+                        </div>
+                        {errors.img && <span className="pf-error">{errors.img}</span>}
+                        {form.img && (
+                          <div className="pf-img-preview">
+                            <img src={form.img} alt="Preview" onError={e => { e.target.style.display = 'none'; }} />
+                            <span className="preview-label">This image will appear on the store grid.</span>
+                          </div>
+                        )}
                       </div>
-                    </div>
 
-                    <div className="pf-row">
-                      <div className="pf-field">
-                        <label>Net Weight / Size</label>
-                        <input type="text" value={form.size} onChange={e => set('size', e.target.value)} placeholder="e.g. 50ml, 100gm, 30ml" />
-                      </div>
-                      <div className="pf-field">
-                        <label>Key Benefit</label>
-                        <input type="text" value={form.benefit} onChange={e => set('benefit', e.target.value)} placeholder="e.g. SPF 50+++ Protection" />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* ── TAB 2: MEDIA ──────────────────────────────────────── */}
-                {activeTab === 'media' && (
-                  <div className="pf-section">
-                    <div className="pf-section-title">Media & Images</div>
-
-                    <div className="pf-field full">
-                      <label>Main Product Image URL <span className="req">*</span></label>
-                      <div className="pf-img-input-wrap">
-                        <ImagePlus size={18} color="#6b7280" />
+                      <div className="pf-field full">
+                        <label>Additional Gallery Images (Bulk Upload)</label>
                         <input
-                          type="url"
-                          value={form.img}
-                          onChange={e => set('img', e.target.value)}
-                          placeholder="https://images.unsplash.com/..."
-                          className={errors.img ? 'input-error' : ''}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleGalleryUpload}
+                          disabled={uploading}
+                          style={{ padding: '0.4rem', border: '1px solid #e5e7eb', borderRadius: '6px', background: '#fff', fontSize: '0.85rem', marginBottom: '0.5rem' }}
                         />
-                        <label className={`upload-minimal-btn ${uploading ? 'uploading' : ''}`} style={{ border: 'none', background: '#f3f4f6', cursor: 'pointer', padding: '0.5rem', borderRadius: '6px' }}>
-                          <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
-                          <Upload size={16} />
-                        </label>
+                        <textarea
+                          rows={3}
+                          value={form.gallery}
+                          onChange={e => set('gallery', e.target.value)}
+                          placeholder={"URLs of uploaded images will automatically appear here..."}
+                        />
+                        <span className="pf-hint">These images are shown in the sliding carousel on the product's detail page.</span>
                       </div>
-                      {errors.img && <span className="pf-error">{errors.img}</span>}
-                      {form.img && (
-                        <div className="pf-img-preview">
-                          <img src={form.img} alt="Preview" onError={e => { e.target.style.display = 'none'; }} />
-                          <span className="preview-label">Main Image Preview</span>
+
+                      {form.gallery && (
+                        <div className="pf-gallery-previews">
+                          {form.gallery.split('\n').filter(Boolean).map((url, i) => (
+                            <div key={i} className="gallery-thumb">
+                              <img src={url.trim()} alt={`Gallery ${i + 1}`} onError={e => { e.target.style.display = 'none'; }} />
+                              <span>Image {i + 1}</span>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
+                  )}
 
-                    <div className="pf-field full">
-                      <label>Gallery Images (one URL per line)</label>
-                      <textarea
-                        rows={5}
-                        value={form.gallery}
-                        onChange={e => set('gallery', e.target.value)}
-                        placeholder={"https://example.com/img1.jpg\nhttps://example.com/img2.jpg\nhttps://example.com/img3.jpg"}
-                      />
-                      <span className="pf-hint">Add each gallery image URL on a new line. These appear in the product detail carousel.</span>
-                    </div>
+                  {/* ── TAB 3: PRODUCT DETAILS ────────────────────────────── */}
+                  {activeTab === 'details' && (
+                    <div className="pf-section">
+                      <div className="pf-section-title">Product Details</div>
 
-                    {form.gallery && (
-                      <div className="pf-gallery-previews">
-                        {form.gallery.split('\n').filter(Boolean).map((url, i) => (
-                          <div key={i} className="gallery-thumb">
-                            <img src={url.trim()} alt={`Gallery ${i + 1}`} onError={e => { e.target.style.display='none'; }} />
-                            <span>Image {i + 1}</span>
-                          </div>
-                        ))}
+                      <div className="pf-field full">
+                        <label>Product Story / Full Description <span className="req">*</span></label>
+                        <textarea
+                          rows={5}
+                          value={form.description}
+                          onChange={e => set('description', e.target.value)}
+                          placeholder="Explain the benefits, texture, and magical results of this product..."
+                          className={errors.description ? 'input-error' : ''}
+                        />
+                        {errors.description && <span className="pf-error">{errors.description}</span>}
                       </div>
+
+                      <div className="pf-field full">
+                        <label>How To Use & Routine</label>
+                        <textarea
+                          rows={4}
+                          value={form.howToUse}
+                          onChange={e => set('howToUse', e.target.value)}
+                          placeholder={"Apply 2-3 drops to clean skin.\nGently pat until absorbed.\nFollow with moisturizer."}
+                        />
+                        <span className="pf-hint">Write one instruction per line. The store will automatically format it as a beautiful numbered list!</span>
+                      </div>
+
+                      <div className="pf-field full">
+                        <label>Key Ingredients</label>
+                        <textarea
+                          rows={3}
+                          value={form.ingredients}
+                          onChange={e => set('ingredients', e.target.value)}
+                          placeholder="e.g. Zinc Oxide, Titanium Dioxide, Vitamin E, Aloe Vera Extract, Hyaluronic Acid."
+                        />
+                      </div>
+
+                      <div className="pf-field full">
+                        <label>Best For (short tagline)</label>
+                        <input
+                          type="text"
+                          value={form.bestFor}
+                          onChange={e => set('bestFor', e.target.value)}
+                          placeholder="e.g. Daily UV protection and anti-aging benefits for all Indian skin types."
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── TAB 4: CONTENT & SEO ─────────────────────────────── */}
+                  {activeTab === 'content' && (
+                    <div className="pf-section">
+                      <div className="pf-section-title">Customer Ratings</div>
+
+                      <div className="pf-row">
+                        <div className="pf-field">
+                          <label>Storefront Rating (Out of 5)</label>
+                          <input
+                            type="number" min="0" max="5" step="0.1"
+                            value={form.rating}
+                            onChange={e => set('rating', e.target.value)}
+                            placeholder="e.g. 4.8"
+                          />
+                          <span className="pf-hint">Set between 0.0 – 5.0 (Defaults to 4.5)</span>
+                        </div>
+                        <div className="pf-field">
+                          <label>Number of Verified Reviews</label>
+                          <input
+                            type="number" min="0"
+                            value={form.reviewsCount}
+                            onChange={e => set('reviewsCount', e.target.value)}
+                            placeholder="e.g. 124"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="pf-divider" />
+                      <div className="pf-section-title">Quick Tags</div>
+
+                      <div className="pf-checkbox-group">
+                        <label className="pf-checkbox">
+                          <input type="checkbox" checked={form.isNew} onChange={e => set('isNew', e.target.checked)} />
+                          <span className="check-mark" />
+                          <span>Mark as NEW Launch</span>
+                        </label>
+                        <label className="pf-checkbox">
+                          <input type="checkbox" checked={form.isBestseller} onChange={e => set('isBestseller', e.target.checked)} />
+                          <span className="check-mark" />
+                          <span>Mark as BESTSELLER</span>
+                        </label>
+                        <label className="pf-checkbox">
+                          <input type="checkbox" checked={form.isSale} onChange={e => set('isSale', e.target.checked)} />
+                          <span className="check-mark" />
+                          <span>On SALE</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── TAB 5: INVENTORY & STATUS ─────────────────────────── */}
+                  {activeTab === 'inventory' && (
+                    <div className="pf-section">
+                      <div className="pf-section-title">Stock & Availability</div>
+
+                      <div className="pf-row">
+                        <div className="pf-field">
+                          <label>Units in Stock</label>
+                          <input
+                            type="number" min="0"
+                            value={form.stock}
+                            onChange={e => set('stock', e.target.value)}
+                            placeholder="e.g. 150"
+                          />
+                          <span className="pf-hint">If set to 0, product will show as 'Out of Stock'.</span>
+                        </div>
+                        <div className="pf-field">
+                          <label>Storefront Visibility</label>
+                          <select value={form.status} onChange={e => set('status', e.target.value)}>
+                            {STATUSES.map(s => (
+                              <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replace('-', ' ')}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="pf-info-box">
+                        <strong>Status Guide:</strong>
+                        <ul>
+                          <li><span className="dot active" /> <b>Active</b> — Visible to customers in the storefront.</li>
+                          <li><span className="dot draft" /> <b>Draft</b> — Hidden from store, only visible in admin panel.</li>
+                          <li><span className="dot out-of-stock" /> <b>Out of Stock</b> — Visible but not purchasable.</li>
+                        </ul>
+                      </div>
+
+                      <div className="pf-divider" />
+                      <div className="pf-section-title">Product Summary Preview</div>
+                      <div className="pf-summary-preview">
+                        <div className="preview-row"><span>Title</span><strong>{form.title || '—'}</strong></div>
+                        <div className="preview-row"><span>Price</span><strong>{form.price ? `₹${form.price}` : '—'} {form.originalPrice ? `(MRP ₹${form.originalPrice})` : ''}</strong></div>
+                        <div className="preview-row"><span>Category</span><strong>{form.skinType || '—'}</strong></div>
+                        <div className="preview-row"><span>Size</span><strong>{form.size || '—'}</strong></div>
+                        <div className="preview-row"><span>Badge</span><strong>{form.badge || 'None'}</strong></div>
+                        <div className="preview-row"><span>Status</span><strong>{form.status}</strong></div>
+                        <div className="preview-row"><span>Stock</span><strong>{form.stock !== '' ? form.stock : 'Not set'}</strong></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Modal Footer */}
+                <div className="pf-footer">
+                  <div className="pf-tab-nav">
+                    {activeTab !== 'basic' && (
+                      <button type="button" className="admin-btn-ghost" onClick={() => {
+                        const idx = tabs.findIndex(t => t.id === activeTab);
+                        if (idx > 0) setActiveTab(tabs[idx - 1].id);
+                      }}>← Previous</button>
+                    )}
+                    {activeTab !== 'inventory' && (
+                      <button type="button" className="admin-btn-secondary" onClick={() => {
+                        const idx = tabs.findIndex(t => t.id === activeTab);
+                        if (idx < tabs.length - 1) setActiveTab(tabs[idx + 1].id);
+                      }}>Next →</button>
                     )}
                   </div>
-                )}
-
-                {/* ── TAB 3: PRODUCT DETAILS ────────────────────────────── */}
-                {activeTab === 'details' && (
-                  <div className="pf-section">
-                    <div className="pf-section-title">Product Details</div>
-
-                    <div className="pf-field full">
-                      <label>Full Description <span className="req">*</span></label>
-                      <textarea
-                        rows={5}
-                        value={form.description}
-                        onChange={e => set('description', e.target.value)}
-                        placeholder="Write a compelling product description. Highlight key ingredients, what makes it unique, and the main skin benefit..."
-                        className={errors.description ? 'input-error' : ''}
-                      />
-                      {errors.description && <span className="pf-error">{errors.description}</span>}
-                      <span className="pf-hint">{form.description.length} / 500 characters recommended</span>
-                    </div>
-
-                    <div className="pf-field full">
-                      <label>How To Use (one step per line)</label>
-                      <textarea
-                        rows={4}
-                        value={form.howToUse}
-                        onChange={e => set('howToUse', e.target.value)}
-                        placeholder={"Apply to clean, dry skin.\nMassage in circular motions.\nFollow with moisturizer."}
-                      />
-                      <span className="pf-hint">Each line becomes a numbered step on the product page.</span>
-                    </div>
-
-                    <div className="pf-field full">
-                      <label>Key Ingredients</label>
-                      <textarea
-                        rows={3}
-                        value={form.ingredients}
-                        onChange={e => set('ingredients', e.target.value)}
-                        placeholder="e.g. Zinc Oxide, Titanium Dioxide, Vitamin E, Aloe Vera Extract, Hyaluronic Acid."
-                      />
-                    </div>
-
-                    <div className="pf-field full">
-                      <label>Best For (short tagline)</label>
-                      <input
-                        type="text"
-                        value={form.bestFor}
-                        onChange={e => set('bestFor', e.target.value)}
-                        placeholder="e.g. Daily UV protection and anti-aging benefits for all Indian skin types."
-                      />
-                    </div>
+                  <div className="pf-footer-actions">
+                    <button type="button" className="admin-btn-ghost" onClick={closeModal}>Cancel</button>
+                    <button type="submit" className="admin-btn-primary">
+                      {editingId ? '✓ Save Changes' : '✓ Add Product'}
+                    </button>
                   </div>
-                )}
-
-                {/* ── TAB 4: CONTENT & SEO ─────────────────────────────── */}
-                {activeTab === 'content' && (
-                  <div className="pf-section">
-                    <div className="pf-section-title">Ratings & Reviews</div>
-
-                    <div className="pf-row">
-                      <div className="pf-field">
-                        <label>Average Rating (out of 5)</label>
-                        <input
-                          type="number" min="0" max="5" step="0.1"
-                          value={form.rating}
-                          onChange={e => set('rating', e.target.value)}
-                          placeholder="4.8"
-                        />
-                        <span className="pf-hint">Leave blank to default to 4.5</span>
-                      </div>
-                      <div className="pf-field">
-                        <label>Total Reviews Count</label>
-                        <input
-                          type="number" min="0"
-                          value={form.reviewsCount}
-                          onChange={e => set('reviewsCount', e.target.value)}
-                          placeholder="124"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="pf-divider" />
-                    <div className="pf-section-title">Quick Tags</div>
-
-                    <div className="pf-checkbox-group">
-                      <label className="pf-checkbox">
-                        <input type="checkbox" checked={form.isNew} onChange={e => set('isNew', e.target.checked)} />
-                        <span className="check-mark" />
-                        <span>Mark as NEW Launch</span>
-                      </label>
-                      <label className="pf-checkbox">
-                        <input type="checkbox" checked={form.isBestseller} onChange={e => set('isBestseller', e.target.checked)} />
-                        <span className="check-mark" />
-                        <span>Mark as BESTSELLER</span>
-                      </label>
-                      <label className="pf-checkbox">
-                        <input type="checkbox" checked={form.isSale} onChange={e => set('isSale', e.target.checked)} />
-                        <span className="check-mark" />
-                        <span>On SALE</span>
-                      </label>
-                    </div>
-                  </div>
-                )}
-
-                {/* ── TAB 5: INVENTORY & STATUS ─────────────────────────── */}
-                {activeTab === 'inventory' && (
-                  <div className="pf-section">
-                    <div className="pf-section-title">Inventory Management</div>
-
-                    <div className="pf-row">
-                      <div className="pf-field">
-                        <label>Stock Quantity</label>
-                        <input
-                          type="number" min="0"
-                          value={form.stock}
-                          onChange={e => set('stock', e.target.value)}
-                          placeholder="e.g. 150"
-                        />
-                        <span className="pf-hint">Set to 0 to mark as out-of-stock.</span>
-                      </div>
-                      <div className="pf-field">
-                        <label>Listing Status</label>
-                        <select value={form.status} onChange={e => set('status', e.target.value)}>
-                          {STATUSES.map(s => (
-                            <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replace('-', ' ')}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="pf-info-box">
-                      <strong>Status Guide:</strong>
-                      <ul>
-                        <li><span className="dot active" /> <b>Active</b> — Visible to customers in the storefront.</li>
-                        <li><span className="dot draft" /> <b>Draft</b> — Hidden from store, only visible in admin panel.</li>
-                        <li><span className="dot out-of-stock" /> <b>Out of Stock</b> — Visible but not purchasable.</li>
-                      </ul>
-                    </div>
-
-                    <div className="pf-divider" />
-                    <div className="pf-section-title">Product Summary Preview</div>
-                    <div className="pf-summary-preview">
-                      <div className="preview-row"><span>Title</span><strong>{form.title || '—'}</strong></div>
-                      <div className="preview-row"><span>Price</span><strong>{form.price ? `₹${form.price}` : '—'} {form.originalPrice ? `(MRP ₹${form.originalPrice})` : ''}</strong></div>
-                      <div className="preview-row"><span>Category</span><strong>{form.skinType || '—'}</strong></div>
-                      <div className="preview-row"><span>Size</span><strong>{form.size || '—'}</strong></div>
-                      <div className="preview-row"><span>Badge</span><strong>{form.badge || 'None'}</strong></div>
-                      <div className="preview-row"><span>Status</span><strong>{form.status}</strong></div>
-                      <div className="preview-row"><span>Stock</span><strong>{form.stock !== '' ? form.stock : 'Not set'}</strong></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Modal Footer */}
-              <div className="pf-footer">
-                <div className="pf-tab-nav">
-                  {activeTab !== 'basic' && (
-                    <button type="button" className="admin-btn-ghost" onClick={() => {
-                      const idx = tabs.findIndex(t => t.id === activeTab);
-                      if (idx > 0) setActiveTab(tabs[idx - 1].id);
-                    }}>← Previous</button>
-                  )}
-                  {activeTab !== 'inventory' && (
-                    <button type="button" className="admin-btn-secondary" onClick={() => {
-                      const idx = tabs.findIndex(t => t.id === activeTab);
-                      if (idx < tabs.length - 1) setActiveTab(tabs[idx + 1].id);
-                    }}>Next →</button>
-                  )}
                 </div>
-                <div className="pf-footer-actions">
-                  <button type="button" className="admin-btn-ghost" onClick={closeModal}>Cancel</button>
-                  <button type="submit" className="admin-btn-primary">
-                    {editingId ? '✓ Save Changes' : '✓ Add Product'}
-                  </button>
-                </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       )}

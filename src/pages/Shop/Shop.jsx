@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
@@ -14,15 +14,29 @@ const CONCERNS = [
   { id: 'oily', label: 'Oily Skin' },
 ];
 
+const CATEGORY_LABELS = {
+  'face-wash': 'Face Washes',
+  'serum': 'Face Serums',
+  'moisturizer': 'Moisturizers',
+  'sunscreen': 'Sunscreens',
+  'body-wash': 'Body Washes',
+  'day-cream': 'Day Creams',
+  'night-cream': 'Night Creams',
+  'body-lotion': 'Body Lotions'
+};
+
 const SKIN_TYPES = ['All', 'Dry', 'Oily', 'Normal', 'Acne-Prone', 'Sensitive'];
 
 const Shop = () => {
-  const { products, addToCart } = useShop();
+  const { products, addToCart, loading } = useShop();
+  const shopGridRef = useRef(null);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialConcern = queryParams.get('concern') || 'all';
+  const initialCategory = queryParams.get('category') || '';
 
   const [activeConcern, setActiveConcern] = useState(initialConcern);
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [activeType, setActiveType] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
@@ -32,7 +46,22 @@ const Shop = () => {
 
   useEffect(() => {
     setActiveConcern(queryParams.get('concern') || 'all');
+    setActiveCategory(queryParams.get('category') || '');
+
+    // Scroll to products if we have a filter applied from URL
+    if (queryParams.get('concern') || queryParams.get('category')) {
+      setTimeout(() => {
+        shopGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
   }, [location.search]);
+
+  // Scroll to products when filters change manually
+  useEffect(() => {
+    if ((activeConcern !== 'all' || activeCategory) && !loading) {
+      shopGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [activeConcern, activeCategory]);
 
   // Close sidebar on outside click
   useEffect(() => {
@@ -78,6 +107,26 @@ const Shop = () => {
       result = result.filter(p => p.skinType?.toLowerCase().includes(activeType.toLowerCase()));
     }
 
+    if (activeCategory) {
+      const cat = activeCategory.toLowerCase();
+      result = result.filter(p => {
+        const title = p.title.toLowerCase();
+        const desc = (p.description || '').toLowerCase();
+        const type = (p.skinType || '').toLowerCase();
+        
+        if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser');
+        if (cat === 'serum') return title.includes('serum');
+        if (cat === 'moisturizer') return title.includes('moisturizer') || title.includes('gel');
+        if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf');
+        if (cat === 'body-wash') return title.includes('body wash');
+        if (cat === 'day-cream') return title.includes('day cream');
+        if (cat === 'night-cream') return title.includes('night cream');
+        if (cat === 'body-lotion') return title.includes('body lotion');
+        
+        return title.includes(cat) || desc.includes(cat) || type.includes(cat);
+      });
+    }
+
     if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
     if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
     if (sortBy === 'rating') result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
@@ -113,9 +162,26 @@ const Shop = () => {
 
   const clearAllFilters = () => {
     setActiveConcern('all');
+    setActiveCategory('');
     setActiveType('All');
     setSearchQuery('');
   };
+
+  const SkinSkeleton = () => (
+    <div className="product-card">
+      <div className="product-card-img-container shimmer skeleton-img" style={{ height: '320px' }}></div>
+      <div className="product-card-info" style={{ padding: '1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+          <div className="skeleton-text shimmer" style={{ width: '30%', height: '10px' }}></div>
+          <div className="skeleton-text shimmer" style={{ width: '20%', height: '10px' }}></div>
+        </div>
+        <div className="skeleton-text shimmer" style={{ width: '85%', height: '18px' }}></div>
+        <div className="skeleton-text shimmer" style={{ width: '50%', height: '12px' }}></div>
+        <div className="skeleton-text shimmer" style={{ width: '40%', height: '24px', marginTop: '10px' }}></div>
+        <div className="skeleton shimmer" style={{ height: '42px', width: '100%', marginTop: '15px' }}></div>
+      </div>
+    </div>
+  );
 
   return (
     <main className="shop-page">
@@ -153,16 +219,24 @@ const Shop = () => {
           {CONCERNS.map(c => (
             <button
               key={c.id}
-              className={`concern-pill ${activeConcern === c.id ? 'active' : ''}`}
-              onClick={() => setActiveConcern(c.id)}
+              className={`concern-pill ${activeConcern === c.id && !activeCategory ? 'active' : ''}`}
+              onClick={() => { setActiveConcern(c.id); setActiveCategory(''); }}
             >
               {c.label}
             </button>
           ))}
+          {activeCategory && CATEGORY_LABELS[activeCategory] && (
+            <button
+              className="concern-pill active"
+              onClick={() => setActiveCategory('')}
+            >
+              {CATEGORY_LABELS[activeCategory]}
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="shop-container">
+      <div className="shop-container" ref={shopGridRef}>
         {/* BREADCRUMBS */}
         <div className="shop-breadcrumbs">
           <Link to="/">Home</Link>
@@ -231,6 +305,12 @@ const Shop = () => {
                 <button onClick={() => setSearchQuery('')}><X size={11} /></button>
               </span>
             )}
+            {activeCategory && (
+              <span className="active-chip">
+                Category: {activeCategory.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                <button onClick={() => setActiveCategory('')}><X size={11} /></button>
+              </span>
+            )}
             <button className="clear-all-btn" onClick={clearAllFilters}>Clear all</button>
           </div>
         )}
@@ -289,7 +369,11 @@ const Shop = () => {
 
           {/* PRODUCT GRID */}
           <div className="shop-content">
-            {filteredProducts.length > 0 ? (
+            {loading ? (
+              <div className="shop-grid">
+                {[...Array(6)].map((_, i) => <SkinSkeleton key={i} />)}
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="shop-grid">
                 {filteredProducts.map(product => {
                   const discount = getDiscount(product.price, product.originalPrice);
@@ -299,31 +383,36 @@ const Shop = () => {
                   return (
                     <article key={product.id} className="product-card">
                       {/* Image */}
-                      <Link to={`/product/${product.id}`} className="product-card-img-link">
-                        <div className="product-card-img-wrap">
-                          <img src={product.img} alt={product.title} loading="lazy" />
+                      <div className="product-card-img-container" style={{ position: 'relative' }}>
+                        <Link to={`/product/${product.id}`} className="product-card-img-link">
+                          <div className="product-card-img-wrap">
+                            <img src={product.img} alt={product.title} loading="lazy" />
 
-                          {/* Badges */}
-                          <div className="product-badges">
-                            {product.isBestseller && <span className="badge best">Bestseller</span>}
-                            {product.isNew && !product.isBestseller && <span className="badge new">New</span>}
-                            {product.isSale && <span className="badge sale">Sale</span>}
-                            {discount && !product.isBestseller && !product.isNew && (
-                              <span className="badge discount">{discount}% Off</span>
-                            )}
+                            {/* Badges */}
+                            <div className="product-badges">
+                              {product.isBestseller && <span className="badge best">Bestseller</span>}
+                              {product.isNew && !product.isBestseller && <span className="badge new">New</span>}
+                              {product.isSale && <span className="badge sale">Sale</span>}
+                              {discount && !product.isBestseller && !product.isNew && (
+                                <span className="badge discount">{discount}% Off</span>
+                              )}
+                            </div>
                           </div>
+                        </Link>
+                        
+                        {/* Wishlist */}
+                        <button
+                          className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
+                          onClick={e => toggleWishlist(e, product.id)}
+                          title="Add to wishlist"
+                          style={{ zIndex: 10 }}
+                        >
+                          <Heart size={16} fill={isWishlisted ? 'currentColor' : 'none'} />
+                        </button>
 
-                          {/* Wishlist */}
-                          <button
-                            className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
-                            onClick={e => toggleWishlist(e, product.id)}
-                            title="Add to wishlist"
-                          >
-                            <Heart size={16} fill={isWishlisted ? 'currentColor' : 'none'} />
-                          </button>
-
-                          {/* Quick-add overlay */}
-                          <div className="product-card-overlay">
+                        {/* Quick-add overlay */}
+                        <div className="product-card-overlay" style={{ zIndex: 5, pointerEvents: 'none' }}>
+                          <div style={{ pointerEvents: 'auto', display: 'flex', gap: '0.5rem', width: '100%', padding: '0 1rem' }}>
                             <button
                               className={`quick-add-btn ${justAdded ? 'added' : ''}`}
                               onClick={e => handleAddToCart(e, product)}
@@ -339,7 +428,7 @@ const Shop = () => {
                             </Link>
                           </div>
                         </div>
-                      </Link>
+                      </div>
 
                       {/* Info */}
                       <div className="product-card-info">
@@ -374,7 +463,9 @@ const Shop = () => {
                         </div>
 
                         {product.size && (
-                          <span className="product-size">{product.size}</span>
+                          <span className="product-size">
+                            {product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size.split(':')[0]}
+                          </span>
                         )}
 
                         <button

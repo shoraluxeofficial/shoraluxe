@@ -28,14 +28,20 @@ const ProductDetail = () => {
   const [showSticky, setShowSticky] = useState(false);
   const addToCartRef = useRef(null);
 
+  const [selectedSize, setSelectedSize] = useState('');
+
   useEffect(() => {
     const foundProduct = products.find(p => p.id === parseInt(id));
     if (foundProduct) {
       setProduct(foundProduct);
-      setActiveImg(foundProduct.gallery[0] || foundProduct.img);
+      const galleryArray = Array.isArray(foundProduct.gallery) ? foundProduct.gallery : (foundProduct.gallery ? foundProduct.gallery.split('\n').filter(Boolean) : []);
+      setActiveImg(galleryArray[0] || foundProduct.img);
+      
+      const sizeChoices = foundProduct.size ? foundProduct.size.split(',').map(s => s.trim()).filter(Boolean) : [];
+      setSelectedSize(sizeChoices[0] || '');
       window.scrollTo(0, 0);
     }
-  }, [id]);
+  }, [id, products]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +55,43 @@ const ProductDetail = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Auto-scroll product gallery
+  useEffect(() => {
+    if (!product) return;
+    const images = Array.isArray(product.gallery) ? product.gallery : (product.gallery ? product.gallery.split('\n').filter(Boolean) : []);
+    if (!images || images.length <= 1) return;
+
+    const autoPlayId = setInterval(() => {
+      setActiveImg(prev => {
+        const currentIndex = images.indexOf(prev);
+        const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % images.length;
+        return images[nextIndex];
+      });
+    }, 5000);
+
+    return () => clearInterval(autoPlayId);
+  }, [product]);
+
   if (!product) return <div className="loading-state">Loading product details...</div>;
+
+  const galleryArray = Array.isArray(product.gallery) ? product.gallery : (product.gallery ? product.gallery.split('\n').filter(Boolean) : []);
+  const howToUseArray = Array.isArray(product.howToUse) ? product.howToUse : (product.howToUse ? product.howToUse.split('\n').filter(Boolean) : []);
+
+  const sizeChoices = product.size ? product.size.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+  const getSelectedPrice = () => {
+     if(!selectedSize) return product.price;
+     if(!selectedSize.includes(':')) return product.price;
+     return Number(selectedSize.split(':')[1]);
+  };
+
+  const getSelectedSizeLabel = () => {
+     if(!selectedSize) return product.size;
+     return selectedSize.split(':')[0];
+  };
+
+  const currentPrice = getSelectedPrice();
+  const currentSizeLabel = getSelectedSizeLabel();
 
   return (
     <div className="product-page-wrap">
@@ -66,7 +108,7 @@ const ProductDetail = () => {
         {/* LEFT: VERTICAL GALLERY (Neudeskin Style) */}
         <div className="pd-gallery-container">
           <div className="pd-thumbs-vertical">
-            {product.gallery.map((img, i) => (
+            {galleryArray.map((img, i) => (
               <div 
                 key={i} 
                 className={`pd-thumb-v ${activeImg === img ? 'active' : ''}`}
@@ -77,7 +119,7 @@ const ProductDetail = () => {
             ))}
           </div>
           <div className="pd-main-img-wrap">
-            <img src={activeImg} alt={product.title} className="pd-main-img" />
+            <img key={activeImg} src={activeImg} alt={product.title} className="pd-main-img" style={{ animation: 'fadeIn 0.4s ease-out' }} />
             {product.badge && <span className="pd-badge">{product.badge}</span>}
           </div>
         </div>
@@ -95,7 +137,7 @@ const ProductDetail = () => {
           </div>
 
           <div className="pd-pricing-block">
-            <span className="pd-price-luxe">₹{product.price.toLocaleString('en-IN')}</span>
+            <span className="pd-price-luxe">₹{currentPrice.toLocaleString('en-IN')}</span>
             {product.originalPrice && (
               <>
                 <span className="pd-original-luxe">₹{product.originalPrice.toLocaleString('en-IN')}</span>
@@ -107,16 +149,33 @@ const ProductDetail = () => {
 
           <p className="pd-short-desc-luxe">{product.description}</p>
 
-          <div className="pd-meta-cards">
-            <div className="meta-card">
-              <span className="meta-label">Quantity</span>
-              <span className="meta-val">{product.size}</span>
+          {sizeChoices.length > 0 ? (
+            <div className="pd-size-selector">
+              <span className="meta-label">Select Size / Combo</span>
+              <div className="size-options">
+                {sizeChoices.map(sz => (
+                  <button 
+                    key={sz} 
+                    className={`size-btn ${selectedSize === sz ? 'active' : ''}`}
+                    onClick={() => setSelectedSize(sz)}
+                  >
+                    {sz.split(':')[0]}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="meta-card">
-              <span className="meta-label">Skin Type</span>
-              <span className="meta-val">{product.skinType}</span>
+          ) : (
+            <div className="pd-meta-cards">
+              <div className="meta-card">
+                <span className="meta-label">Size</span>
+                <span className="meta-val">{currentSizeLabel}</span>
+              </div>
+              <div className="meta-card">
+                <span className="meta-label">Skin Type</span>
+                <span className="meta-val">{product.skinType}</span>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="pd-luxe-offers">
             <Check size={18} color="#611C28" />
@@ -130,8 +189,12 @@ const ProductDetail = () => {
               <span>{quantity}</span>
               <button onClick={() => setQuantity(q => q + 1)}><Plus size={16} /></button>
             </div>
-            <button className="btn-luxe-primary" ref={addToCartRef} onClick={() => addToCart(product, quantity)}>
-              ADD TO CART - ₹{(product.price * quantity).toLocaleString('en-IN')}
+            <button className="btn-luxe-primary" ref={addToCartRef} onClick={() => {
+                const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0,8)}` : product.id;
+                const cartProduct = { ...product, id: cartIdOverride, price: currentPrice, size: currentSizeLabel };
+                addToCart(cartProduct, quantity);
+            }}>
+              ADD TO CART - ₹{(currentPrice * quantity).toLocaleString('en-IN')}
             </button>
             <button className="btn-wishlist-luxe">
               <Heart size={20} />
@@ -164,7 +227,7 @@ const ProductDetail = () => {
               {activeTab === 'use' && (
                 <div className="tab-fade-in">
                   <ul className="luxe-step-list">
-                    {product.howToUse.map((step, i) => (
+                    {howToUseArray.map((step, i) => (
                       <li key={i}>
                         <span className="step-num">{i + 1}</span>
                         <p>{step}</p>
@@ -196,8 +259,8 @@ const ProductDetail = () => {
           <div className="sticky-prod-info">
             <img src={activeImg} alt="" className="sticky-img" />
             <div>
-              <span className="sticky-title">{product.title.split('|')[0]}</span>
-              <span className="sticky-price">₹{product.price}</span>
+              <span className="sticky-title">{product.title.split('|')[0]} {sizeChoices.length > 1 && `(${currentSizeLabel})`}</span>
+              <span className="sticky-price">₹{currentPrice.toLocaleString('en-IN')}</span>
             </div>
           </div>
           <div className="sticky-actions">
@@ -206,7 +269,11 @@ const ProductDetail = () => {
               <span>{quantity}</span>
               <button onClick={() => setQuantity(q => q + 1)}><Plus size={14} /></button>
             </div>
-            <button className="btn-luxe-primary sticky-btn" onClick={() => addToCart(product, quantity)}>
+            <button className="btn-luxe-primary sticky-btn" onClick={() => {
+                const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0,8)}` : product.id;
+                const cartProduct = { ...product, id: cartIdOverride, price: currentPrice, size: currentSizeLabel };
+                addToCart(cartProduct, quantity);
+            }}>
               ADD TO CART
             </button>
           </div>

@@ -10,17 +10,21 @@ export const createOrder = async (req, res) => {
     try {
         const { amount, currency = 'INR', receipt } = req.body;
 
+        console.log('Razorpay Key ID:', process.env.RAZORPAY_KEY_ID);
+        console.log('Razorpay Secret:', process.env.RAZORPAY_KEY_SECRET ? '[HIDDEN]' : 'MISSING');
+
         const options = {
             amount: Math.round(amount * 100), // convert to paisa
             currency,
             receipt,
         };
+        console.log('Razorpay order options:', options);
 
         const order = await razorpay.orders.create(options);
         res.status(200).json(order);
     } catch (error) {
-        console.error('Razorpay Order Error:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Razorpay Order Error Details:', error);
+        res.status(500).json({ error: error.message || 'Razorpay creation failed' });
     }
 };
 

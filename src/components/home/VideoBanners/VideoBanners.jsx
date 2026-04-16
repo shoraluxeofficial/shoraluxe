@@ -42,7 +42,7 @@ const VideoBanners = () => {
 
       if (error && error.code !== 'PGRST116') throw error;
 
-      if (data && data.content && data.content.length > 0) {
+      if (data && data.content) {
         setBanners(data.content);
       } else {
         setBanners(defaultVideos);
