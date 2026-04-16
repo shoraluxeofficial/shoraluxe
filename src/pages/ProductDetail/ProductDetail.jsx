@@ -255,7 +255,7 @@ const ProductDetail = () => {
               ref={addToCartRef}
               disabled={isOutOfStock}
               onClick={() => {
-                const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0, 8)}` : product.id;
+                const cartIdOverride = parsedVariants.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0, 8)}` : product.id;
                 const cartProduct = { ...product, id: cartIdOverride, price: currentPrice, size: currentSizeLabel };
                 addToCart(cartProduct, quantity);
               }}
@@ -328,7 +328,7 @@ const ProductDetail = () => {
           <div className="sticky-prod-info">
             <img src={activeImg} alt="" className="sticky-img" />
             <div>
-              <span className="sticky-title">{product.title.split('|')[0]} {sizeChoices.length > 1 && `(${currentSizeLabel})`}</span>
+              <span className="sticky-title">{product.title.split('|')[0]} {parsedVariants.length > 1 && `(${currentSizeLabel})`}</span>
               <span className="sticky-price">₹{currentPrice.toLocaleString('en-IN')}</span>
             </div>
           </div>
@@ -339,7 +339,7 @@ const ProductDetail = () => {
               <button onClick={() => setQuantity(q => q + 1)}><Plus size={14} /></button>
             </div>
             <button className="btn-luxe-primary sticky-btn" onClick={() => {
-              const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0, 8)}` : product.id;
+              const cartIdOverride = parsedVariants.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0, 8)}` : product.id;
               const cartProduct = { ...product, id: cartIdOverride, price: currentPrice, size: currentSizeLabel };
               addToCart(cartProduct, quantity);
             }}>
