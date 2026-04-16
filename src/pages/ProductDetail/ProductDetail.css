@@ -309,17 +309,23 @@
 }
 
 .variant-cards-wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-top: 0.8rem;
-  overflow-x: auto;
   padding-bottom: 0.5rem;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
-.variant-cards-wrapper::-webkit-scrollbar {
-  display: none;
+@media (max-width: 768px) {
+  .variant-cards-wrapper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .variant-cards-wrapper {
+    grid-template-columns: 1fr;
+  }
 }
 
 .variant-card {

@@ -722,37 +722,62 @@ const AdminProducts = () => {
                           {(!form.variants || form.variants.length === 0) ? (
                             <p style={{fontSize: '0.85rem', color: '#6b7280'}}>No combos added yet. Standard price will be used.</p>
                           ) : (
-                            <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
                               {form.variants.map((v, i) => (
-                                <div key={i} style={{display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr auto', gap: '0.5rem', alignItems: 'center', background: '#fff', padding: '0.75rem', borderRadius: '6px', border: '1px solid #ddd'}}>
-                                  <input type="text" placeholder="Title e.g. Single Pack (50gm)" value={v.label} onChange={e => {
-                                      const arr = [...form.variants]; arr[i].label = e.target.value; 
-                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
-                                  <input type="number" placeholder="Price (₹)" value={v.price} onChange={e => {
-                                      const arr = [...form.variants]; arr[i].price = e.target.value; 
-                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
-                                  <input type="number" placeholder="MRP (₹)" value={v.mrp} onChange={e => {
-                                      const arr = [...form.variants]; arr[i].mrp = e.target.value; 
-                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
-                                  <input type="text" placeholder="Tag e.g. 30% off" value={v.discount} onChange={e => {
-                                      const arr = [...form.variants]; arr[i].discount = e.target.value; 
-                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
-                                  <input type="text" placeholder="USP: ₹8.98/g" value={v.usp} onChange={e => {
-                                      const arr = [...form.variants]; arr[i].usp = e.target.value; 
-                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
-                                  <input type="text" placeholder="Badge (e.g. Timer)" value={v.badge} onChange={e => {
-                                      const arr = [...form.variants]; arr[i].badge = e.target.value; 
-                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                <div key={i} style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem', background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid #ddd', position: 'relative'}}>
+                                  
                                   <button type="button" onClick={() => {
                                       const arr = form.variants.filter((_, idx) => idx !== i);
                                       setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{padding: '0.4rem', color: 'red', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 'bold'}}>✕</button>
+                                  }} style={{position: 'absolute', top: '8px', right: '8px', width: '24px', height: '24px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>✕</button>
+
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Combo Title (e.g. Pack of 2)</label>
+                                    <input type="text" placeholder="Single Pack (50gm)" value={v.label} onChange={e => {
+                                        const arr = [...form.variants]; arr[i].label = e.target.value; 
+                                        setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  </div>
+
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Selling Price (₹)</label>
+                                    <input type="number" placeholder="449" value={v.price} onChange={e => {
+                                        const arr = [...form.variants]; arr[i].price = e.target.value; 
+                                        setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  </div>
+                                  
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Original MRP (₹)</label>
+                                    <input type="number" placeholder="599" value={v.mrp} onChange={e => {
+                                        const arr = [...form.variants]; arr[i].mrp = e.target.value; 
+                                        setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  </div>
+
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Discount Tag</label>
+                                    <input type="text" placeholder="e.g. 30% off" value={v.discount} onChange={e => {
+                                        const arr = [...form.variants]; arr[i].discount = e.target.value; 
+                                        setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  </div>
+
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>USP Text</label>
+                                    <input type="text" placeholder="e.g. USP: ₹8.98/g" value={v.usp} onChange={e => {
+                                        const arr = [...form.variants]; arr[i].usp = e.target.value; 
+                                        setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  </div>
+
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Top Badge (Optional)</label>
+                                    <input type="text" placeholder="e.g. 1h:25m left" value={v.badge} onChange={e => {
+                                        const arr = [...form.variants]; arr[i].badge = e.target.value; 
+                                        setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  </div>
                                 </div>
                               ))}
                             </div>
