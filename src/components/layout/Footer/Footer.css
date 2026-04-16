@@ -235,13 +235,13 @@
 }
 
 .payment-logo {
-  height: 22px; /* Smaller inner height */
+  height: 32px; /* Increased height for better visibility */
   width: auto;
   object-fit: contain;
   background-color: #ffffff; /* Uniform white badge for all */
-  padding: 4px 8px; /* Breathing room */
-  border-radius: 4px; /* Clean structured look */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  padding: 6px 12px; /* Increased breathing room */
+  border-radius: 6px; /* Clean structured look */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   transition: all 0.3s ease;
 }
 

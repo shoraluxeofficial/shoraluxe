@@ -142,6 +142,45 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+.stock-overlay-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  z-index: 10;
+  pointer-events: none;
+  text-align: center;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+}
+
+.stock-overlay-badge.out {
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+}
+
+.stock-overlay-badge.hurry {
+  background: rgba(180, 83, 9, 0.95);
+  color: #fff;
+  animation: pulse-overlay 1.5s infinite;
+}
+
+@keyframes pulse-overlay {
+  0% { background: rgba(180, 83, 9, 0.95); }
+  50% { background: rgba(220, 100, 10, 1); }
+  100% { background: rgba(180, 83, 9, 0.95); }
+}
+
+.add-to-bag-btn.disabled {
+  background: #d1d5db !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
 /* Info Section */
 .product-info {
   display: flex;

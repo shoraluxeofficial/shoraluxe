@@ -189,10 +189,16 @@ export const productsData = [
     offer: 'For Illuminating Glow',
     rating: 4.3,
     reviewsCount: 128,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/poster_4-01.png?v=1768804165&width=1000',
+    img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/poster_4-01.png?v=1768804165&width=1000',
-      'http://www.shoraluxe.com/cdn/shop/files/poster_4-03.png?v=1768804167&width=1000'
+      '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
+      '/Vitamin C & Niacinamide Face Serum/0B854F8D-9D8D-4F9F-A7C3-586B00A2921C.png',
+      '/Vitamin C & Niacinamide Face Serum/22D1B635-B0B4-4642-801F-3D1F8EFAEE80.png',
+      '/Vitamin C & Niacinamide Face Serum/3C3E2161-147D-4A76-ADFF-64471E27912C.png',
+      '/Vitamin C & Niacinamide Face Serum/491AA1B9-AB96-4170-A651-0C43BBACF160.png',
+      '/Vitamin C & Niacinamide Face Serum/50AC8D9A-E0BF-4D26-9867-1F811B25C718.png',
+      '/Vitamin C & Niacinamide Face Serum/67AE1B19-61C1-4F5C-A2D1-EAFC96DA6616.png',
+      '/Vitamin C & Niacinamide Face Serum/95D473CC-8AB3-4E45-B0E9-BF0A08A9B4E2.png'
     ],
     badge: null,
     size: '30ml',

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { 
-  Star, 
-  ChevronRight, 
-  ShoppingBag, 
-  Heart, 
-  Truck, 
-  RotateCcw, 
+import {
+  Star,
+  ChevronRight,
+  ShoppingBag,
+  Heart,
+  Truck,
+  RotateCcw,
   ShieldCheck,
   Plus,
   Minus,
@@ -27,8 +27,10 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [showSticky, setShowSticky] = useState(false);
   const addToCartRef = useRef(null);
-
+  const footerRef = useRef(null);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [selectedSize, setSelectedSize] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const foundProduct = products.find(p => p.id === parseInt(id));
@@ -36,7 +38,7 @@ const ProductDetail = () => {
       setProduct(foundProduct);
       const galleryArray = Array.isArray(foundProduct.gallery) ? foundProduct.gallery : (foundProduct.gallery ? foundProduct.gallery.split('\n').filter(Boolean) : []);
       setActiveImg(galleryArray[0] || foundProduct.img);
-      
+
       const sizeChoices = foundProduct.size ? foundProduct.size.split(',').map(s => s.trim()).filter(Boolean) : [];
       setSelectedSize(sizeChoices[0] || '');
       window.scrollTo(0, 0);
@@ -45,11 +47,22 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const handleScroll = () => {
+      // Show sticky bar when original button scrolls past top
+      let shouldShow = false;
       if (addToCartRef.current) {
         const rect = addToCartRef.current.getBoundingClientRect();
-        // Show sticky bar when original button scrolls past the top of the viewport
-        setShowSticky(rect.top < 0);
+        shouldShow = rect.top < 0;
       }
+
+      // Hide if footer is in view
+      if (footerRef.current) {
+        const footerRect = footerRef.current.getBoundingClientRect();
+        if (footerRect.top < window.innerHeight) {
+          shouldShow = false;
+        }
+      }
+
+      setShowSticky(shouldShow);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -74,28 +87,37 @@ const ProductDetail = () => {
 
   if (!product) return <div className="loading-state">Loading product details...</div>;
 
+  const toggleDescription = () => setIsExpanded(!isExpanded);
+  const truncatedDesc = product.description.length > 200
+    ? product.description.slice(0, 200) + '...'
+    : product.description;
+
   const galleryArray = Array.isArray(product.gallery) ? product.gallery : (product.gallery ? product.gallery.split('\n').filter(Boolean) : []);
   const howToUseArray = Array.isArray(product.howToUse) ? product.howToUse : (product.howToUse ? product.howToUse.split('\n').filter(Boolean) : []);
 
   const sizeChoices = product.size ? product.size.split(',').map(s => s.trim()).filter(Boolean) : [];
 
   const getSelectedPrice = () => {
-     if(!selectedSize) return product.price;
-     if(!selectedSize.includes(':')) return product.price;
-     return Number(selectedSize.split(':')[1]);
+    if (!selectedSize) return product.price;
+    if (!selectedSize.includes(':')) return product.price;
+    return Number(selectedSize.split(':')[1]);
   };
 
   const getSelectedSizeLabel = () => {
-     if(!selectedSize) return product.size;
-     return selectedSize.split(':')[0];
+    if (!selectedSize) return product.size;
+    return selectedSize.split(':')[0];
   };
 
   const currentPrice = getSelectedPrice();
   const currentSizeLabel = getSelectedSizeLabel();
 
+  // Inventory Logic
+  const isOutOfStock = product.stock === 0;
+  const isLowStock = product.stock > 0 && product.stock <= 5;
+
   return (
     <div className="product-page-wrap">
-      {/* BREADCRUMBS */}
+      {/* ... (rest of the Nav) ... */}
       <nav className="breadcrumbs">
         <Link to="/">Home</Link>
         <ChevronRight size={12} strokeWidth={3} />
@@ -109,8 +131,8 @@ const ProductDetail = () => {
         <div className="pd-gallery-container">
           <div className="pd-thumbs-vertical">
             {galleryArray.map((img, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className={`pd-thumb-v ${activeImg === img ? 'active' : ''}`}
                 onClick={() => setActiveImg(img)}
               >
@@ -132,6 +154,10 @@ const ProductDetail = () => {
               <span className="rating-val">{product.rating}</span>
               <span className="rating-count">({product.reviewsCount} reviews)</span>
             </div>
+
+            {isOutOfStock && <div className="pd-stock-badge out">OUT OF STOCK</div>}
+            {isLowStock && <div className="pd-stock-badge hurry">HURRY UP! ONLY {product.stock} LEFT</div>}
+
             <h1 className="pd-title-luxe">{product.title}</h1>
             <p className="pd-subtitle">{product.benefit}</p>
           </div>
@@ -147,15 +173,27 @@ const ProductDetail = () => {
             <span className="pd-tax-note">Inclusive of all taxes</span>
           </div>
 
-          <p className="pd-short-desc-luxe">{product.description}</p>
+          <div className="pd-desc-luxe-wrap">
+            <p className="pd-short-desc-luxe">
+              {isExpanded ? product.description : truncatedDesc}
+            </p>
+            {product.description.length > 200 && (
+              <button
+                className="btn-read-more"
+                onClick={toggleDescription}
+              >
+                {isExpanded ? 'Read Less' : 'Read More'}
+              </button>
+            )}
+          </div>
 
           {sizeChoices.length > 0 ? (
             <div className="pd-size-selector">
               <span className="meta-label">Select Size / Combo</span>
               <div className="size-options">
                 {sizeChoices.map(sz => (
-                  <button 
-                    key={sz} 
+                  <button
+                    key={sz}
                     className={`size-btn ${selectedSize === sz ? 'active' : ''}`}
                     onClick={() => setSelectedSize(sz)}
                   >
@@ -185,16 +223,21 @@ const ProductDetail = () => {
           {/* MAIN ACTIONS */}
           <div className="pd-action-panel">
             <div className="pd-qty-box">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))}><Minus size={16} /></button>
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} disabled={isOutOfStock}><Minus size={16} /></button>
               <span>{quantity}</span>
-              <button onClick={() => setQuantity(q => q + 1)}><Plus size={16} /></button>
+              <button onClick={() => setQuantity(q => q + 1)} disabled={isOutOfStock}><Plus size={16} /></button>
             </div>
-            <button className="btn-luxe-primary" ref={addToCartRef} onClick={() => {
-                const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0,8)}` : product.id;
+            <button
+              className={`btn-luxe-primary ${isOutOfStock ? 'disabled' : ''}`}
+              ref={addToCartRef}
+              disabled={isOutOfStock}
+              onClick={() => {
+                const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0, 8)}` : product.id;
                 const cartProduct = { ...product, id: cartIdOverride, price: currentPrice, size: currentSizeLabel };
                 addToCart(cartProduct, quantity);
-            }}>
-              ADD TO CART - ₹{(currentPrice * quantity).toLocaleString('en-IN')}
+              }}
+            >
+              {isOutOfStock ? 'OUT OF STOCK' : `ADD TO CART - ₹${(currentPrice * quantity).toLocaleString('en-IN')}`}
             </button>
             <button className="btn-wishlist-luxe">
               <Heart size={20} />
@@ -214,7 +257,7 @@ const ProductDetail = () => {
               </button>
               <button className={activeTab === 'ingredients' ? 'active' : ''} onClick={() => setActiveTab('ingredients')}>
                 <div className="icon-circle"><Beaker size={20} /></div>
-                <span>Key Actives</span>
+                <span>Ingredients</span>
               </button>
             </div>
             <div className="icon-tab-content">
@@ -238,7 +281,11 @@ const ProductDetail = () => {
               )}
               {activeTab === 'ingredients' && (
                 <div className="tab-fade-in">
-                  <p className="ing-text-luxe">{product.ingredients}</p>
+                  <ul className="ing-points-list">
+                    {product.ingredients?.split(',').map((item, i) => (
+                      <li key={i}>{item.trim()}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
@@ -248,7 +295,6 @@ const ProductDetail = () => {
           <div className="pd-trust-luxe">
             <div className="trust-col"><Truck strokeWidth={1.5} size={24} /> <span>Pan India Delivery</span></div>
             <div className="trust-col"><ShieldCheck strokeWidth={1.5} size={24} /> <span>Dermatologist Approved</span></div>
-            <div className="trust-col"><RotateCcw strokeWidth={1.5} size={24} /> <span>Secure Returns</span></div>
           </div>
         </div>
       </div>
@@ -270,16 +316,16 @@ const ProductDetail = () => {
               <button onClick={() => setQuantity(q => q + 1)}><Plus size={14} /></button>
             </div>
             <button className="btn-luxe-primary sticky-btn" onClick={() => {
-                const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0,8)}` : product.id;
-                const cartProduct = { ...product, id: cartIdOverride, price: currentPrice, size: currentSizeLabel };
-                addToCart(cartProduct, quantity);
+              const cartIdOverride = sizeChoices.length > 1 ? `${product.id}-${btoa(selectedSize).substring(0, 8)}` : product.id;
+              const cartProduct = { ...product, id: cartIdOverride, price: currentPrice, size: currentSizeLabel };
+              addToCart(cartProduct, quantity);
             }}>
               ADD TO CART
             </button>
           </div>
         </div>
       </div>
-
+      <div ref={footerRef} className="footer-sensor"></div>
     </div>
   );
 };

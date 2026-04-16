@@ -46,7 +46,7 @@
   margin: 0 auto;
   padding: 0 4rem;
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 0.9fr 1.1fr;
   gap: 5rem;
   align-items: start;
 }
@@ -58,6 +58,8 @@
   gap: 1.5rem;
   position: sticky;
   top: 100px;
+  max-width: 550px;
+  margin: 0 auto;
 }
 
 .pd-thumbs-vertical {
@@ -92,7 +94,7 @@
 
 .pd-main-img-wrap {
   flex-grow: 1;
-  aspect-ratio: 4/5;
+  aspect-ratio: 1/1;
   background: #fff;
   border-radius: 20px;
   overflow: hidden;
@@ -162,6 +164,45 @@
   color: #666;
 }
 
+/* STOCK BADGES */
+.pd-stock-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.pd-stock-badge.out {
+  background: #fdf2f2;
+  color: #d32f2f;
+  border: 1px solid #fecaca;
+}
+
+.pd-stock-badge.hurry {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.btn-luxe-primary.disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 .pd-pricing-block {
   display: flex;
   align-items: baseline;
@@ -204,6 +245,30 @@
   font-size: 1.05rem;
   color: #444;
   line-height: 1.6;
+  margin-bottom: 0.5rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.btn-read-more {
+  background: none;
+  border: none;
+  color: #611C28;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  margin-bottom: 2rem;
+  display: block;
+  transition: opacity 0.2s;
+}
+
+.btn-read-more:hover {
+  opacity: 0.8;
+}
+
+.pd-desc-luxe-wrap {
   margin-bottom: 2rem;
 }
 
@@ -425,6 +490,8 @@
   font-size: 1.05rem;
   line-height: 1.7;
   color: #444;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 @keyframes fadeIn {
@@ -464,15 +531,46 @@
   flex-shrink: 0;
 }
 
-.ing-text-luxe {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.15rem;
-  color: #555;
+.ing-points-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   background: #fff;
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: 12px;
   border: 1px solid #eaeaea;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two column list for better space usage */
+  gap: 1.5rem 2rem;
+}
+
+.ing-points-list li {
+  position: relative;
+  padding-left: 24px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: break-word; /* Safety for long names */
+}
+
+.ing-points-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  background-color: #611C28;
+  border-radius: 50%;
+}
+
+@media (max-width: 600px) {
+  .ing-points-list {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
 }
 
 /* TRUST SECTION */

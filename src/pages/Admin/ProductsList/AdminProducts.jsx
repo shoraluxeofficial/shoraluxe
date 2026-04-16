@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Search, X, ImagePlus, PackagePlus, ChevronDown, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, X, ImagePlus, PackagePlus, ChevronDown, Upload, RefreshCw } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
 import imageCompression from 'browser-image-compression';
 import { useShop } from '../../../context/ShopContext';
 import { useNotify } from '../../../components/common/Notification/Notification';
@@ -12,6 +13,7 @@ const EMPTY_FORM = {
   title: '',
   price: '',
   originalPrice: '',
+  discountPercent: '',
   discount: '',
   offer: '',
   badge: '',
@@ -106,8 +108,31 @@ const AdminProducts = () => {
     }
   };
 
+  const deleteOutOfStock = async () => {
+    notify('This will PERMANENTLY DELETE all products currently showing as "Out of Stock". Continue?', 'confirm', {
+      onConfirm: async () => {
+        setSyncing(true);
+        try {
+          const { error } = await supabase
+            .from('products')
+            .delete()
+            .eq('stock', 0);
+
+          if (error) throw error;
+
+          notify('All Out-of-Stock products have been removed.', 'success');
+          fetchProducts();
+        } catch (err) {
+          notify('Error deleting: ' + err.message, 'error');
+        } finally {
+          setSyncing(false);
+        }
+      }
+    });
+  };
+
   const syncLocalData = async () => {
-    notify('This will upload all 16 local products to Supabase. Continue?', 'confirm', {
+    notify('WARNING: This will RESET your catalogue and re-import the 16 default products. Any manual changes you made (like price updates) will be overwritten or duplicated. Continue?', 'confirm', {
       onConfirm: async () => {
         setSyncing(true);
         try {
@@ -135,6 +160,7 @@ const AdminProducts = () => {
               is_new: product.isNew || false,
               is_bestseller: product.isBestseller || false,
               is_sale: product.isSale || false,
+              stock: 100,
               status: 'active'
             };
             await addProduct(payload);
@@ -158,6 +184,8 @@ const AdminProducts = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
   const [errors, setErrors] = useState({});
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
 
   // ── FILTERING ──────────────────────────────────────────────────────────────
   const filtered = products.filter(p => {
@@ -174,13 +202,17 @@ const AdminProducts = () => {
     setActiveTab('basic');
     setShowModal(true);
   };
-
   const openEdit = (product) => {
+    const discPct = product.originalPrice && product.price 
+      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+      : '';
+
     setForm({
       brand: product.brand || 'SHORALUXE',
       title: product.title || '',
       price: product.price || '',
       originalPrice: product.originalPrice || '',
+      discountPercent: discPct,
       discount: product.discount || '',
       offer: product.offer || '',
       badge: product.badge || '',
@@ -257,7 +289,7 @@ const AdminProducts = () => {
         is_new: form.badge === 'NEW',
         is_bestseller: form.badge === 'BESTSELLER',
         is_sale: form.badge === 'SALE',
-        stock: form.stock ? Number(form.stock) : 0,
+        stock: form.stock !== '' ? Number(form.stock) : 100,
         status: form.status || 'active',
         updated_at: new Date()
       };
@@ -299,17 +331,73 @@ const AdminProducts = () => {
 
   // ── FIELD CHANGE ──────────────────────────────────────────────────────────
   const set = (key, val) => {
-    setForm(prev => ({ ...prev, [key]: val }));
+    setForm(prev => {
+      let next = { ...prev, [key]: val };
+
+      // Auto-calculate logic
+      if (key === 'originalPrice' || key === 'discountPercent') {
+        const mrp = Number(key === 'originalPrice' ? val : prev.originalPrice);
+        const pct = Number(key === 'discountPercent' ? val : prev.discountPercent);
+
+        if (mrp && pct) {
+          next.price = Math.round(mrp * (1 - pct / 100));
+          next.discount = `${pct}% off`;
+        }
+      } else if (key === 'price') {
+        const mrp = Number(prev.originalPrice);
+        const sale = Number(val);
+        if (mrp && sale && sale < mrp) {
+          next.discountPercent = Math.round(((mrp - sale) / mrp) * 100);
+          next.discount = `${next.discountPercent}% off`;
+        }
+      }
+
+      return next;
+    });
+
     if (errors[key]) setErrors(prev => { const n = { ...prev }; delete n[key]; return n; });
   };
 
   // ── INVENTORY BADGE ───────────────────────────────────────────────────────
   const stockBadge = (p) => {
     const s = p.stock;
-    if (s === undefined || s === null || s === '') return <span className="stock-badge in-stock">In Stock</span>;
-    if (s === 0) return <span className="stock-badge out">Out of Stock</span>;
-    if (s < 10) return <span className="stock-badge low">{s} left</span>;
+    if (s === undefined || s === null || s === '') return <span className="stock-badge in-stock">Unlimited Stock</span>;
+    if (Number(s) === 0) return <span className="stock-badge out">Out of Stock</span>;
+    if (Number(s) < 10) return <span className="stock-badge low">{s} left</span>;
     return <span className="stock-badge in-stock">{s} in stock</span>;
+  };
+
+  // ── SELECTION ─────────────────────────────────────────────────────────────
+  const toggleSelect = (id) => {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filtered.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filtered.map(p => p.id));
+    }
+  };
+
+  const deleteSelected = async () => {
+    setSyncing(true);
+    try {
+      let successCount = 0;
+      for (const id of selectedIds) {
+        const res = await deleteProduct(id);
+        if (res.success) successCount++;
+      }
+      notify(`Successfully deleted ${successCount} products.`, 'success');
+      setSelectedIds([]);
+      setBulkDeleteConfirm(false);
+    } catch (err) {
+      notify('Error during bulk delete: ' + err.message, 'error');
+    } finally {
+      setSyncing(false);
+    }
   };
 
   // ── TABS CONFIG ───────────────────────────────────────────────────────────
@@ -329,13 +417,21 @@ const AdminProducts = () => {
           <h1 className="admin-page-title">Products Management</h1>
           <p className="admin-page-subtitle">{products.length} total products in catalogue</p>
         </div>
-        <div className="admin-page-header-actions" style={{ display: 'flex', gap: '1rem' }}>
-          <button className="admin-btn-secondary" onClick={syncLocalData} disabled={syncing}>
-            {syncing ? 'Syncing...' : 'Sync All 16 Products'}
-          </button>
+        <div className="admin-page-header-actions" style={{ display: 'flex', gap: '0.8rem' }}>
+          {selectedIds.length > 0 ? (
+            <button className="admin-btn-danger" onClick={() => setBulkDeleteConfirm(true)}>
+              <Trash2 size={18} />
+              Delete Selected ({selectedIds.length})
+            </button>
+          ) : (
+            <button className="admin-btn-secondary" onClick={() => fetchProducts()} title="Refresh current list">
+              <RefreshCw size={16} />
+              Refresh
+            </button>
+          )}
           <button className="admin-btn-primary" onClick={openAdd}>
             <PackagePlus size={18} />
-            Add New Product
+            New Product
           </button>
         </div>
       </div>
@@ -364,59 +460,66 @@ const AdminProducts = () => {
           <table className="admin-table">
             <thead>
               <tr>
+                <th style={{ width: '40px' }}>
+                  <input
+                    type="checkbox"
+                    checked={filtered.length > 0 && selectedIds.length === filtered.length}
+                    onChange={toggleSelectAll}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </th>
                 <th>Product</th>
                 <th>Price / MRP</th>
                 <th>Category</th>
                 <th>Size</th>
                 <th>Inventory</th>
-                <th>Status</th>
-                <th>Badge</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '3rem' }}><div className="loader">Loading Products...</div></td></tr>
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '3rem' }}><div className="loader">Loading...</div></td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={8} style={{ textAlign: 'center', padding: '2rem', color: '#9ca3af' }}>No products found.</td></tr>
-              ) : filtered.map(product => (
-                <tr key={product.id}>
-                  <td>
-                    <div className="table-product-cell">
-                      <img src={product.img} alt={product.title} />
-                      <div className="t-prod-info">
-                        <strong>{product.title.split('|')[0].trim()}</strong>
-                        <span>SKU: SHL-{String(product.id).slice(-4).padStart(4, '0')}</span>
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: '#9ca3af' }}>No products found.</td></tr>
+              ) : filtered.map(product => {
+                const isSelected = selectedIds.includes(product.id);
+                return (
+                  <tr key={product.id} className={isSelected ? 'row-selected' : ''}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelect(product.id)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </td>
+                    <td>
+                      <div className="table-product-cell">
+                        <img src={product.img} alt={product.title} />
+                        <div className="t-prod-info">
+                          <strong>{product.title.split('|')[0].trim()}</strong>
+                          <span>ID: {product.id}</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="price-cell">
-                      <span className="sell-price">₹{product.price}</span>
-                      <span className="t-original">₹{product.originalPrice}</span>
-                    </div>
-                  </td>
-                  <td>{product.skinType}</td>
-                  <td>{product.size || '—'}</td>
-                  <td>{stockBadge(product)}</td>
-                  <td>
-                    <span className={`status-badge ${product.status || 'active'}`}>
-                      {product.status ? product.status.replace('-', ' ') : 'Active'}
-                    </span>
-                  </td>
-                  <td>
-                    {product.badge
-                      ? <span className={`badge-pill ${product.badge.toLowerCase()}`}>{product.badge}</span>
-                      : <span style={{ color: '#d1d5db' }}>—</span>}
-                  </td>
-                  <td>
-                    <div className="table-actions">
-                      <button className="t-action-btn edit" title="Edit" onClick={() => openEdit(product)}><Edit size={16} /></button>
-                      <button className="t-action-btn delete" title="Delete" onClick={() => setDeleteConfirm(product.id)}><Trash2 size={16} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td>
+                      <div className="price-cell">
+                        <span className="sell-price">₹{product.price}</span>
+                        <span className="t-original">₹{product.originalPrice}</span>
+                      </div>
+                    </td>
+                    <td>{product.skinType}</td>
+                    <td>{product.size || '—'}</td>
+                    <td>{stockBadge(product)}</td>
+                    <td>
+                      <div className="table-actions">
+                        <button className="t-action-btn edit" title="Edit" onClick={() => openEdit(product)}><Edit size={16} /></button>
+                        <button className="t-action-btn delete" title="Delete" onClick={() => setDeleteConfirm(product.id)}><Trash2 size={16} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -433,6 +536,16 @@ const AdminProducts = () => {
           setDeleteConfirm(null);
         }}
         onCancel={() => setDeleteConfirm(null)}
+      />
+
+      <ConfirmModal
+        isOpen={bulkDeleteConfirm}
+        title={`Delete ${selectedIds.length} Products?`}
+        message={`Are you sure you want to permanently delete the ${selectedIds.length} selected products? This action cannot be undone.`}
+        confirmText="Yes, Delete All"
+        type="danger"
+        onConfirm={deleteSelected}
+        onCancel={() => setBulkDeleteConfirm(false)}
       />
 
       <ConfirmModal
@@ -503,18 +616,7 @@ const AdminProducts = () => {
                         <span className="pf-hint">Optional: Add a | symbol and subtitle for better SEO (e.g. Cleanser | Glowing Skin).</span>
                       </div>
 
-                      <div className="pf-row three">
-                        <div className="pf-field">
-                          <label>Selling Price (₹) <span className="req">*</span></label>
-                          <input
-                            type="number" min="0" step="0.01"
-                            value={form.price}
-                            onChange={e => set('price', e.target.value)}
-                            placeholder="499"
-                            className={errors.price ? 'input-error' : ''}
-                          />
-                          {errors.price && <span className="pf-error">{errors.price}</span>}
-                        </div>
+                      <div className="pf-row four">
                         <div className="pf-field">
                           <label>MRP (₹) <span className="req">*</span></label>
                           <input
@@ -527,14 +629,33 @@ const AdminProducts = () => {
                           {errors.originalPrice && <span className="pf-error">{errors.originalPrice}</span>}
                         </div>
                         <div className="pf-field">
+                          <label>Discount (%)</label>
+                          <input
+                            type="number" min="0" max="100"
+                            value={form.discountPercent}
+                            onChange={e => set('discountPercent', e.target.value)}
+                            placeholder="20"
+                          />
+                        </div>
+                        <div className="pf-field">
+                          <label>Selling Price (₹) <span className="req">*</span></label>
+                          <input
+                            type="number" min="0" step="0.01"
+                            value={form.price}
+                            onChange={e => set('price', e.target.value)}
+                            placeholder="499"
+                            className={errors.price ? 'input-error' : ''}
+                          />
+                          {errors.price && <span className="pf-error">{errors.price}</span>}
+                        </div>
+                        <div className="pf-field">
                           <label>Discount Tag</label>
                           <input
                             type="text"
                             value={form.discount}
                             onChange={e => set('discount', e.target.value)}
-                            placeholder="Auto-calculated if left blank"
+                            placeholder="Auto-calculated"
                           />
-                          <span className="pf-hint">e.g. "18% off" – auto-filled if blank.</span>
                         </div>
                       </div>
 

@@ -296,10 +296,25 @@ const Checkout = () => {
       }
 
       console.log("Order SUCCESS! ID:", data[0]?.id);
-
-      // 3. Clear cart (Assuming we add a clearCart method to ShopContext soon, for now we manipulate local storage or reload after success)
-      
       setOrderId(data[0].id);
+
+      // 3. Deduct Stock from Supabase
+      console.log("Deducting inventory counts...");
+      for (const item of cartItems) {
+        // Find the base numeric ID (handle variants like 5-QUJDSE)
+        const baseProductId = typeof item.id === 'string' ? item.id.split('-')[0] : item.id;
+        
+        // Use RPC or decrement logic. Since we know the item.id/baseProductId, 
+        // we fetch the current stock first or use an update with logic.
+        // For simplicity with standard JS client:
+        const { data: pData } = await supabase.from('products').select('stock').eq('id', baseProductId).single();
+        if (pData) {
+            const currentStock = pData.stock || 0;
+            const newStock = Math.max(0, currentStock - item.quantity);
+            await supabase.from('products').update({ stock: newStock }).eq('id', baseProductId);
+        }
+      }
+      
       setSuccess(true);
       clearCart();
       
@@ -438,13 +453,6 @@ const Checkout = () => {
                 <div className="pay-details">
                   <strong>Online Payment (Razorpay)</strong>
                   <span>UPI, Cards, Wallets, NetBanking</span>
-                </div>
-              </label>
-              <label className={`pay-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}>
-                <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === 'cod'} onChange={handleChange} />
-                <div className="pay-details">
-                  <strong>Cash on Delivery (COD)</strong>
-                  <span>Pay when your order arrives (₹10 service fee apply)</span>
                 </div>
               </label>
             </div>

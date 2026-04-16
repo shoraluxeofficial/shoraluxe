@@ -90,6 +90,14 @@
   white-space: nowrap;
 }
 
+.admin-table tr.row-selected {
+  background-color: #f5f3ff;
+}
+
+.admin-table tr.row-selected td {
+  border-bottom-color: #ddd6fe;
+}
+
 .admin-table th {
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -509,6 +517,10 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+.pf-row.four {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
 .pf-field {
   display: flex;
   flex-direction: column;
@@ -517,6 +529,10 @@
 
 .pf-field.full {
   grid-column: 1 / -1;
+}
+
+.pf-row.four {
+  grid-template-columns: 140px 100px 140px 1fr;
 }
 
 .pf-field label {
@@ -535,8 +551,8 @@
 .pf-field textarea {
   border: 1.5px solid #e5e7eb;
   border-radius: 8px;
-  padding: 0.6rem 0.85rem;
-  font-size: 0.88rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
   color: #111827;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;

@@ -624,6 +624,46 @@
 .badge.sale { background: #ab2346; }
 .badge.discount { background: #111; }
 
+.stock-overlay-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  z-index: 10;
+  pointer-events: none;
+  text-align: center;
+}
+
+.stock-overlay-badge.out {
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+}
+
+.stock-overlay-badge.hurry {
+  background: rgba(180, 83, 9, 0.95);
+  color: #fff;
+  animation: pulse-overlay-shop 1.5s infinite;
+}
+
+@keyframes pulse-overlay-shop {
+  0% { background: rgba(180, 83, 9, 0.95); }
+  50% { background: rgba(220, 100, 10, 1); }
+  100% { background: rgba(180, 83, 9, 0.95); }
+}
+
+.quick-add-btn.disabled,
+.atc-btn.disabled {
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  border-color: #d1d5db !important;
+}
+
 /* Wishlist */
 .wishlist-btn {
   position: absolute;

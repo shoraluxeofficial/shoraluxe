@@ -57,7 +57,7 @@ const Footer = () => {
             <nav className="f-nav">
               <a href="#" className="f-nav-item">Concierge (Support)</a>
               <a href="/track-order" className="f-nav-item">Track Order</a>
-              <a href="#" className="f-nav-item">Shipping & Returns</a>
+              <a href="#" className="f-nav-item">Shipping Policy</a>
               <a href="#" className="f-nav-item">Skin Consultations</a>
               <a href="#" className="f-nav-item">Store Registry</a>
               <a href="#" className="f-nav-item">Privacy & Terms</a>

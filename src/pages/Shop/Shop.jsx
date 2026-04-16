@@ -397,6 +397,14 @@ const Shop = () => {
                                 <span className="badge discount">{discount}% Off</span>
                               )}
                             </div>
+
+                            {/* Stock Special Badges */}
+                            {product.stock === 0 && (
+                              <div className="stock-overlay-badge out">Out of Stock</div>
+                            )}
+                            {product.stock > 0 && product.stock <= 5 && (
+                              <div className="stock-overlay-badge hurry">Hurry Up! Only {product.stock} Left</div>
+                            )}
                           </div>
                         </Link>
                         
@@ -414,17 +422,20 @@ const Shop = () => {
                         <div className="product-card-overlay" style={{ zIndex: 5, pointerEvents: 'none' }}>
                           <div style={{ pointerEvents: 'auto', display: 'flex', gap: '0.5rem', width: '100%', padding: '0 1rem' }}>
                             <button
-                              className={`quick-add-btn ${justAdded ? 'added' : ''}`}
+                              className={`quick-add-btn ${justAdded ? 'added' : ''} ${product.stock === 0 ? 'disabled' : ''}`}
+                              disabled={product.stock === 0}
                               onClick={e => handleAddToCart(e, product)}
                             >
-                              {justAdded ? (
+                              {product.stock === 0 ? (
+                                'Out of Stock'
+                              ) : justAdded ? (
                                 <>✓ Added to Bag</>
                               ) : (
                                 <><ShoppingBag size={14} /> Quick Add</>
                               )}
                             </button>
                             <Link to={`/product/${product.id}`} className="view-product-btn">
-                              View Product <ArrowRight size={13} />
+                              View <ArrowRight size={13} />
                             </Link>
                           </div>
                         </div>
@@ -469,10 +480,11 @@ const Shop = () => {
                         )}
 
                         <button
-                          className={`atc-btn ${justAdded ? 'added' : ''}`}
+                          className={`atc-btn ${justAdded ? 'added' : ''} ${product.stock === 0 ? 'disabled' : ''}`}
+                          disabled={product.stock === 0}
                           onClick={e => handleAddToCart(e, product)}
                         >
-                          {justAdded ? '✓ Added!' : 'Add to Bag'}
+                          {product.stock === 0 ? 'Out of Stock' : justAdded ? '✓ Added!' : 'Add to Bag'}
                         </button>
                       </div>
                     </article>

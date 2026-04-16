@@ -23,6 +23,18 @@ export const ShopProvider = ({ children }) => {
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const normalizeProduct = (p) => ({
+    ...p,
+    originalPrice: p.original_price,
+    skinType: p.skin_type,
+    howToUse: p.how_to_use,
+    bestFor: p.best_for,
+    reviewsCount: p.reviews_count,
+    isNew: p.is_new,
+    isBestseller: p.is_bestseller,
+    isSale: p.is_sale,
+  });
+
   // Fetch products from Supabase
   const fetchProducts = async () => {
     // If env vars are missing, we stay on fallback data
@@ -41,18 +53,7 @@ export const ShopProvider = ({ children }) => {
 
       if (error) throw error;
       
-      // Normalize data: Map snake_case from DB back to camelCase for the App
-      const normalizedData = (data || []).map(p => ({
-        ...p,
-        originalPrice: p.original_price,
-        skinType: p.skin_type,
-        howToUse: p.how_to_use,
-        bestFor: p.best_for,
-        reviewsCount: p.reviews_count,
-        isNew: p.is_new,
-        isBestseller: p.is_bestseller,
-        isSale: p.is_sale,
-      }));
+      const normalizedData = (data || []).map(normalizeProduct);
 
       if (normalizedData.length > 0) {
         setProducts(normalizedData);
@@ -126,8 +127,9 @@ export const ShopProvider = ({ children }) => {
         .select();
 
       if (error) throw error;
-      setProducts(prev => [data[0], ...prev]);
-      return { success: true, data: data[0] };
+      const normalized = normalizeProduct(data[0]);
+      setProducts(prev => [normalized, ...prev]);
+      return { success: true, data: normalized };
     } catch (error) {
       console.error('Error adding product:', error.message);
       return { success: false, error: error.message };
@@ -159,8 +161,9 @@ export const ShopProvider = ({ children }) => {
         .select();
 
       if (error) throw error;
-      setProducts(prev => prev.map(p => p.id === id ? data[0] : p));
-      return { success: true, data: data[0] };
+      const normalized = normalizeProduct(data[0]);
+      setProducts(prev => prev.map(p => p.id === id ? normalized : p));
+      return { success: true, data: normalized };
     } catch (error) {
       console.error('Error updating product:', error.message);
       return { success: false, error: error.message };

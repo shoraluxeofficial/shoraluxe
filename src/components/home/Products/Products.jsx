@@ -76,6 +76,14 @@ const Products = () => {
                           {product.badge}
                         </span>
                       )}
+
+                      {/* Stock Special Badges */}
+                      {product.stock === 0 && (
+                        <div className="stock-overlay-badge out">Out of Stock</div>
+                      )}
+                      {product.stock > 0 && product.stock <= 5 && (
+                        <div className="stock-overlay-badge hurry">Hurry! Only {product.stock} Left</div>
+                      )}
                     </Link>
 
                     <div className="product-info">
@@ -102,10 +110,11 @@ const Products = () => {
                       </div>
 
                       <button 
-                        className="add-to-bag-btn" 
+                        className={`add-to-bag-btn ${product.stock === 0 ? 'disabled' : ''}`} 
+                        disabled={product.stock === 0}
                         onClick={(e) => handleAddToCart(e, product)}
                       >
-                        ADD TO CART
+                        {product.stock === 0 ? 'OUT OF STOCK' : 'ADD TO CART'}
                       </button>
                     </div>
                   </div>
