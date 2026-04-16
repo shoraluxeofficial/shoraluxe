@@ -95,21 +95,32 @@ const ProductDetail = () => {
   const galleryArray = Array.isArray(product.gallery) ? product.gallery : (product.gallery ? product.gallery.split('\n').filter(Boolean) : []);
   const howToUseArray = Array.isArray(product.howToUse) ? product.howToUse : (product.howToUse ? product.howToUse.split('\n').filter(Boolean) : []);
 
-  const sizeChoices = product.size ? product.size.split(',').map(s => s.trim()).filter(Boolean) : [];
+  const parsedVariants = (() => {
+    if (!product?.size) return [];
+    try {
+      const arr = JSON.parse(product.size);
+      if (Array.isArray(arr) && arr.length > 0 && arr[0].label) return arr;
+    } catch (e) {}
+    
+    // Fallback old comma format
+    return product.size.split(',').map(s => {
+       const str = s.trim();
+       if(!str) return null;
+       const [lbl, p] = str.split(':');
+       return { 
+         label: lbl.trim(), 
+         price: p ? Number(p) : product.price, 
+         mrp: product.originalPrice, 
+         discount: product.discount, 
+         usp: '', 
+         badge: '' 
+       };
+    }).filter(Boolean);
+  })();
 
-  const getSelectedPrice = () => {
-    if (!selectedSize) return product.price;
-    if (!selectedSize.includes(':')) return product.price;
-    return Number(selectedSize.split(':')[1]);
-  };
-
-  const getSelectedSizeLabel = () => {
-    if (!selectedSize) return product.size;
-    return selectedSize.split(':')[0];
-  };
-
-  const currentPrice = getSelectedPrice();
-  const currentSizeLabel = getSelectedSizeLabel();
+  const selectedVariantData = parsedVariants.find(v => v.label === selectedSize) || parsedVariants[0] || {};
+  const currentPrice = Number(selectedVariantData.price || product.price);
+  const currentSizeLabel = selectedVariantData.label || product.size;
 
   // Inventory Logic
   const isOutOfStock = product.stock === 0;
@@ -164,10 +175,10 @@ const ProductDetail = () => {
 
           <div className="pd-pricing-block">
             <span className="pd-price-luxe">₹{currentPrice.toLocaleString('en-IN')}</span>
-            {product.originalPrice && (
+            {(selectedVariantData.mrp || product.originalPrice) && (
               <>
-                <span className="pd-original-luxe">₹{product.originalPrice.toLocaleString('en-IN')}</span>
-                <span className="pd-discount-badge">{product.discount}</span>
+                <span className="pd-original-luxe">₹{Number(selectedVariantData.mrp || product.originalPrice).toLocaleString('en-IN')}</span>
+                <span className="pd-discount-badge">{selectedVariantData.discount || product.discount}</span>
               </>
             )}
             <span className="pd-tax-note">Inclusive of all taxes</span>
@@ -187,19 +198,31 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {sizeChoices.length > 0 ? (
+          {parsedVariants.length > 0 ? (
             <div className="pd-size-selector">
-              <span className="meta-label">Select Size / Combo</span>
-              <div className="size-options">
-                {sizeChoices.map(sz => (
-                  <button
-                    key={sz}
-                    className={`size-btn ${selectedSize === sz ? 'active' : ''}`}
-                    onClick={() => setSelectedSize(sz)}
-                  >
-                    {sz.split(':')[0]}
-                  </button>
-                ))}
+              <span className="meta-label" style={{fontWeight: 600, color: '#333'}}>Select Size</span>
+              <div className="variant-cards-wrapper">
+                {parsedVariants.map((v, i) => {
+                  const isSelected = selectedSize === v.label || (!selectedSize && i === 0);
+                  return (
+                    <div 
+                      key={i} 
+                      className={`variant-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => setSelectedSize(v.label)}
+                    >
+                      {isSelected && <div className="v-check-icon">✔</div>}
+                      {v.badge && <div className="v-badge">{v.badge}</div>}
+                      
+                      <div className="v-title">{v.label}</div>
+                      <div className="v-price-block">
+                         <span className="v-sell-price">₹{v.price}</span>
+                         {v.mrp && <span className="v-mrp">₹{v.mrp}</span>}
+                         {v.discount && <span className="v-discount">{v.discount}</span>}
+                      </div>
+                      {v.usp && <div className="v-usp-line">USP: {v.usp}</div>}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ) : (

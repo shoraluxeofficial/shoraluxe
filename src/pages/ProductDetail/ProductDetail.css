@@ -308,33 +308,109 @@
   margin-bottom: 2rem;
 }
 
-.size-options {
+.variant-cards-wrapper {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-.size-btn {
-  background: #fff;
-  border: 1px solid #eaeaea;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 8px;
+.variant-cards-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.variant-card {
+  position: relative;
+  min-width: 170px;
+  background: #f9f9f9;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 1.25rem;
   cursor: pointer;
-  color: #444;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.size-btn:hover {
-  border-color: #611C28;
+.variant-card:hover {
+  background: #f1f1f1;
 }
 
-.size-btn.active {
-  background: #611C28;
+.variant-card.selected {
+  background: #f4f6fb;
+  border-color: #0b57d0; /* Deep blue like the reference */
+}
+
+.v-check-icon {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #0b57d0;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.v-badge {
+  position: absolute;
+  top: -12px;
+  right: 15px;
+  background: #8b3dff; /* Purple gradient/solid */
   color: #fff;
-  border-color: #611C28;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.v-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.v-price-block {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.v-sell-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.v-mrp {
+  font-size: 0.85rem;
+  color: #888;
+  text-decoration: line-through;
+}
+
+.v-discount {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #d32f2f;
+}
+
+.v-usp-line {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 0.2rem;
+  font-weight: 500;
 }
 
 /* OFFERS */

@@ -33,6 +33,7 @@ const EMPTY_FORM = {
   isSale: false,
   stock: '',
   status: 'active',
+  variants: [],
 };
 
 const CATEGORIES = ['All Skin Types', 'Oily & Acne-Prone', 'Dry & Dehydrated', 'Dull & Uneven Tone', 'Mature Skin', 'Sensitive Skin', 'Very Dry Skin', 'Combination Skin'];
@@ -232,6 +233,20 @@ const AdminProducts = () => {
       isSale: product.isSale || false,
       stock: product.stock || '',
       status: product.status || 'active',
+      variants: (() => {
+        try {
+           return JSON.parse(product.size);
+        } catch(e) {
+           // Fallback if older string format "50ml:299, 100ml:499" or empty
+           if(product.size) {
+              return product.size.split(',').map(s => {
+                 const [lbl, p] = s.split(':');
+                 return { label: lbl?.trim()||'', price: p?.trim()||product.price||'', mrp: '', discount: '', usp: '', badge: '' };
+              });
+           }
+           return [];
+        }
+      })()
     });
     setEditingId(product.id);
     setErrors({});
@@ -689,11 +704,64 @@ const AdminProducts = () => {
                       </div>
 
                       <div className="pf-row">
-                        <div className="pf-field">
-                          <label>Available Sizes & Options</label>
-                          <input type="text" value={form.size} onChange={e => set('size', e.target.value)} placeholder="e.g. 50ml, 100ml" />
-                          <span className="pf-hint">Use commas (,) for multiple sizes. Use colons (:) for custom pricing (e.g. 100ml:899, Combo:1200).</span>
+                        <div className="pf-field full" style={{background: '#f9fafb', padding: '1rem', borderRadius: '8px', border: '1px solid #e5e7eb'}}>
+                          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
+                            <label style={{margin: 0}}>Available Sizes & Combos 🌟</label>
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                const newVariants = [...(form.variants || []), { label: '', price: '', mrp: '', discount: '', usp: '', badge: '' }];
+                                setForm({...form, variants: newVariants, size: JSON.stringify(newVariants) });
+                              }}
+                              style={{padding: '0.4rem 0.8rem', background: '#611C28', color: '#fff', borderRadius: '6px', border: 'none', fontSize: '0.8rem', cursor: 'pointer'}}
+                            >
+                              + Add Size / Combo
+                            </button>
+                          </div>
+                          
+                          {(!form.variants || form.variants.length === 0) ? (
+                            <p style={{fontSize: '0.85rem', color: '#6b7280'}}>No combos added yet. Standard price will be used.</p>
+                          ) : (
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem'}}>
+                              {form.variants.map((v, i) => (
+                                <div key={i} style={{display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr auto', gap: '0.5rem', alignItems: 'center', background: '#fff', padding: '0.75rem', borderRadius: '6px', border: '1px solid #ddd'}}>
+                                  <input type="text" placeholder="Title e.g. Single Pack (50gm)" value={v.label} onChange={e => {
+                                      const arr = [...form.variants]; arr[i].label = e.target.value; 
+                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  <input type="number" placeholder="Price (₹)" value={v.price} onChange={e => {
+                                      const arr = [...form.variants]; arr[i].price = e.target.value; 
+                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  <input type="number" placeholder="MRP (₹)" value={v.mrp} onChange={e => {
+                                      const arr = [...form.variants]; arr[i].mrp = e.target.value; 
+                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  <input type="text" placeholder="Tag e.g. 30% off" value={v.discount} onChange={e => {
+                                      const arr = [...form.variants]; arr[i].discount = e.target.value; 
+                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  <input type="text" placeholder="USP: ₹8.98/g" value={v.usp} onChange={e => {
+                                      const arr = [...form.variants]; arr[i].usp = e.target.value; 
+                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  <input type="text" placeholder="Badge (e.g. Timer)" value={v.badge} onChange={e => {
+                                      const arr = [...form.variants]; arr[i].badge = e.target.value; 
+                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                  }} style={{padding: '0.4rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                  <button type="button" onClick={() => {
+                                      const arr = form.variants.filter((_, idx) => idx !== i);
+                                      setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                  }} style={{padding: '0.4rem', color: 'red', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: 'bold'}}>✕</button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <input type="hidden" value={form.size || ''} name="size" />
                         </div>
+                      </div>
+                      
+                      <div className="pf-row">
                         <div className="pf-field">
                           <label>Quick Feature Highlight</label>
                           <input type="text" value={form.benefit} onChange={e => set('benefit', e.target.value)} placeholder="e.g. Instant Glow & Repair" />
