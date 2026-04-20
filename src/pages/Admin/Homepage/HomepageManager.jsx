@@ -124,12 +124,18 @@ const HomepageManager = () => {
     setEditModal({ open: true, index, draft: data, title: `Edit ${tabLabel}` });
   };
 
-  // ── SAVE EDIT ─────────────────────────────────────────────────────────────
+  // ── SAVE EDIT OR NEW ITEM ─────────────────────────────────────────────────
   const handleSaveEdit = async () => {
     const tab = TABS.find(t => t.key === activeTab);
     let newContent;
     if (tab.type === 'array') {
-      newContent = sections[activeTab].map((item, i) => i === editModal.index ? editModal.draft : item);
+      if (editModal.index === null) {
+        // Appending a new item
+        newContent = [...(sections[activeTab] || []), editModal.draft];
+      } else {
+        // Updating an existing item
+        newContent = sections[activeTab].map((item, i) => i === editModal.index ? editModal.draft : item);
+      }
     } else {
       newContent = editModal.draft;
     }
@@ -141,15 +147,21 @@ const HomepageManager = () => {
   };
 
   // ── ADD NEW ITEM ──────────────────────────────────────────────────────────
-  const handleAdd = async () => {
+  const handleAdd = () => {
     const blanks = {
       hero: { img: '', url: '', alt: '' },
       videoBanners: { url: '', title: '', desc: '' },
       watchAndShop: { title: '', price: '', originalPrice: '', discount: '', views: '0', img: '', video: '', overlayText: '' },
     };
-    const newList = [...sections[activeTab], blanks[activeTab]];
-    const ok = await saveSection(activeTab, newList);
-    if (ok) setSections(prev => ({ ...prev, [activeTab]: newList }));
+    const currentTabObj = TABS.find(t => t.key === activeTab);
+    const tabLabel = currentTabObj.label.replace(/s$/, ''); // e.g. "Hero Banner"
+    
+    setEditModal({
+      open: true,
+      index: null,
+      draft: blanks[activeTab],
+      title: `Add ${tabLabel}`
+    });
   };
 
   // ── DELETE ITEM ───────────────────────────────────────────────────────────
@@ -499,9 +511,13 @@ const HomepageManager = () => {
           <h1 className="admin-page-title">Homepage CMS</h1>
           <p className="admin-page-subtitle">CRUD control for every storefront section — all changes go live instantly</p>
         </div>
-        {currentTab.type === 'array' && (
+        {currentTab.type === 'array' ? (
           <button className="admin-btn-primary" onClick={handleAdd}>
             <Plus size={16}/> Add {currentTab.label.replace(/s$/, '')}
+          </button>
+        ) : (
+          <button className="admin-btn-primary" onClick={() => openEdit(null, currentTab.label)}>
+            <Pencil size={16}/> Edit {currentTab.label}
           </button>
         )}
       </div>
