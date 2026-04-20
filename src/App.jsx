@@ -7,7 +7,7 @@ import AdminProducts from './pages/Admin/ProductsList/AdminProducts';
 import AdminOrders from './pages/Admin/Orders/AdminOrders';
 import AdminBanners from './pages/Admin/Banners/AdminBanners';
 import AdminReviews from './pages/Admin/Reviews/AdminReviews';
-import AdminCustomers from './pages/Admin/Customers/AdminCustomers';
+import AdminUsers from './pages/Admin/Users/AdminUsers';
 import AdminSettings from './pages/Admin/Settings/AdminSettings';
 import AdminHomepage from './pages/Admin/Homepage/HomepageManager';
 import AdminRevenue from './pages/Admin/Revenue/AdminRevenue';
@@ -61,7 +61,7 @@ function App() {
               <Route path="orders" element={<AdminOrders />} />
               <Route path="banners" element={<AdminBanners />} />
               <Route path="reviews" element={<AdminReviews />} />
-              <Route path="customers" element={<AdminCustomers />} />
+              <Route path="users" element={<AdminUsers />} />
               <Route path="revenue" element={<AdminRevenue />} />
               <Route path="security" element={<AdminSecurity />} />
               <Route path="settings" element={<AdminSettings />} />

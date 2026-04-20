@@ -38,7 +38,7 @@ const AdminLayout = () => {
     { path: '/admin/security', icon: <ShieldCheck size={20} />, label: 'Firewall' },
     { path: '/admin/homepage', icon: <HomeIcon size={20} />, label: 'Home Page CMS' },
     { path: '/admin/reviews', icon: <MessageSquare size={20} />, label: 'Testimonials' },
-    { path: '/admin/customers', icon: <Users size={20} />, label: 'Customers' },
+    { path: '/admin/users', icon: <Users size={20} />, label: 'Users' },
     { path: '/admin/settings', icon: <Settings size={20} />, label: 'Store Settings' },
   ];
 
