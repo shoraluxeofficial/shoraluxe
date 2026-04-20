@@ -112,6 +112,7 @@ const QuizSection = () => {
   const [answers, setAnswers] = useState({});
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeStep, setAnalyzeStep] = useState(0);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -194,6 +195,28 @@ const QuizSection = () => {
     setIsCartOpen(true);
   };
 
+  const toggleProductSelection = (prodId) => {
+    setSelectedProductIds(prev =>
+      prev.includes(prodId) ? prev.filter(id => id !== prodId) : [...prev, prodId]
+    );
+  };
+
+  const handleAddSelectedToCart = (prods) => {
+    const selected = prods.filter(p => selectedProductIds.includes(p.id));
+    if (selected.length === 0) return;
+    selected.forEach(p => addToCart(p, 1));
+    setIsCartOpen(true);
+  };
+  const { skinType, concern, products: liveProducts } = calculateLiveResults();
+
+  // Init all selected when results first render
+  useEffect(() => {
+    if (viewState === 'results' && liveProducts.length > 0) {
+      setSelectedProductIds(liveProducts.map(p => p.id));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewState]);
+
   /* ─── START ─── */
   if (viewState === 'start') {
     return (
@@ -207,7 +230,7 @@ const QuizSection = () => {
           {/* Left content */}
           <div className="qs-start-left">
             <span className="qs-eyebrow">
-              <Zap size={12} /> RADIANCE ANALYST™ &nbsp;·&nbsp; PERSONALIZED FOR YOU
+              <Zap size={12} /> RADIANCE ANALYST™ · Personalized For You
             </span>
             <h1 className="qs-start-h1">
               Your Skin Has a<br />
@@ -349,7 +372,7 @@ const QuizSection = () => {
                 <ArrowLeft size={16} /> Back
               </button>
               <div className="qs-step-pill">
-                Step {currentStepIndex + 1} / {QUIZ_QUESTIONS.length}
+                Step {currentStepIndex + 1} of {QUIZ_QUESTIONS.length}
               </div>
               <div className="qs-pct">{Math.round(progress)}%</div>
             </div>
@@ -372,7 +395,11 @@ const QuizSection = () => {
                       <div className="qs-opt-icon-wrap">{opt.icon}</div>
                       <strong className="qs-opt-label">{opt.label}</strong>
                       <span className="qs-opt-desc">{opt.desc}</span>
-                      {sel && <span className="qs-opt-check"><CheckCircle2 size={16} /></span>}
+                      {sel && (
+                        <span className="qs-opt-check">
+                          <CheckCircle2 size={13} />
+                        </span>
+                      )}
                       {sel && <span className="qs-opt-ripple" />}
                     </button>
                   );
@@ -399,8 +426,37 @@ const QuizSection = () => {
             </div>
           </div>
 
-          {/* RIGHT — editorial */}
+          {/* RIGHT — editorial + step tracker */}
           <div className="qs-quiz-right">
+            {/* Step tracker */}
+            <div className="qs-right-progress-block">
+              <div className="qs-right-progress-label">
+                <span className="qs-live-dot" />
+                Your Progress
+              </div>
+              <div className="qs-right-prog-bar">
+                <div className="qs-right-prog-fill" style={{ width: `${progress}%` }} />
+              </div>
+              <div className="qs-right-step-list">
+                {STEP_TITLES.map((title, i) => {
+                  const isDone = i < currentStepIndex;
+                  const isActive = i === currentStepIndex;
+                  return (
+                    <div
+                      key={i}
+                      className={`qs-right-step-item ${isDone ? 'qs-right-step-item--done' : isActive ? 'qs-right-step-item--active' : ''}`}
+                    >
+                      <span className="qs-right-step-icon">
+                        {isDone ? <CheckCircle2 size={11} /> : i + 1}
+                      </span>
+                      {title}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Editorial image */}
             <div className="qs-editorial-img-wrap" key={currentStepIndex}>
               <img src={RIGHT_IMGS[currentStepIndex]} alt="editorial" className="qs-editorial-img" />
               <div className="qs-editorial-overlay">
@@ -408,8 +464,6 @@ const QuizSection = () => {
                 <span className="qs-editorial-author">— SHORALUXE LABS</span>
               </div>
             </div>
-
-
           </div>
         </div>
       </section>
@@ -467,11 +521,14 @@ const QuizSection = () => {
       </section>
     );
   }
-
   /* ─── RESULTS ─── */
-  const { skinType, concern, products: liveProducts } = calculateLiveResults();
   const STEP_LABELS = ["Cleanse", "Treat", "Hydrate", "Protect", "Repair"];
   const CARD_COLORS = ['#900b3b', '#6d3bb5', '#1a6fa0', '#0f7a5a', '#c07000'];
+
+  const selectedCount = selectedProductIds.length;
+  const selectedValue = liveProducts
+    .filter(p => selectedProductIds.includes(p.id))
+    .reduce((a, p) => a + (p.price || 0), 0);
 
   return (
     <section className="qs-results">
@@ -495,18 +552,31 @@ const QuizSection = () => {
           </div>
         </div>
 
+        {/* Selection hint */}
+        <div className="qs-select-hint">
+          <CheckCircle2 size={15} />
+          <span>Tap cards to select / deselect products, then add to cart individually or all at once.</span>
+        </div>
+
         {/* Product cards */}
         <div className="qs-prod-grid">
           {liveProducts.map((prod, idx) => {
             const cartItem = cartItems.find(item => item.id === prod.id);
             const qty = cartItem ? cartItem.quantity : 0;
             const color = CARD_COLORS[idx] || '#900b3b';
+            const isSelected = selectedProductIds.includes(prod.id);
             return (
               <div
                 key={idx}
-                className="qs-prod-card qs-slide-in-up"
+                className={`qs-prod-card qs-slide-in-up ${isSelected ? 'qs-prod-card--selected' : ''}`}
                 style={{ '--c': color, animationDelay: `${idx * 0.1}s` }}
+                onClick={() => toggleProductSelection(prod.id)}
               >
+                {/* Selection overlay check */}
+                <span className={`qs-prod-select-badge ${isSelected ? 'qs-prod-select-badge--on' : ''}`}>
+                  <CheckCircle2 size={15} />
+                </span>
+
                 {/* Top accent bar */}
                 <div className="qs-prod-bar" style={{ background: color }} />
                 {/* Step badge */}
@@ -519,7 +589,6 @@ const QuizSection = () => {
                 {/* Image */}
                 <div className="qs-prod-img-wrap">
                   <img src={prod.gallery?.[0] || prod.img} alt={prod.title} />
-                  {/* Shimmer */}
                   <div className="qs-prod-shimmer" />
                 </div>
 
@@ -529,14 +598,15 @@ const QuizSection = () => {
                   <h4 className="qs-prod-name">{prod.title.split('|')[0]}</h4>
                   <p className="qs-prod-price">₹{prod.price}</p>
 
-                  <div className="qs-prod-actions">
+                  {/* Stop card click from propagating on action buttons */}
+                  <div className="qs-prod-actions" onClick={e => e.stopPropagation()}>
                     {qty === 0 ? (
                       <button
                         className="qs-add-btn"
                         style={{ '--c': color }}
                         onClick={() => { addToCart(prod, 1); setIsCartOpen(true); }}
                       >
-                        Add to Ritual
+                        Add to Cart
                       </button>
                     ) : (
                       <div className="qs-qty-ctrl">
@@ -554,16 +624,43 @@ const QuizSection = () => {
 
         {/* Footer */}
         <div className="qs-results-footer">
-          <div className="qs-total-block">
-            <span>Total Ritual Value</span>
-            <strong>₹{liveProducts.reduce((a, p) => a + (p.price || 0), 0)}</strong>
+          {/* Value summary */}
+          <div className="qs-footer-values">
+            <div className="qs-total-block">
+              <span>Selected ({selectedCount} of {liveProducts.length})</span>
+              <strong>₹{selectedValue}</strong>
+            </div>
+            <div className="qs-total-block qs-total-block--muted">
+              <span>Full Ritual Value</span>
+              <strong>₹{liveProducts.reduce((a, p) => a + (p.price || 0), 0)}</strong>
+            </div>
           </div>
-          <button className="qs-adopt-btn" onClick={() => handleAddAllToCart(liveProducts)}>
-            <ShoppingBag size={18} /> Adopt Full Ritual
-          </button>
-          <button className="qs-retake-btn" onClick={() => { setAnswers({}); setCurrentStepIndex(0); setViewState('quiz'); }}>
-            <Activity size={14} /> Re-Calculate My Profile
-          </button>
+
+          {/* Action buttons */}
+          <div className="qs-footer-actions">
+            <button
+              className={`qs-adopt-btn qs-adopt-btn--selected ${selectedCount === 0 ? 'qs-adopt-btn--disabled' : ''}`}
+              onClick={() => handleAddSelectedToCart(liveProducts)}
+              disabled={selectedCount === 0}
+            >
+              <ShoppingBag size={18} />
+              Add {selectedCount > 0 ? `${selectedCount} Selected` : 'Selected'} to Cart
+            </button>
+            <button className="qs-adopt-btn qs-adopt-btn--all" onClick={() => handleAddAllToCart(liveProducts)}>
+              <Sparkles size={18} /> Add Full Ritual
+            </button>
+          </div>
+
+          {/* Select helpers */}
+          <div className="qs-footer-links">
+            <button className="qs-text-link" onClick={() => setSelectedProductIds(liveProducts.map(p => p.id))}>Select All</button>
+            <span className="qs-footer-sep">·</span>
+            <button className="qs-text-link" onClick={() => setSelectedProductIds([])}>Deselect All</button>
+            <span className="qs-footer-sep">·</span>
+            <button className="qs-retake-btn" onClick={() => { setAnswers({}); setCurrentStepIndex(0); setViewState('quiz'); }}>
+              <Activity size={14} /> Re-Calculate
+            </button>
+          </div>
         </div>
       </div>
     </section>
