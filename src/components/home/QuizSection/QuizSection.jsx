@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  ArrowRight, ArrowLeft, Droplet, Sun, Clock, AlertCircle, Sparkles, 
-  ShoppingBag, CloudRain, Flame, Activity, Cloud, Star, Target, Shield, Heart, Moon 
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  ArrowRight, ArrowLeft, Droplet, Sun, Clock, AlertCircle, Sparkles,
+  ShoppingBag, CloudRain, Flame, Activity, Cloud, Star, Target, Shield, Heart, Moon, CheckCircle2, Zap
 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
 import { supabase } from '../../../lib/supabase';
@@ -9,397 +9,563 @@ import './QuizSection.css';
 
 const QUIZ_QUESTIONS = [
   {
-    step: 1,
-    title: "Skin Type Check",
-    icon: <Droplet size={20} />,
-    questions: [
-      {
-        id: 'q1',
-        text: "How does your skin feel most of the time?",
-        options: [
-          { label: "Oily & Shiny", value: "Oily", icon: <Flame size={24}/> },
-          { label: "Dry or Flaky", value: "Dry", icon: <CloudRain size={24}/> },
-          { label: "Combination", value: "Combination", icon: <Activity size={24}/> },
-          { label: "Normal & Balanced", value: "Normal", icon: <Sun size={24}/> }
-        ]
-      },
-      {
-        id: 'q2',
-        text: "How does your skin react after washing?",
-        options: [
-          { label: "Becomes tight", value: "Dry", icon: <Target size={24}/> },
-          { label: "Gets oily quickly", value: "Oily", icon: <Flame size={24}/> },
-          { label: "Feels perfectly fine", value: "Normal", icon: <Heart size={24}/> },
-          { label: "Dry spots, oily T-zone", value: "Combination", icon: <Activity size={24}/> }
-        ]
-      }
-    ]
+    step: 1, title: "Baseline", icon: <Droplet size={20} />,
+    questions: [{
+      id: 'q1', text: "How does your skin feel most of the time?",
+      options: [
+        { label: "Oily & Shiny", value: "Oily", icon: <Flame size={22} />, desc: "Visible shine throughout the day" },
+        { label: "Dry or Flaky", value: "Dry", icon: <CloudRain size={22} />, desc: "Feels tight and rough" },
+        { label: "Combination", value: "Combination", icon: <Activity size={22} />, desc: "Oily T-zone, dry cheeks" },
+        { label: "Normal & Balanced", value: "Normal", icon: <Sun size={22} />, desc: "Comfortable and even" }
+      ]
+    }]
   },
   {
-    step: 2,
-    title: "Skin Concerns",
-    icon: <AlertCircle size={20} />,
-    questions: [
-      {
-        id: 'q3',
-        text: "What is your biggest skin concern?",
-        options: [
-          { label: "Acne / Breakouts", value: "Acne", icon: <AlertCircle size={24}/> },
-          { label: "Pigmentation / Dark spots", value: "Pigmentation", icon: <Target size={24}/> },
-          { label: "Dullness / Uneven tone", value: "Dullness", icon: <Sparkles size={24}/> },
-          { label: "Fine lines / Early aging", value: "Aging", icon: <Clock size={24}/> },
-          { label: "Sensitivity / Redness", value: "Sensitivity", icon: <Shield size={24}/> }
-        ]
-      },
-      {
-        id: 'q4',
-        text: "How long have you had this concern?",
-        options: [
-          { label: "Less than 3 months", value: "Short-term", icon: <AlertCircle size={24}/> },
-          { label: "3–12 months", value: "Medium-term", icon: <Clock size={24}/> },
-          { label: "Over a year", value: "Long-term", icon: <Target size={24}/> }
-        ]
-      }
-    ]
+    step: 2, title: "Post-Cleansing", icon: <Droplet size={20} />,
+    questions: [{
+      id: 'q2', text: "How does your skin react after washing?",
+      options: [
+        { label: "Becomes tight", value: "Dry", icon: <Target size={22} />, desc: "Feels stripped and dry" },
+        { label: "Gets oily quickly", value: "Oily", icon: <Flame size={22} />, desc: "Shine returns in minutes" },
+        { label: "Feels perfectly fine", value: "Normal", icon: <Heart size={22} />, desc: "No discomfort at all" },
+        { label: "Dry spots, oily T-zone", value: "Combination", icon: <Activity size={22} />, desc: "Mixed feeling across face" }
+      ]
+    }]
   },
   {
-    step: 3,
-    title: "Environment",
-    icon: <Sun size={20} />,
-    questions: [
-      {
-        id: 'q5',
-        text: "How much time do you spend outdoors?",
-        options: [
-          { label: "Mostly indoors", value: "Indoors", icon: <Cloud size={24}/> },
-          { label: "1–2 hours daily", value: "Moderate", icon: <Sun size={24}/> },
-          { label: "3+ hours daily", value: "High exposure", icon: <Flame size={24}/> }
-        ]
-      },
-      {
-        id: 'q6',
-        text: "What best describes your climate?",
-        options: [
-          { label: "Hot & humid", value: "Humid", icon: <Droplet size={24}/> },
-          { label: "Hot & dry", value: "Dry", icon: <Sun size={24}/> },
-          { label: "Cold or mixed", value: "Mixed", icon: <CloudRain size={24}/> }
-        ]
-      }
-    ]
+    step: 3, title: "Primary Focus", icon: <AlertCircle size={20} />,
+    questions: [{
+      id: 'q3', text: "What is your biggest skin concern?",
+      options: [
+        { label: "Acne / Breakouts", value: "Acne", icon: <AlertCircle size={22} />, desc: "Pimples, cysts, blackheads" },
+        { label: "Pigmentation", value: "Pigmentation", icon: <Target size={22} />, desc: "Dark spots, uneven tone" },
+        { label: "Dullness", value: "Dullness", icon: <Sparkles size={22} />, desc: "Lack of radiance & glow" },
+        { label: "Fine lines / Aging", value: "Aging", icon: <Clock size={22} />, desc: "Early signs of aging" },
+        { label: "Sensitivity", value: "Sensitivity", icon: <Shield size={22} />, desc: "Redness, irritation" }
+      ]
+    }]
   },
   {
-    step: 4,
-    title: "Habits",
-    icon: <Clock size={20} />,
-    questions: [
-      {
-        id: 'q7',
-        text: "How much sleep do you get?",
-        options: [
-          { label: "Less than 6 hours", value: "Low", icon: <Moon size={24}/> },
-          { label: "6–8 hours", value: "Optimal", icon: <Star size={24}/> },
-          { label: "More than 8 hours", value: "High", icon: <Heart size={24}/> }
-        ]
-      },
-      {
-        id: 'q8',
-        text: "How often do you follow a routine?",
-        options: [
-          { label: "Daily", value: "Consistent", icon: <Sparkles size={24}/> },
-          { label: "A few times a week", value: "Occasional", icon: <Clock size={24}/> },
-          { label: "Rarely / Never", value: "Rare", icon: <AlertCircle size={24}/> }
-        ]
-      }
-    ]
+    step: 4, title: "History", icon: <AlertCircle size={20} />,
+    questions: [{
+      id: 'q4', text: "How long have you had this concern?",
+      options: [
+        { label: "Less than 3 months", value: "Short-term", icon: <AlertCircle size={22} />, desc: "Recently developed" },
+        { label: "3–12 months", value: "Medium-term", icon: <Clock size={22} />, desc: "Persisting for a while" },
+        { label: "Over a year", value: "Long-term", icon: <Target size={22} />, desc: "Long-standing issue" }
+      ]
+    }]
+  },
+  {
+    step: 5, title: "Exposure", icon: <Sun size={20} />,
+    questions: [{
+      id: 'q5', text: "How much time do you spend outdoors?",
+      options: [
+        { label: "Mostly indoors", value: "Indoors", icon: <Cloud size={22} />, desc: "Work from home / indoors" },
+        { label: "1–2 hours daily", value: "Moderate", icon: <Sun size={22} />, desc: "Moderate sun exposure" },
+        { label: "3+ hours daily", value: "High exposure", icon: <Flame size={22} />, desc: "Heavy sun exposure" }
+      ]
+    }]
+  },
+  {
+    step: 6, title: "Environment", icon: <Sun size={20} />,
+    questions: [{
+      id: 'q6', text: "What best describes your climate?",
+      options: [
+        { label: "Hot & humid", value: "Humid", icon: <Droplet size={22} />, desc: "Mumbai, Chennai, Kolkata" },
+        { label: "Hot & dry", value: "Dry", icon: <Sun size={22} />, desc: "Delhi, Rajasthan, Gujarat" },
+        { label: "Cold or mixed", value: "Mixed", icon: <CloudRain size={22} />, desc: "Hills, Bangalore, Pune" }
+      ]
+    }]
+  },
+  {
+    step: 7, title: "Regeneration", icon: <Clock size={20} />,
+    questions: [{
+      id: 'q7', text: "How much sleep do you get?",
+      options: [
+        { label: "Less than 6 hours", value: "Low", icon: <Moon size={22} />, desc: "Sleep deprived" },
+        { label: "6–8 hours", value: "Optimal", icon: <Star size={22} />, desc: "Well rested" },
+        { label: "More than 8 hours", value: "High", icon: <Heart size={22} />, desc: "Plenty of rest" }
+      ]
+    }]
+  },
+  {
+    step: 8, title: "Consistency", icon: <Clock size={20} />,
+    questions: [{
+      id: 'q8', text: "How often do you follow a skincare routine?",
+      options: [
+        { label: "Daily", value: "Consistent", icon: <Sparkles size={22} />, desc: "Never miss a day" },
+        { label: "A few times a week", value: "Occasional", icon: <Clock size={22} />, desc: "Try to stay consistent" },
+        { label: "Rarely / Never", value: "Rare", icon: <AlertCircle size={22} />, desc: "Just starting out" }
+      ]
+    }]
   }
 ];
 
+const STEP_TITLES = ['Identifying Type', 'Analyzing Barrier', 'Defining Focus', 'Concern Depth', 'UV Exposure', 'Climatic Impact', 'Cellular Repair', 'Routine Habit'];
+
 const QuizSection = () => {
   const { products, addToCart, cartItems, updateQuantity, removeFromCart, setIsCartOpen } = useShop();
-
-  const [landingContent, setLandingContent] = useState({
-    heading: 'Build Your Perfect Routine, Instantly.',
-    text: 'Answer a few quick questions. Watch your personalized Shoraluxe product stack build itself in real-time as we analyze your unique skin profile.',
-    buttonText: 'Start The Quiz'
-  });
-
   const [viewState, setViewState] = useState('start');
-
-  useEffect(() => {
-    const fetchQuizData = async () => {
-      const { data: sectionData } = await supabase
-        .from('homepage_sections')
-        .select('content')
-        .eq('section_name', 'quiz')
-        .single();
-      
-      if (sectionData && sectionData.content) {
-        setLandingContent(sectionData.content);
-      }
-    };
-    fetchQuizData();
-  }, []);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeStep, setAnalyzeStep] = useState(0);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [viewState, currentStepIndex]);
 
   const startQuiz = () => setViewState('quiz');
 
   const activeStep = QUIZ_QUESTIONS[currentStepIndex];
-  const activeQuestion = activeStep?.questions[currentQIndex];
-
-  const totalQuestions = QUIZ_QUESTIONS.reduce((acc, step) => acc + step.questions.length, 0);
-  const questionsAnswered = Object.keys(answers).length;
-  const progressPercent = (questionsAnswered / totalQuestions) * 100;
-  const isFinished = questionsAnswered === totalQuestions;
 
   const handleSelectOption = (questionId, value) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 
   const handleNext = () => {
-    if (currentQIndex < activeStep.questions.length - 1) {
-      setCurrentQIndex(currentQIndex + 1);
-    } else if (currentStepIndex < QUIZ_QUESTIONS.length - 1) {
+    if (currentStepIndex < QUIZ_QUESTIONS.length - 1) {
       setCurrentStepIndex(currentStepIndex + 1);
-      setCurrentQIndex(0);
+    } else {
+      setViewState('analyzing');
+      runAnalyzeSequence();
     }
+  };
+
+  const runAnalyzeSequence = () => {
+    setAnalyzeStep(0);
+    const steps = [0, 1, 2, 3, 4];
+    steps.forEach((s, i) => {
+      setTimeout(() => {
+        setAnalyzeStep(i + 1);
+        if (i === steps.length - 1) {
+          setTimeout(() => setViewState('results'), 700);
+        }
+      }, 600 + i * 700);
+    });
   };
 
   const goBack = () => {
-    if (currentQIndex > 0) {
-      setCurrentQIndex(currentQIndex - 1);
-    } else if (currentStepIndex > 0) {
-      const prevStepIdx = currentStepIndex - 1;
-      setCurrentStepIndex(prevStepIdx);
-      setCurrentQIndex(QUIZ_QUESTIONS[prevStepIdx].questions.length - 1);
-    } else {
-      setViewState('start');
-    }
+    if (currentStepIndex > 0) setCurrentStepIndex(currentStepIndex - 1);
+    else setViewState('start');
   };
 
-  // Live calculation based on CURRENT answers
   const calculateLiveResults = () => {
     const typeAnswers = [answers.q1, answers.q2];
     let finalSkinType = 'Normal';
     if (typeAnswers.includes('Oily') && !typeAnswers.includes('Dry')) finalSkinType = 'Oily';
     if (typeAnswers.includes('Dry') && !typeAnswers.includes('Oily')) finalSkinType = 'Dry';
     if (answers.q1 === 'Combination' || answers.q2 === 'Combination') finalSkinType = 'Combination';
-    
     const typeDecided = answers.q1 || answers.q2;
     const primaryConcern = answers.q3;
-
     let recommendedProducts = [];
-
     const addProduct = (keyword) => {
+      if (!products || products.length === 0) return;
       const found = products.find(p => p.title.toLowerCase().includes(keyword.toLowerCase()));
       if (found) recommendedProducts.push(found);
     };
-
     if (typeDecided || primaryConcern) {
-      if (primaryConcern === 'Acne' || finalSkinType === 'Oily') {
-        addProduct('Salicylic Acid Face Wash');
-      } else if (primaryConcern === 'Dullness') {
-        addProduct('Vitamin C Ubtan Face Wash');
-      } else if (finalSkinType === 'Dry') {
-        addProduct('Hyaluronic Acid Hydrating gel Face wash');
-      } else {
-        addProduct('Rice Water Face Wash');
-      }
+      if (primaryConcern === 'Acne' || finalSkinType === 'Oily') addProduct('Salicylic Acid Face Wash');
+      else if (primaryConcern === 'Dullness') addProduct('Vitamin C Ubtan Face Wash');
+      else if (finalSkinType === 'Dry') addProduct('Hyaluronic Acid Hydrating gel Face wash');
+      else addProduct('Rice Water Face Wash');
     }
-
-    if (primaryConcern === 'Pigmentation' || primaryConcern === 'Dullness') {
-      addProduct('Vitamin C & Niacinamide');
-    }
-
+    if (primaryConcern === 'Pigmentation' || primaryConcern === 'Dullness') addProduct('Vitamin C & Niacinamide');
     if (typeDecided) {
-      if (finalSkinType === 'Oily' || finalSkinType === 'Combination') {
-        addProduct('Non-Sticky Moisturizer');
-      } else {
-        addProduct('Brightening day cream');
-      }
+      if (finalSkinType === 'Oily' || finalSkinType === 'Combination') addProduct('Non-Sticky Moisturizer');
+      else addProduct('Brightening day cream');
     }
-
-    if (answers.q5) {
-      addProduct('Sunscreen Cream SPF 50');
-    }
-
+    if (answers.q5) addProduct('Sunscreen Cream SPF 50');
     if (primaryConcern === 'Aging' || primaryConcern === 'Pigmentation' || (answers.q8 && answers.q8 !== 'Sensitive')) {
-      if (primaryConcern !== 'Sensitivity') {
-         addProduct('Retinol Night cream');
-      }
+      if (primaryConcern !== 'Sensitivity') addProduct('Retinol Night cream');
     }
-
     recommendedProducts = [...new Set(recommendedProducts)];
-
-    return { 
-      skinType: typeDecided ? finalSkinType : 'Evaluating...', 
-      concern: primaryConcern ? primaryConcern : 'Evaluating...', 
-      products: recommendedProducts 
+    return {
+      skinType: typeDecided ? finalSkinType : 'Evaluating...',
+      concern: primaryConcern ? primaryConcern : 'Evaluating...',
+      products: recommendedProducts
     };
   };
 
-  const handleAddAllToCart = (recommendedProds) => {
-    recommendedProds.forEach(p => addToCart(p, 1));
+  const handleAddAllToCart = (prods) => {
+    prods.forEach(p => addToCart(p, 1));
     setIsCartOpen(true);
   };
 
+  /* ─── START ─── */
   if (viewState === 'start') {
     return (
-      <section className="quiz-landing-sec">
-        <div className="ql-container">
-          <div className="ql-content">
-            <span className="glow-badge"><Sparkles size={14}/> Live AI Analysis</span>
-            <h2>{landingContent.heading}</h2>
-            <p>{landingContent.text}</p>
-            <button className="q-start-btn pulse-glow" onClick={startQuiz}>
-              {landingContent.buttonText} <ArrowRight size={20} />
+      <section className="qs-start">
+        {/* Background orbs */}
+        <div className="qs-orb qs-orb--1" />
+        <div className="qs-orb qs-orb--2" />
+        <div className="qs-orb qs-orb--3" />
+
+        <div className="qs-start-inner">
+          {/* Left content */}
+          <div className="qs-start-left">
+            <span className="qs-eyebrow">
+              <Zap size={12} /> RADIANCE ANALYST™ &nbsp;·&nbsp; PERSONALIZED FOR YOU
+            </span>
+            <h1 className="qs-start-h1">
+              Your Skin Has a<br />
+              <em>Story.</em> Let Us<br />
+              <span className="qs-h1-accent">Read It.</span>
+            </h1>
+            <p className="qs-start-desc">
+              Answer 8 quick questions. Our algorithm analyzes your skin type, environment, lifestyle &amp; concerns to build a bespoke ritual — in under 3 minutes.
+            </p>
+
+            <button className="qs-cta-btn" onClick={startQuiz}>
+              <span>Begin My Analysis</span>
+              <ArrowRight size={18} />
             </button>
+
+            <div className="qs-social-row">
+              <div className="qs-avatars">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop&crop=face" alt="u1" />
+                <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=60&h=60&fit=crop&crop=face" alt="u2" />
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop&crop=face" alt="u3" />
+                <div className="qs-avatar-more">+12k</div>
+              </div>
+              <span>Glowing faces already matched</span>
+            </div>
+
+            {/* Stat cards */}
+            <div className="qs-stat-row">
+              {[
+                { icon: <Zap size={16} />, val: '3 Min', label: 'Analysis' },
+                { icon: <Shield size={16} />, val: 'Derm', label: 'Validated' },
+                { icon: <Star size={16} />, val: '98%', label: 'Satisfaction' },
+              ].map((s, i) => (
+                <div className="qs-stat-card" key={i} style={{ animationDelay: `${0.2 + i * 0.15}s` }}>
+                  <div className="qs-stat-icon">{s.icon}</div>
+                  <div>
+                    <strong>{s.val}</strong>
+                    <span>{s.label}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="ql-image-wrap">
-            <div className="ql-glow-circle"></div>
-            <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600" alt="Shora Luxe Mode" />
-            
-            {/* Visual flair floating cards */}
+
+          {/* Right image + floating cards */}
+          <div className="qs-start-right">
+            <div className="qs-hero-img-wrap">
+              <img
+                src="/images/quiz-hero-girl.png"
+                alt="Skin Analysis"
+                className="qs-hero-img"
+              />
+              <div className="qs-img-glow" />
+
+              {/* Floating card 1 — bottom left */}
+              <div className="qs-float-card qs-float-card--bl">
+                <div className="qs-float-dot" />
+                <div>
+                  <strong>Heritage × Science</strong>
+                  <span>Ancestral remedies meet modern actives</span>
+                </div>
+              </div>
+
+              {/* Floating card 2 — top right */}
+              <div className="qs-float-card qs-float-card--tr">
+                <Sparkles size={14} className="qs-float-sparkle" />
+                <div>
+                  <strong>Live Results</strong>
+                  <span>Profile builds as you answer</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature cards below image */}
+            <div className="qs-feat-cards">
+              <div className="qs-feat-card qs-feat-card--dark">
+                <Sparkles size={24} />
+                <h4>3-Min Quiz</h4>
+                <p>Fast & precise</p>
+              </div>
+              <div className="qs-feat-card qs-feat-card--cream">
+                <Shield size={24} />
+                <h4>Derm Backed</h4>
+                <p>Expert validated</p>
+              </div>
+              <div className="qs-feat-card qs-feat-card--light">
+                <Target size={24} />
+                <h4>Indian Climate</h4>
+                <p>Built for your city</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
     );
   }
 
+  /* ─── QUIZ ─── */
+  if (viewState === 'quiz') {
+    const discoverImg = (keywords, fallback) => {
+      const found = products?.find(p => keywords.some(k => p.title.toLowerCase().includes(k.toLowerCase())));
+      return found?.img || found?.gallery?.[0] || fallback;
+    };
+    const RIGHT_IMGS = [
+      discoverImg(['wash', 'cleanser'], "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=600"),
+      discoverImg(['essence', 'water', 'toner'], "https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=600"),
+      discoverImg(['vitamin c', 'niacinamide', 'serum'], "https://images.unsplash.com/photo-1620916566398-39f1143af7be?q=80&w=600"),
+      discoverImg(['retinol', 'night'], "https://images.unsplash.com/photo-1594125355955-388e633f576c?q=80&w=600"),
+      discoverImg(['sunscreen', 'spf'], "https://images.unsplash.com/photo-1552046122-03184de85e08?q=80&w=600"),
+      discoverImg(['day cream', 'moisturizer'], "https://images.unsplash.com/photo-1570191047585-e24635293482?q=80&w=600"),
+      discoverImg(['night cream', 'repair'], "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=600"),
+      products?.[0]?.img || "https://images.unsplash.com/photo-1616671285410-0937a3424168?q=80&w=600",
+    ];
+    const RIGHT_QUOTES = [
+      '"The foundation of great skin is a clean canvas."',
+      '"Post-wash behavior reveals your barrier health."',
+      '"We target the cellular root of your concerns."',
+      '"Long-term issues need deep, sustained repair."',
+      '"Protection from UV is non-negotiable."',
+      '"Your climate defines your moisturizer texture."',
+      '"Sleep is when skin regeneration peaks."',
+      '"The best routine is one you actually follow."',
+    ];
+
+    const progress = ((currentStepIndex + 1) / QUIZ_QUESTIONS.length) * 100;
+    const canContinue = activeStep.questions.every(q => answers[q.id]);
+
+    return (
+      <section className="qs-quiz">
+        {/* Top progress bar */}
+        <div className="qs-top-bar">
+          <div className="qs-top-progress" style={{ width: `${progress}%` }} />
+        </div>
+
+        <div className="qs-quiz-inner">
+          {/* LEFT — questions */}
+          <div className="qs-quiz-left">
+            <div className="qs-quiz-header">
+              <button className="qs-back-btn" onClick={goBack}>
+                <ArrowLeft size={16} /> Back
+              </button>
+              <div className="qs-step-pill">
+                Step {currentStepIndex + 1} / {QUIZ_QUESTIONS.length}
+              </div>
+              <div className="qs-pct">{Math.round(progress)}%</div>
+            </div>
+
+            <div className="qs-q-content qs-slide-in" key={currentStepIndex}>
+              <div className="qs-q-eyebrow">{activeStep.title.toUpperCase()}</div>
+              <h2 className="qs-q-title">{STEP_TITLES[currentStepIndex]}</h2>
+              <p className="qs-q-text">{activeStep.questions[0].text}</p>
+
+              <div className={`qs-opts-grid ${activeStep.questions[0].options.length > 3 ? 'qs-opts-grid--4' : 'qs-opts-grid--3'}`}>
+                {activeStep.questions[0].options.map((opt, i) => {
+                  const sel = answers[activeStep.questions[0].id] === opt.value;
+                  return (
+                    <button
+                      key={i}
+                      className={`qs-opt ${sel ? 'qs-opt--active' : ''}`}
+                      onClick={() => handleSelectOption(activeStep.questions[0].id, opt.value)}
+                      style={{ animationDelay: `${i * 0.07}s` }}
+                    >
+                      <div className="qs-opt-icon-wrap">{opt.icon}</div>
+                      <strong className="qs-opt-label">{opt.label}</strong>
+                      <span className="qs-opt-desc">{opt.desc}</span>
+                      {sel && <span className="qs-opt-check"><CheckCircle2 size={16} /></span>}
+                      {sel && <span className="qs-opt-ripple" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="qs-quiz-footer">
+              <div className="qs-steps-dots">
+                {QUIZ_QUESTIONS.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`qs-dot ${i < currentStepIndex ? 'qs-dot--done' : i === currentStepIndex ? 'qs-dot--active' : ''}`}
+                  />
+                ))}
+              </div>
+              <button
+                className={`qs-next-btn ${canContinue ? '' : 'qs-next-btn--disabled'}`}
+                onClick={() => canContinue && handleNext()}
+              >
+                {currentStepIndex === QUIZ_QUESTIONS.length - 1 ? 'Analyze My Profile' : 'Continue'}
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </div>
+
+          {/* RIGHT — editorial */}
+          <div className="qs-quiz-right">
+            <div className="qs-editorial-img-wrap" key={currentStepIndex}>
+              <img src={RIGHT_IMGS[currentStepIndex]} alt="editorial" className="qs-editorial-img" />
+              <div className="qs-editorial-overlay">
+                <p className="qs-editorial-quote">{RIGHT_QUOTES[currentStepIndex]}</p>
+                <span className="qs-editorial-author">— SHORALUXE LABS</span>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ─── ANALYZING ─── */
+  if (viewState === 'analyzing') {
+    const ANALYZE_LINES = [
+      'Reading skin type signals...',
+      'Mapping environmental stressors...',
+      'Matching active ingredients...',
+      'Building your bespoke ritual...',
+      'Finalizing prescription...',
+    ];
+    return (
+      <section className="qs-analyzing">
+        <div className="qs-orb qs-orb--1" />
+        <div className="qs-orb qs-orb--2" />
+        <div className="qs-analyzing-box">
+          {/* Pulsing ring */}
+          <div className="qs-pulse-ring">
+            <div className="qs-pulse-inner">
+              <svg className="qs-checkmark-svg" viewBox="0 0 52 52">
+                <circle className="qs-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                <path className="qs-checkmark-path" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+              </svg>
+            </div>
+          </div>
+
+          <h2 className="qs-analyzing-title">Analysis Complete!</h2>
+          <p className="qs-analyzing-sub">
+            We've matched your unique profile with powerful regimens tailored specifically for you.
+          </p>
+
+          {/* Progress lines */}
+          <div className="qs-analyze-lines">
+            {ANALYZE_LINES.map((line, i) => (
+              <div
+                key={i}
+                className={`qs-analyze-line ${analyzeStep > i ? 'qs-analyze-line--done' : analyzeStep === i ? 'qs-analyze-line--active' : ''}`}
+              >
+                <span className="qs-analyze-icon">
+                  {analyzeStep > i ? <CheckCircle2 size={14} /> : <div className="qs-analyze-spinner" />}
+                </span>
+                <span>{line}</span>
+              </div>
+            ))}
+          </div>
+
+          <button className="qs-view-results-btn" onClick={() => setViewState('results')}>
+            View Your Results <ArrowRight size={18} />
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  /* ─── RESULTS ─── */
   const { skinType, concern, products: liveProducts } = calculateLiveResults();
+  const STEP_LABELS = ["Cleanse", "Treat", "Hydrate", "Protect", "Repair"];
+  const CARD_COLORS = ['#900b3b', '#6d3bb5', '#1a6fa0', '#0f7a5a', '#c07000'];
 
   return (
-    <section className="quiz-split-layout">
-      {/* Premium Background Orbs */}
-      <div className="quiz-ambient-orb orb-1"></div>
-      <div className="quiz-ambient-orb orb-2"></div>
-      
-      {/* LEFT TIER - THE QUIZ FORM */}
-      <div className="quiz-split-left">
-        <div className="quiz-top-bar small">
-          <button className="q-back-btn" onClick={goBack} disabled={isFinished}><ArrowLeft size={16} /> Back</button>
-          <div className="q-progress-wrap">
-            <div className="q-progress-text">Step {currentStepIndex + 1} of 4: <span>{activeStep.title}</span></div>
-            <div className="q-progress-bar">
-              <div className="q-progress-fill" style={{ width: `${progressPercent}%` }}></div>
-            </div>
+    <section className="qs-results">
+      <div className="qs-orb qs-orb--1" />
+      <div className="qs-orb qs-orb--2" />
+
+      <div className="qs-results-inner">
+        {/* Header */}
+        <div className="qs-results-header">
+          <span className="qs-eyebrow"><Sparkles size={12} /> PRESCRIPTION READY</span>
+          <h2 className="qs-results-title">Your Bespoke<br /><em>Treatment Plan</em></h2>
+          <p className="qs-results-sub">
+            Based on your <strong>{skinType.toLowerCase()}</strong> skin and <strong>{concern.toLowerCase()}</strong> concern —
+            a {liveProducts.length}-step ritual curated for you.
+          </p>
+
+          <div className="qs-profile-tags">
+            <div className="qs-profile-tag"><Droplet size={13} /> {skinType} Skin</div>
+            <div className="qs-profile-tag"><Target size={13} /> {concern.replace('-term', '')} Focus</div>
+            <div className="qs-profile-tag"><Activity size={13} /> {liveProducts.length} Steps</div>
           </div>
         </div>
 
-        {!isFinished ? (
-          <div className="quiz-question-container compact slide-in-top">
-            <div className="q-step-indicator">
-              <div className="q-step-icon large">{activeStep.icon}</div>
-            </div>
-            
-            <h3 className="q-question-text dynamic-glow">{activeQuestion.text}</h3>
-            
-            <div className="q-options-grid visual-tiles">
-              {activeQuestion.options.map((opt, idx) => {
-                const isSelected = answers[activeQuestion.id] === opt.value;
-                return (
-                  <button 
-                    key={idx} 
-                    className={`q-visual-card ${isSelected ? 'selected' : ''}`}
-                    onClick={() => handleSelectOption(activeQuestion.id, opt.value)}
-                  >
-                    <div className="q-visual-icon-wrap">
-                      {opt.icon}
-                    </div>
-                    <span className="q-visual-label">{opt.label}</span>
-                    <div className="q-visual-check"></div>
-                  </button>
-                )
-              })}
-            </div>
+        {/* Product cards */}
+        <div className="qs-prod-grid">
+          {liveProducts.map((prod, idx) => {
+            const cartItem = cartItems.find(item => item.id === prod.id);
+            const qty = cartItem ? cartItem.quantity : 0;
+            const color = CARD_COLORS[idx] || '#900b3b';
+            return (
+              <div
+                key={idx}
+                className="qs-prod-card qs-slide-in-up"
+                style={{ '--c': color, animationDelay: `${idx * 0.1}s` }}
+              >
+                {/* Top accent bar */}
+                <div className="qs-prod-bar" style={{ background: color }} />
+                {/* Step badge */}
+                <div className="qs-prod-badge" style={{ background: color }}>
+                  Step 0{idx + 1} · {STEP_LABELS[idx] || 'Ritual'}
+                </div>
+                {/* Large ghost number */}
+                <div className="qs-prod-ghost-num" style={{ color }}>0{idx + 1}</div>
 
-            {answers[activeQuestion.id] && (
-              <div className="q-next-action slide-in-top">
-                <button className="q-next-btn pulse-glow" onClick={handleNext}>
-                  {currentStepIndex === QUIZ_QUESTIONS.length - 1 && currentQIndex === activeStep.questions.length - 1 ? 'Finish' : 'Continue'} <ArrowRight size={18} />
-                </button>
-              </div>
-            )}
+                {/* Image */}
+                <div className="qs-prod-img-wrap">
+                  <img src={prod.gallery?.[0] || prod.img} alt={prod.title} />
+                  {/* Shimmer */}
+                  <div className="qs-prod-shimmer" />
+                </div>
 
-          </div>
-        ) : (
-          <div className="quiz-finished-box slide-in-bottom">
-            <Sparkles size={48} color="#907253" className="spin-icon-slow" />
-            <h2 className="dynamic-glow">Analysis Complete!</h2>
-            <p>Your personalized Indian skin profile has been locked in. Your perfect skincare regimen is waiting in the panel.</p>
-            <button className="qr-retake mt-4" onClick={() => {setAnswers({}); setCurrentStepIndex(0); setCurrentQIndex(0);}}>
-              Retake Quiz
-            </button>
-          </div>
-        )}
-      </div>
+                {/* Details */}
+                <div className="qs-prod-body">
+                  <p className="qs-prod-category" style={{ color }}>{prod.category || 'Scientifically Formulated'}</p>
+                  <h4 className="qs-prod-name">{prod.title.split('|')[0]}</h4>
+                  <p className="qs-prod-price">₹{prod.price}</p>
 
-      {/* RIGHT TIER - LIVE RECOMMENDATIONS */}
-      <div className="quiz-split-right">
-        <div className="live-results-panel">
-          <div className="lr-header">
-            <h3>Your Routine Matches</h3>
-            <span className="live-pulse">● Live</span>
-          </div>
-
-          <div className="lr-profile-tags">
-            <div className="lr-tag">
-              <Droplet size={14}/> {skinType}
-            </div>
-            <div className="lr-tag">
-              <AlertCircle size={14}/> {concern.replace('-term', '')} Focus
-            </div>
-          </div>
-
-          <div className="lr-products-feed">
-            {liveProducts.length === 0 ? (
-              <div className="lr-empty-state visual-empty">
-                <Shield size={40} className="pulse-opacity" color="#cbd5e1" />
-                <p>Awaiting data...<br/>Your routine will appear here.</p>
-              </div>
-            ) : (
-              liveProducts.map((prod, idx) => {
-                const cartItem = cartItems.find(item => item.id === prod.id);
-                const qty = cartItem ? cartItem.quantity : 0;
-                
-                return (
-                  <div className="lr-prod-card slide-in-right visual-card" key={idx} style={{animationDelay: `${idx * 0.1}s`}}>
-                    <img src={prod.gallery?.[0] || prod.img} alt={prod.title} />
-                    <div className="lr-det">
-                      <h4>{prod.title.split('|')[0]}</h4>
-                      <span>₹{prod.price}</span>
-                    </div>
+                  <div className="qs-prod-actions">
                     {qty === 0 ? (
-                      <button className="lr-add-btn" onClick={() => { addToCart(prod, 1); setIsCartOpen(true); }}>
-                        Add
+                      <button
+                        className="qs-add-btn"
+                        style={{ '--c': color }}
+                        onClick={() => { addToCart(prod, 1); setIsCartOpen(true); }}
+                      >
+                        Add to Ritual
                       </button>
                     ) : (
-                      <div className="lr-qty-controls">
-                        <button onClick={() => {
-                          if (qty === 1) removeFromCart(prod.id);
-                          else updateQuantity(prod.id, qty - 1);
-                        }}>-</button>
+                      <div className="qs-qty-ctrl">
+                        <button onClick={() => { if (qty === 1) removeFromCart(prod.id); else updateQuantity(prod.id, qty - 1); }}>−</button>
                         <span>{qty}</span>
                         <button onClick={() => updateQuantity(prod.id, qty + 1)}>+</button>
                       </div>
                     )}
                   </div>
-                );
-              })
-            )}
-          </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
-          {isFinished && liveProducts.length > 0 && (
-            <div className="lr-footer slide-in-bottom">
-              <button className="qr-cta-btn primary full pulse-glow" onClick={() => handleAddAllToCart(liveProducts)}>
-                <ShoppingBag size={18}/> Claim Full Routine
-              </button>
-            </div>
-          )}
+        {/* Footer */}
+        <div className="qs-results-footer">
+          <div className="qs-total-block">
+            <span>Total Ritual Value</span>
+            <strong>₹{liveProducts.reduce((a, p) => a + (p.price || 0), 0)}</strong>
+          </div>
+          <button className="qs-adopt-btn" onClick={() => handleAddAllToCart(liveProducts)}>
+            <ShoppingBag size={18} /> Adopt Full Ritual
+          </button>
+          <button className="qs-retake-btn" onClick={() => { setAnswers({}); setCurrentStepIndex(0); setViewState('quiz'); }}>
+            <Activity size={14} /> Re-Calculate My Profile
+          </button>
         </div>
       </div>
-
     </section>
   );
 };
