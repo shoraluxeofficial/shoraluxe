@@ -60,20 +60,29 @@ const AdminUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(u => (
+              {filtered.map(u => {
+                const isDummyMobile = u.mobile && u.mobile.startsWith('+9199') && u.mobile.length === 13;
+                return (
                 <tr key={u.id}>
                   <td><strong>{u.name || 'Anonymous User'}</strong></td>
                   <td style={{ color: '#000' }}>{u.email || '-'}</td>
                   <td style={{ color: '#6b7280' }}>
-                    <span style={{ background: '#f3f4f6', padding: '0.2rem 0.5rem', borderRadius: 4, fontSize: '0.8rem' }}>
-                      {u.mobile || '-'}
+                    <span style={{ 
+                      background: isDummyMobile ? '#e0e7ff' : '#f3f4f6', 
+                      color: isDummyMobile ? '#4f46e5' : 'inherit',
+                      padding: '0.2rem 0.5rem', 
+                      borderRadius: 4, 
+                      fontSize: '0.8rem',
+                      fontWeight: isDummyMobile ? 600 : 400
+                    }}>
+                      {isDummyMobile ? 'Google OAuth' : (u.mobile || '-')}
                     </span>
                   </td>
                   <td style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
                     {u.created_at ? new Date(u.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Unknown'}
                   </td>
                 </tr>
-              ))}
+              )})}
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: '#9ca3af' }}>No users found.</td>
