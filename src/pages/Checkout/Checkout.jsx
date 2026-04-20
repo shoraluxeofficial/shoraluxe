@@ -39,11 +39,17 @@ const Checkout = () => {
     // Make sure cart sidebar is closed when entering checkout
     setIsCartOpen(false);
     
+    // Redirect if not logged in
+    if (!user) {
+      navigate('/account?redirect=checkout');
+      return;
+    }
+
     // Redirect if cart is empty
     if (cartItems.length === 0 && !success) {
       navigate('/');
     }
-  }, [cartItems, setIsCartOpen, navigate, success]);
+  }, [cartItems, setIsCartOpen, navigate, success, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

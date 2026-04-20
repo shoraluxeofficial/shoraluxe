@@ -23,7 +23,7 @@ const UserLayout = () => {
         <Outlet />
       </main>
       <CartSidebar />
-      <Footer />
+      {pathname !== '/account' && <Footer />}
     </div>
   );
 };

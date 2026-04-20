@@ -79,13 +79,6 @@ export const ShopProvider = ({ children }) => {
 
   // Actions: Cart
   const addToCart = (product, quantity = 1) => {
-    const user = localStorage.getItem('shoraluxe_user');
-    
-    if (!user) {
-      // Not logged in -> Redirect to login
-      window.location.href = '/account?redirect=' + window.location.pathname;
-      return;
-    }
 
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);

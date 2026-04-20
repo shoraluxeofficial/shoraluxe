@@ -1,7 +1,6 @@
 import React from 'react';
 import { X, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
-import { useTracking } from '../common/TrackingNotification/TrackingNotification';
 import { Link, useNavigate } from 'react-router-dom';
 import './CartSidebar.css';
 
@@ -12,10 +11,9 @@ const CartSidebar = () => {
     setIsCartOpen, 
     updateQuantity, 
     removeFromCart, 
-    cartTotal 
+    cartTotal,
+    user
   } = useShop();
-
-  const { user } = useTracking();
   const navigate = useNavigate();
 
   const handleOverlayClick = (e) => {

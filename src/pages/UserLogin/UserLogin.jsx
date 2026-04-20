@@ -240,6 +240,14 @@ const UserLogin = () => {
         <div className="user-form-panel">
           <div className="user-form-wrap">
 
+            {/* Logo */}
+            <div className="login-logo-wrap" style={{ marginBottom: '2rem' }}>
+              <Link to="/" className="logo" style={{ textDecoration: 'none', fontSize: '28px', fontWeight: '800', letterSpacing: '2px', display: 'inline-block' }}>
+                <span style={{ color: '#000' }}>SHORA</span>
+                <span style={{ color: '#888' }}>LUXE</span>
+              </Link>
+            </div>
+
             {/* EMAIL LOGIN - Primary flow */}
             <div className="anim-slide-in">
               <h2>Sign in</h2>
