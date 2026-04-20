@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, Heart, MapPin, User, Menu, X, ChevronDown, LogOut } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, ShoppingBag, User, Menu, X, ChevronDown, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useShop } from '../../../context/ShopContext';
 import './Navbar.css';
 
+const CONCERNS = [
+  { emoji: '🧼', label: 'Acne & Breakouts',          slug: 'acne-breakouts' },
+  { emoji: '✨', label: 'Pigmentation & Dark Spots',  slug: 'pigmentation-dark-spots' },
+  { emoji: '🌟', label: 'Dullness & Uneven Tone',     slug: 'dullness-uneven-tone' },
+  { emoji: '⏳', label: 'Anti‑Aging & Fine Lines',    slug: 'anti-aging-fine-lines' },
+  { emoji: '🌿', label: 'Sensitivity & Redness',      slug: 'sensitivity-redness' },
+  { emoji: '💧', label: 'Dryness & Dehydration',      slug: 'dryness-dehydration' },
+  { emoji: '🫧', label: 'Oily Skin & Pore Control',   slug: 'oily-skin-pore-control' },
+  { emoji: '☀️', label: 'Sun Protection',              slug: 'sun-protection' },
+];
+
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [concernOpen, setConcernOpen] = useState(false);
   const { cartCount, setIsCartOpen, user, setUser } = useShop();
   const navigate = useNavigate();
 
@@ -51,17 +63,22 @@ const Navbar = () => {
               <li><Link to="/">Home</Link></li>
               <li><Link to="/shop">Shop All</Link></li>
               <li className="nav-dropdown-wrapper">
-                <a href="#" className="nav-dropdown-trigger">
+                <a href="#concern" className="nav-dropdown-trigger" onClick={e => e.preventDefault()}>
                   Shop by Concern <ChevronDown size={14} className="dropdown-arrow" />
                 </a>
-                <ul className="nav-dropdown-menu">
-                  <li><Link to="/shop?concern=age-protection">Age-Protection</Link></li>
-                  <li><Link to="/shop?concern=acne">Acne & Blemishes</Link></li>
-                  <li><Link to="/shop?concern=oily">Oily & Congested Skin</Link></li>
-                  <li><Link to="/shop?concern=dry">Dry & Dehydrated</Link></li>
-                  <li><Link to="/shop?concern=brightening">Brightening & Depigmentation</Link></li>
-                  <li><Link to="/shop?concern=suncare">Suncare</Link></li>
-                </ul>
+                <div className="nav-dropdown-menu nav-dropdown-concern">
+                  <p className="dropdown-section-label">Choose your skin concern</p>
+                  <ul className="concern-dropdown-grid">
+                    {CONCERNS.map(c => (
+                      <li key={c.slug}>
+                        <Link to={`/shop?concern=${c.slug}`}>
+                          <span className="concern-dd-emoji">{c.emoji}</span>
+                          <span className="concern-dd-label">{c.label}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </li>
               <li><Link to="/track-order">Track Order</Link></li>
               <li><Link to="/quiz">Glow Up Quiz</Link></li>
@@ -127,6 +144,32 @@ const Navbar = () => {
           <ul className="mobile-links">
             <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
             <li><Link to="/shop" onClick={() => setMenuOpen(false)}>Shop All</Link></li>
+
+            {/* Shop by Concern accordion */}
+            <li className="mobile-concern-accordion">
+              <button
+                className="mobile-concern-trigger"
+                onClick={() => setConcernOpen(!concernOpen)}
+              >
+                Shop by Concern
+                <ChevronDown size={16} className={`mobile-chevron ${concernOpen ? 'open' : ''}`} />
+              </button>
+              {concernOpen && (
+                <ul className="mobile-concern-list">
+                  {CONCERNS.map(c => (
+                    <li key={c.slug}>
+                      <Link
+                        to={`/shop?concern=${c.slug}`}
+                        onClick={() => { setMenuOpen(false); setConcernOpen(false); }}
+                      >
+                        <span>{c.emoji}</span> {c.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+
             <li><Link to="/track-order" onClick={() => setMenuOpen(false)}>Track Order</Link></li>
             <li><Link to="/quiz" onClick={() => setMenuOpen(false)}>Glow Up Quiz</Link></li>
             <li><Link to="/account" onClick={() => setMenuOpen(false)}>My Account</Link></li>

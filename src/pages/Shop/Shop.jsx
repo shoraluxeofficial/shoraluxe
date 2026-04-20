@@ -5,14 +5,28 @@ import { useShop } from '../../context/ShopContext';
 import './Shop.css';
 
 const CONCERNS = [
-  { id: 'all', label: 'All Products' },
-  { id: 'suncare', label: 'Suncare' },
-  { id: 'acne', label: 'Acne & Blemishes' },
-  { id: 'dry', label: 'Dry & Dehydrated' },
-  { id: 'brightening', label: 'Brightening' },
-  { id: 'age-protection', label: 'Age Protection' },
-  { id: 'oily', label: 'Oily Skin' },
+  { id: 'all',                    label: 'All Products',              emoji: '🛍️' },
+  { id: 'acne-breakouts',         label: 'Acne & Breakouts',          emoji: '🧼' },
+  { id: 'pigmentation-dark-spots',label: 'Pigmentation & Dark Spots', emoji: '✨' },
+  { id: 'dullness-uneven-tone',   label: 'Dullness & Uneven Tone',    emoji: '🌟' },
+  { id: 'anti-aging-fine-lines',  label: 'Anti-Aging & Fine Lines',   emoji: '⏳' },
+  { id: 'sensitivity-redness',    label: 'Sensitivity & Redness',     emoji: '🌿' },
+  { id: 'dryness-dehydration',    label: 'Dryness & Dehydration',     emoji: '💧' },
+  { id: 'oily-skin-pore-control', label: 'Oily Skin & Pore Control',  emoji: '🫧' },
+  { id: 'sun-protection',         label: 'Sun Protection',            emoji: '☀️' },
 ];
+
+// Exact product title keywords per concern (matches ShopByConcern section)
+const CONCERN_KEYWORDS = {
+  'acne-breakouts':          ['salicylic', 'charcoal', 'ubtan', 'non sticky moisturizer', 'non-sticky moisturizer', 'sunscreen'],
+  'pigmentation-dark-spots': ['vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'ubtan', 'rice water', 'sunscreen'],
+  'dullness-uneven-tone':    ['vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'ubtan', 'rice water', 'hyaluronic acid hydrating', 'body lotion', 'lavender body wash'],
+  'anti-aging-fine-lines':   ['retinol', 'vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'hyaluronic acid hydrating', 'sunscreen'],
+  'sensitivity-redness':     ['rice water', 'hyaluronic acid hydrating', 'non sticky moisturizer', 'non-sticky moisturizer', 'body lotion', 'shea butter', 'lavender body wash'],
+  'dryness-dehydration':     ['non sticky moisturizer', 'non-sticky moisturizer', 'body lotion', 'shea butter', 'hyaluronic acid hydrating', 'rice water', 'retinol'],
+  'oily-skin-pore-control':  ['salicylic', 'charcoal', 'non sticky moisturizer', 'non-sticky moisturizer', 'sunscreen'],
+  'sun-protection':          ['sunscreen', 'brightening day cream'],
+};
 
 const CATEGORY_LABELS = {
   'face-wash': 'Face Washes',
@@ -90,17 +104,13 @@ const Shop = () => {
     }
 
     if (activeConcern !== 'all') {
-      result = result.filter(p => {
-        const title = p.title.toLowerCase();
-        const desc = (p.description || '').toLowerCase();
-        if (activeConcern === 'acne') return title.includes('acne') || title.includes('salicylic') || desc.includes('acne');
-        if (activeConcern === 'dry') return title.includes('moisturizer') || title.includes('hydrating') || desc.includes('dry');
-        if (activeConcern === 'brightening') return title.includes('brightening') || title.includes('vitamin c') || title.includes('ubtan');
-        if (activeConcern === 'suncare') return title.includes('sunscreen') || title.includes('spf');
-        if (activeConcern === 'age-protection') return title.includes('retinol') || title.includes('night cream');
-        if (activeConcern === 'oily') return title.includes('charcoal') || title.includes('exfoliating');
-        return true;
-      });
+      const keywords = CONCERN_KEYWORDS[activeConcern] || [];
+      if (keywords.length > 0) {
+        result = result.filter(p => {
+          const title = p.title.toLowerCase();
+          return keywords.some(kw => title.includes(kw.toLowerCase()));
+        });
+      }
     }
 
     if (activeType !== 'All') {
@@ -222,7 +232,7 @@ const Shop = () => {
               className={`concern-pill ${activeConcern === c.id && !activeCategory ? 'active' : ''}`}
               onClick={() => { setActiveConcern(c.id); setActiveCategory(''); }}
             >
-              {c.label}
+              {c.emoji && <span style={{ marginRight: '0.35rem' }}>{c.emoji}</span>}{c.label}
             </button>
           ))}
           {activeCategory && CATEGORY_LABELS[activeCategory] && (
@@ -245,7 +255,9 @@ const Shop = () => {
           {activeConcern !== 'all' && (
             <>
               <span>/</span>
-              <span className="bc-current">{CONCERNS.find(c => c.id === activeConcern)?.label}</span>
+              <span className="bc-current">
+                {CONCERNS.find(c => c.id === activeConcern)?.emoji} {CONCERNS.find(c => c.id === activeConcern)?.label}
+              </span>
             </>
           )}
         </div>
@@ -289,7 +301,7 @@ const Shop = () => {
           <div className="active-filters">
             {activeConcern !== 'all' && (
               <span className="active-chip">
-                {CONCERNS.find(c => c.id === activeConcern)?.label}
+                {CONCERNS.find(c => c.id === activeConcern)?.emoji} {CONCERNS.find(c => c.id === activeConcern)?.label}
                 <button onClick={() => setActiveConcern('all')}><X size={11} /></button>
               </span>
             )}
@@ -339,7 +351,7 @@ const Shop = () => {
                     onClick={() => { setActiveConcern(c.id); if (window.innerWidth < 768) setShowFilters(false); }}
                   >
                     <span className="filter-check">{activeConcern === c.id ? '✓' : ''}</span>
-                    {c.label}
+                    {c.emoji && <span style={{ marginRight: '0.4rem' }}>{c.emoji}</span>}{c.label}
                   </li>
                 ))}
               </ul>

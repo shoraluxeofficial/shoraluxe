@@ -1,98 +1,251 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ShopByConcern.css';
 
 const concernData = [
   {
-    id: 'anti-ageing',
-    title: 'Anti-Ageing',
-    desc: 'Minimize fine lines and restore youthful elasticity.',
-    img: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop'
+    id: 'acne-breakouts',
+    title: 'Acne & Breakouts',
+    emoji: '🧼',
+    color: '#e8f4e8',
+    accent: '#3a7d44',
+    desc: 'Unclogs pores, reduces oil, and treats active breakouts.',
+    products: [
+      { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=600' },
+      { name: 'Charcoal Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/charcoalfacewash.png?v=1761301942&width=600' },
+      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+    ]
   },
   {
-    id: 'brightening',
-    title: 'Brightening',
-    desc: 'Even out skin tone and reveal a radiant, natural glow.',
-    img: 'https://images.unsplash.com/photo-1590736962386-38703a987679?q=80&w=800&auto=format&fit=crop'
+    id: 'pigmentation-dark-spots',
+    title: 'Pigmentation & Dark Spots',
+    emoji: '✨',
+    color: '#fef9ec',
+    accent: '#c9a226',
+    desc: 'Brightens skin, fades marks, and evens out skin tone.',
+    products: [
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
+      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+    ]
   },
   {
-    id: 'dryness',
-    title: 'Dryness',
-    desc: 'Deeply hydrate and nourish thirsty, parched skin.',
-    img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800&auto=format&fit=crop'
+    id: 'dullness-uneven-tone',
+    title: 'Dullness & Uneven Tone',
+    emoji: '🌟',
+    color: '#fff8f0',
+    accent: '#e07b39',
+    desc: 'Glow-boosting, brightening & radiance-enhancing products.',
+    products: [
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
+      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
+      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=600' },
+      { name: 'Lavender Body Wash', sizes: '200ml', img: 'http://www.shoraluxe.com/cdn/shop/files/LavenderBodyWash.png?v=1761305931&width=600' },
+    ]
+  },
+  {
+    id: 'anti-aging-fine-lines',
+    title: 'Anti‑Aging & Fine Lines',
+    emoji: '⏳',
+    color: '#f3f0ff',
+    accent: '#7c5cbf',
+    desc: 'Supports collagen, smooths texture & reduces early aging.',
+    products: [
+      { name: 'Retinol Night Cream', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=600' },
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+    ]
+  },
+  {
+    id: 'sensitivity-redness',
+    title: 'Sensitivity & Redness',
+    emoji: '🌿',
+    color: '#edf7f3',
+    accent: '#2e8b6a',
+    desc: 'Gentle, soothing & barrier-supporting formulas.',
+    products: [
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
+      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=600' },
+      { name: 'Shea Butter Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11.jpg?v=1774992113&width=600' },
+      { name: 'Lavender Body Wash', sizes: '200ml', img: 'http://www.shoraluxe.com/cdn/shop/files/LavenderBodyWash.png?v=1761305931&width=600' },
+    ]
+  },
+  {
+    id: 'dryness-dehydration',
+    title: 'Dryness & Dehydration',
+    emoji: '💧',
+    color: '#eaf4fb',
+    accent: '#1a7abf',
+    desc: 'Deep hydration, nourishment & moisture-locking care.',
+    products: [
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
+      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=600' },
+      { name: 'Shea Butter Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11.jpg?v=1774992113&width=600' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
+      { name: 'Retinol Night Cream', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=600' },
+    ]
+  },
+  {
+    id: 'oily-skin-pore-control',
+    title: 'Oily Skin & Pore Control',
+    emoji: '🫧',
+    color: '#f0f7ff',
+    accent: '#2563b8',
+    desc: 'Oil-balancing, pore-clearing & mattifying products.',
+    products: [
+      { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=600' },
+      { name: 'Charcoal Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/charcoalfacewash.png?v=1761301942&width=600' },
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+    ]
   },
   {
     id: 'sun-protection',
     title: 'Sun Protection',
-    desc: 'Broad-spectrum defense against harmful UV rays.',
-    img: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca418?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'skin-repair',
-    title: 'Skin Repair',
-    desc: 'Strengthen the skin barrier and heal damage.',
-    img: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'oily',
-    title: 'Oily & Congested',
-    desc: 'Balance oil production and clear clogged pores.',
-    img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: 'sensitive',
-    title: 'Sensitive Skin',
-    desc: 'Gentle, soothing care for easily irritated skin.',
-    img: 'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?q=80&w=800&auto=format&fit=crop'
+    emoji: '☀️',
+    color: '#fff4e0',
+    accent: '#d97706',
+    desc: 'Protect from UV damage, tanning & premature aging.',
+    products: [
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
+    ]
   }
 ];
 
 const ShopByConcern = () => {
-  const [activeConcern, setActiveConcern] = useState(concernData[0]);
+  const [active, setActive] = useState(0);
+  const [hoveredProduct, setHoveredProduct] = useState(null);
+  const navigate = useNavigate();
+  const current = concernData[active];
+
+  // Show hovered product image, else show first 4 stacked
+  const featuredImg = hoveredProduct !== null
+    ? current.products[hoveredProduct]?.img
+    : current.products[0]?.img;
 
   return (
-    <section className="concern-section">
-      <div className="concern-container">
-        {/* LEFT: INTERACTIVE LIST */}
-        <div className="concern-list-side">
-          <span className="concern-top-tag">Targeted Solutions</span>
-          <h2 className="concern-main-heading">Shop by Concern</h2>
-          
-          <div className="concern-items">
-            {concernData.map((item) => (
-              <div 
-                key={item.id} 
-                className={`concern-row ${activeConcern.id === item.id ? 'active' : ''}`}
-                onMouseEnter={() => setActiveConcern(item)}
+    <section className="sbc-section">
+      {/* HEADING */}
+      <div className="sbc-heading-block">
+        <span className="sbc-eyebrow">Targeted Solutions</span>
+        <h2 className="sbc-heading">Shop by Concern</h2>
+        <p className="sbc-subheading">Select your skin concern to discover the right products for you.</p>
+      </div>
+
+      {/* CONCERN PILL TABS — wrapped for mobile horizontal scroll */}
+      <div className="sbc-tabs-wrapper">
+        <div className="sbc-tabs">
+          {concernData.map((c, idx) => (
+            <button
+              key={c.id}
+              className={`sbc-tab ${active === idx ? 'sbc-tab--active' : ''}`}
+              style={active === idx ? { '--tab-accent': c.accent, '--tab-bg': c.color } : {}}
+              onClick={() => { setActive(idx); setHoveredProduct(null); }}
+            >
+              <span className="sbc-tab-emoji">{c.emoji}</span>
+              <span className="sbc-tab-label">{c.title}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* CONTENT CARD */}
+      <div className="sbc-card" key={current.id} style={{ '--accent': current.accent, '--bg': current.color }}>
+
+        {/* LEFT: product list */}
+        <div className="sbc-card-left">
+          <div className="sbc-card-icon">{current.emoji}</div>
+          <h3 className="sbc-card-title">{current.title}</h3>
+          <p className="sbc-card-desc">{current.desc}</p>
+          <div className="sbc-divider" />
+          <p className="sbc-products-label">Recommended Products</p>
+
+          <ul className="sbc-product-list">
+            {current.products.map((p, i) => (
+              <li
+                key={i}
+                className={`sbc-product-row ${hoveredProduct === i ? 'sbc-product-row--active' : ''}`}
+                style={{ animationDelay: `${i * 0.06}s` }}
+                onMouseEnter={() => setHoveredProduct(i)}
+                onMouseLeave={() => setHoveredProduct(null)}
+                onClick={() => navigate('/shop')}
               >
-                <div className="concern-row-header">
-                  <h3 className="concern-item-title">{item.title}</h3>
-                  {activeConcern.id === item.id && (
-                    <button className="concern-action-btn">
-                      FIND MY SOLUTION
-                    </button>
-                  )}
+                {/* tiny thumbnail */}
+                <div className="sbc-row-thumb">
+                  <img src={p.img} alt={p.name} />
                 </div>
-                {activeConcern.id === item.id && (
-                  <p className="concern-item-desc animate-fadeIn">{item.desc}</p>
-                )}
-                <div className="concern-row-border"></div>
-              </div>
+                <div className="sbc-product-text">
+                  <span className="sbc-product-name">{p.name}</span>
+                  <span className="sbc-product-size">{p.sizes}</span>
+                </div>
+                <span className="sbc-product-cta">Shop →</span>
+              </li>
             ))}
-          </div>
+          </ul>
+
+          <button className="sbc-main-cta" onClick={() => navigate('/shop')}>
+            Explore All Products
+          </button>
         </div>
 
-        {/* RIGHT: DYNAMIC IMAGE */}
-        <div className="concern-image-side">
-          <div className="concern-img-frame">
-            <img 
-              src={activeConcern.img} 
-              alt={activeConcern.title} 
-              key={activeConcern.id}
-              className="concern-dynamic-img animate-scaleIn" 
+        {/* RIGHT: product image showcase */}
+        <div className="sbc-card-right">
+          {/* Background tint */}
+          <div className="sbc-right-bg" />
+
+          {/* Large featured image */}
+          <div className="sbc-featured-img-wrap">
+            <img
+              key={featuredImg}
+              src={featuredImg}
+              alt={current.title}
+              className="sbc-featured-img"
             />
-            <div className="img-overlay-brand">SHORALUXE</div>
+            {/* count badge */}
+            <div className="sbc-img-badge">
+              <span className="sbc-img-badge-num">{current.products.length}</span>
+              <span className="sbc-img-badge-label">Products</span>
+            </div>
           </div>
+
+          {/* Stacked mini thumbnails */}
+          <div className="sbc-thumb-row">
+            {current.products.slice(0, 4).map((p, i) => (
+              <div
+                key={i}
+                className={`sbc-thumb ${hoveredProduct === i ? 'sbc-thumb--active' : ''}`}
+                onMouseEnter={() => setHoveredProduct(i)}
+                onMouseLeave={() => setHoveredProduct(null)}
+                onClick={() => navigate('/shop')}
+                title={p.name}
+              >
+                <img src={p.img} alt={p.name} />
+              </div>
+            ))}
+            {current.products.length > 4 && (
+              <div className="sbc-thumb sbc-thumb-more" onClick={() => navigate('/shop')}>
+                +{current.products.length - 4}
+              </div>
+            )}
+          </div>
+
+          {/* concern label */}
+          <p className="sbc-right-label">{current.emoji} {current.title}</p>
         </div>
+
       </div>
     </section>
   );
