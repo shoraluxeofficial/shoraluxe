@@ -32,13 +32,13 @@ const AdminLayout = () => {
 
   const menuItems = [
     { path: '/admin', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
+    { path: '/admin/users', icon: <Users size={20} />, label: 'Users' },
     { path: '/admin/products', icon: <ShoppingBag size={20} />, label: 'Products' },
     { path: '/admin/orders', icon: <ClipboardList size={20} />, label: 'Orders' },
     { path: '/admin/revenue', icon: <IndianRupee size={20} />, label: 'Revenue' },
     { path: '/admin/security', icon: <ShieldCheck size={20} />, label: 'Firewall' },
     { path: '/admin/homepage', icon: <HomeIcon size={20} />, label: 'Home Page CMS' },
     { path: '/admin/reviews', icon: <MessageSquare size={20} />, label: 'Testimonials' },
-    { path: '/admin/users', icon: <Users size={20} />, label: 'Users' },
     { path: '/admin/settings', icon: <Settings size={20} />, label: 'Store Settings' },
   ];
 
