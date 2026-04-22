@@ -780,3 +780,24 @@
   .sticky-actions { width: 100%; justify-content: space-between; }
   .pd-trust-luxe { flex-direction: column; gap: 2rem; }
 }
+
+/* IDEAL FOR TAGS */
+.ideal-for-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.ideal-tag {
+  display: inline-block;
+  background: rgba(97, 28, 40, 0.07);
+  color: #611C28;
+  border: 1px solid rgba(97, 28, 40, 0.2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}

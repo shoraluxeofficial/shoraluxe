@@ -37,7 +37,6 @@ export const ShopProvider = ({ children }) => {
 
   // Fetch products from Supabase
   const fetchProducts = async () => {
-    // If env vars are missing, we stay on fallback data
     if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
       console.warn('Supabase keys missing. Using local fallback data.');
       setLoading(false);
@@ -49,20 +48,20 @@ export const ShopProvider = ({ children }) => {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .order('id', { ascending: false });
+        .eq('status', 'active')
+        .order('id', { ascending: true });
 
       if (error) throw error;
-      
-      const normalizedData = (data || []).map(normalizeProduct);
 
-      if (normalizedData.length > 0) {
-        setProducts(normalizedData);
+      if (data && data.length > 0) {
+        setProducts(data.map(normalizeProduct));
       } else {
-        setProducts([]); 
+        // Fallback to local data if Supabase table is empty
+        setProducts(fallbackProducts);
       }
     } catch (error) {
       console.error('Error fetching products:', error.message);
-      // Stay with fallbackProducts already in state
+      setProducts(fallbackProducts);
     } finally {
       setLoading(false);
     }

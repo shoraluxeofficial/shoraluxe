@@ -287,6 +287,26 @@ const ProductDetail = () => {
               {activeTab === 'description' && (
                 <div className="tab-fade-in">
                   <p>{product.description}</p>
+                  {product.benefits && (
+                    <div className="best-for-luxe" style={{marginTop: '12px'}}>
+                      <strong>Key Benefits:</strong> {product.benefits}
+                    </div>
+                  )}
+                  {product.idealFor && product.idealFor.length > 0 && (
+                    <div style={{marginTop: '14px'}}>
+                      <strong style={{fontSize: '0.85rem', color: '#611C28', display: 'block', marginBottom: '8px'}}>Ideal For:</strong>
+                      <div className="ideal-for-tags">
+                        {product.idealFor.map((tag, i) => (
+                          <span key={i} className="ideal-tag">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {product.netQuantity && (
+                    <div className="best-for-luxe" style={{marginTop: '10px'}}>
+                      <strong>Net Quantity:</strong> {product.netQuantity}
+                    </div>
+                  )}
                   <div className="best-for-luxe"><strong>Recommended for:</strong> {product.bestFor}</div>
                 </div>
               )}
@@ -300,6 +320,11 @@ const ProductDetail = () => {
                       </li>
                     ))}
                   </ul>
+                  {product.cautions && (
+                    <div className="best-for-luxe" style={{marginTop: '14px', borderLeft: '3px solid #C5A028', paddingLeft: '10px'}}>
+                      <strong>⚠️ Cautions:</strong> {product.cautions}
+                    </div>
+                  )}
                 </div>
               )}
               {activeTab === 'ingredients' && (
