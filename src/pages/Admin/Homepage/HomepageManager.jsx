@@ -214,15 +214,20 @@ const HomepageManager = () => {
     const renderVisualUpload = (field, label, isMobile = false) => {
       const isUploading = uploading === field;
       const url = d[field] || '';
+      const isVideo = url.toLowerCase().endsWith('.mp4');
       return (
         <div className="hm-visual-upload">
           <label>{label}</label>
           <label className={`hm-visual-preview ${url ? 'has-img' : ''} ${isMobile ? 'hm-mobile-preview' : ''}`}>
-            <input type="file" accept="image/*" hidden onChange={e => handleUpload(e, field)} />
+            <input type="file" accept="image/*,video/mp4" hidden onChange={e => handleUpload(e, field)} />
             {url ? (
               <>
-                <img src={url} alt="" />
-                <div className="hm-visual-overlay"><Upload size={16}/> Change Image</div>
+                {isVideo ? (
+                  <video src={url} muted loop playsInline autoPlay style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <img src={url} alt="" />
+                )}
+                <div className="hm-visual-overlay"><Upload size={16}/> Change Media</div>
               </>
             ) : (
               <div className="hm-visual-empty">
@@ -238,7 +243,7 @@ const HomepageManager = () => {
             )}
           </label>
           <div className="hm-visual-input-group">
-             <input type="text" value={url} onChange={e => upd(field, e.target.value)} placeholder="Or paste image URL here..." />
+             <input type="text" value={url} onChange={e => upd(field, e.target.value)} placeholder="Or paste media URL here..." />
           </div>
         </div>
       );
@@ -415,20 +420,29 @@ const HomepageManager = () => {
       <div className="hm-card" key={index}>
         <div className="hm-card-preview">
           <div className="hm-dual-preview">
-            <div className="hm-preview-item">
-              <span className="hm-preview-label">Desktop</span>
-              {(item.desktopImg || item.img) 
-                ? <img src={item.desktopImg || item.img} alt="" className="hm-card-img" />
-                : <div className="hm-card-no-img"><ImageIcon size={14}/></div>
-              }
-            </div>
-            <div className="hm-preview-item">
-              <span className="hm-preview-label">Mobile</span>
-              {(item.mobileImg || item.img) 
-                ? <img src={item.mobileImg || item.img} alt="" className="hm-card-img mobile-v" />
-                : <div className="hm-card-no-img"><ImageIcon size={14}/></div>
-              }
-            </div>
+            {[ 
+              { key: 'desktopImg', label: 'Desktop' }, 
+              { key: 'mobileImg', label: 'Mobile', class: 'mobile-v' } 
+            ].map(m => {
+              const url = item[m.key] || item.img;
+              const isVid = url?.toLowerCase().endsWith('.mp4');
+              return (
+                <div className="hm-preview-item" key={m.key}>
+                  <span className="hm-preview-label">{m.label}</span>
+                  {url ? (
+                    isVid ? (
+                      <div className={`hm-card-img ${m.class || ''}`} style={{ overflow: 'hidden' }}>
+                        <video src={url} muted playsInline style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                      </div>
+                    ) : (
+                      <img src={url} alt="" className={`hm-card-img ${m.class || ''}`} />
+                    )
+                  ) : (
+                    <div className="hm-card-no-img"><ImageIcon size={14}/></div>
+                  )}
+                </div>
+              );
+            })}
           </div>
           <div className="hm-card-info">
             <p className="hm-card-title">{item.alt || 'Untitled Slide'}</p>

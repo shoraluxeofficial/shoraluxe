@@ -65,14 +65,39 @@ const Hero = () => {
           {bannerData.map((banner) => (
             <a key={banner.id} href={banner.url} className="hero-slide-link">
               <div className="hero-slide-item">
-                <picture>
-                  <source media="(max-width: 768px)" srcSet={banner.mobileImg || banner.img} />
-                  <img 
-                    src={banner.desktopImg || banner.img} 
-                    alt={banner.alt} 
-                    className="hero-slide-img" 
-                  />
-                </picture>
+                {/* Desktop Media */}
+                <div className="hero-media-desktop">
+                  {(banner.desktopImg || banner.img)?.toLowerCase().endsWith('.mp4') ? (
+                    <video 
+                      src={banner.desktopImg || banner.img} 
+                      autoPlay muted loop playsInline 
+                      className="hero-slide-img" 
+                    />
+                  ) : (
+                    <img 
+                      src={banner.desktopImg || banner.img} 
+                      alt={banner.alt} 
+                      className="hero-slide-img" 
+                    />
+                  )}
+                </div>
+
+                {/* Mobile Media */}
+                <div className="hero-media-mobile">
+                  {(banner.mobileImg || banner.img)?.toLowerCase().endsWith('.mp4') ? (
+                    <video 
+                      src={banner.mobileImg || banner.img} 
+                      autoPlay muted loop playsInline 
+                      className="hero-slide-img" 
+                    />
+                  ) : (
+                    <img 
+                      src={banner.mobileImg || banner.img} 
+                      alt={banner.alt} 
+                      className="hero-slide-img" 
+                    />
+                  )}
+                </div>
                 <div className="hero-hover-overlay"></div>
               </div>
             </a>
