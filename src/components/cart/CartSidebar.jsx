@@ -31,6 +31,19 @@ const CartSidebar = () => {
     }
   };
 
+  const formatSize = (sizeStr) => {
+    if (!sizeStr) return '';
+    try {
+      const parsed = JSON.parse(sizeStr);
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].label) {
+        return parsed[0].label;
+      }
+    } catch (e) {
+      return sizeStr; // Not JSON, return as is
+    }
+    return sizeStr;
+  };
+
   return (
     <div className={`cart-overlay ${isCartOpen ? 'open' : ''}`} onClick={handleOverlayClick}>
       <aside className={`cart-sidebar ${isCartOpen ? 'open' : ''}`}>
@@ -71,7 +84,7 @@ const CartSidebar = () => {
                       <h4 className="cart-item-title">{item.title.split('|')[0]}</h4>
                       <span className="cart-item-price">₹{item.price * item.quantity}</span>
                     </div>
-                    <span className="cart-item-size">{item.size}</span>
+                    <span className="cart-item-size">{formatSize(item.size)}</span>
                     <div className="cart-item-control-row">
                       <div className="cart-qty-ctrl">
                         <button onClick={() => updateQuantity(item.id, item.quantity - 1)}><Minus size={14} /></button>

@@ -94,7 +94,16 @@ const Products = () => {
                       <div className="product-desc-row">
                         <span>{product.benefit}</span>
                         <span className="pipe">|</span>
-                        <span>{product.size && product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size?.split(':')[0]}</span>
+                        <span>{(() => {
+                          if (!product.size) return '';
+                          try {
+                            const parsed = JSON.parse(product.size);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                              return parsed[0].label + (parsed.length > 1 ? ' & More' : '');
+                            }
+                          } catch (e) {}
+                          return product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size?.split(':')[0];
+                        })()}</span>
                       </div>
 
                       <div className="product-offer-text">{product.offer}</div>

@@ -487,7 +487,16 @@ const Shop = () => {
 
                         {product.size && (
                           <span className="product-size">
-                            {product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size.split(':')[0]}
+                            {(() => {
+                              try {
+                                const parsed = JSON.parse(product.size);
+                                if (Array.isArray(parsed) && parsed.length > 0) {
+                                  return parsed[0].label + (parsed.length > 1 ? ' & More' : '');
+                                }
+                              } catch (e) {}
+                              // Fallback to old logic
+                              return product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size.split(':')[0];
+                            })()}
                           </span>
                         )}
 

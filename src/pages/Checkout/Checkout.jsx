@@ -147,6 +147,19 @@ const Checkout = () => {
 
   const finalTotal = Math.max(0, cartTotal - discountAmount + shippingFee);
 
+  const formatSize = (sizeStr) => {
+    if (!sizeStr) return '';
+    try {
+      const parsed = JSON.parse(sizeStr);
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].label) {
+        return parsed[0].label;
+      }
+    } catch (e) {
+      return sizeStr; // Not JSON, return as is
+    }
+    return sizeStr;
+  };
+
 
   const fetchAddressByPincode = async (pin) => {
     if (pin.length !== 6) return;
@@ -595,7 +608,7 @@ const Checkout = () => {
                 </div>
                 <div className="s-info">
                   <h4>{item.title.split('|')[0]}</h4>
-                  <p>{item.size}</p>
+                  <p>{formatSize(item.size)}</p>
                 </div>
                 <div className="s-price">₹{(item.price * item.quantity).toLocaleString('en-IN')}</div>
               </div>
