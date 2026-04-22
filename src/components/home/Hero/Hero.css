@@ -143,7 +143,7 @@
   }
   .hero-slider-wrap {
     height: auto;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     border-radius: 16px;
   }
   .slider-arrow {

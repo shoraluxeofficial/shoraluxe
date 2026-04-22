@@ -727,7 +727,7 @@
 }
 
 .hm-mobile-preview {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   width: 100%;
   max-width: 190px;
   margin: 0;
