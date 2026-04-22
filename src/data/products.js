@@ -9,23 +9,30 @@ export const productsData = [
     offer: 'Acne Control Formula',
     rating: 4.8,
     reviewsCount: 124,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=1000',
+    img: '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0001.jpg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=1000',
-      'http://www.shoraluxe.com/cdn/shop/files/poster_1-02.png?v=1768804164&width=1000'
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0001.jpg',
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0012.jpg',
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0019.jpg',
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0020.jpg',
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0022.jpg',
+      '/products images/Salicylic acid face wash 100gm/Copy of IMG-20260112-WA0001.jpg',
+      '/products images/Salicylic acid face wash 100gm/Copy of IMG-20260112-WA0012.jpg',
+      '/products images/Salicylic acid face wash 100gm/Copy of IMG-20260112-WA0019.jpg'
     ],
     badge: 'BESTSELLER',
     isNew: true,
     isBestseller: true,
     size: JSON.stringify([
       { label: '50ml', price: 319, mrp: 399, discount: '20% off', usp: '' },
-      { label: '100ml', price: 379, mrp: 479, discount: '21% off', usp: 'Best Value' }
+      { label: '100ml', price: 379, mrp: 479, discount: '21% off', usp: 'Best Value' },
+      { label: 'Pack of 2', price: 549, mrp: 798, discount: '31% off', usp: 'Saver Pack', badge: 'POPULAR' }
     ]),
     netQuantity: '100 ml, 50ml, pack of 2',
     benefit: 'Acne & Pore Clearing',
     skinType: 'Oily & Acne-Prone',
     idealFor: ['Oily skin', 'Acne-prone skin', 'Combination skin', 'Blackheads & whiteheads', 'Clogged or enlarged pores'],
-    description: 'Reveal clearer, smoother skin with our Salicylic Acid Face Wash.\nSpecially formulated to target excess oil, clogged pores, and breakouts, this cleanser penetrates deep to remove impurities, exfoliate dead skin cells, and prevent acne-causing buildup. Enriched with gentle soothing agents, it balances the skin without stripping moisture, leaving your complexion feeling fresh, calm, and refined.\nPerfect for oily, acne-prone, and combination skin types, it promotes a visibly clearer, healthier-looking glow with every wash.',
+    description: 'Reveal clearer, smoother skin with our Salicylic Acid Face Wash. Specially formulated to target excess oil, clogged pores, and breakouts, this cleanser penetrates deep to remove impurities, exfoliate dead skin cells, and prevent acne-causing buildup. Enriched with gentle soothing agents, it balances the skin without stripping moisture, leaving your complexion feeling fresh, calm, and refined. Perfect for oily, acne-prone, and combination skin types, it promotes a visibly clearer, healthier-looking glow with every wash.',
     benefits: 'A daily use foaming cleanser formulated with 2% Salicylic Acid to remove excess oil, unclog pores, and prevent acne. Ideal for oily and acne-prone skin types.',
     howToUse: [
       'Wet your face, take a generous amount of the face wash and apply, gently massage on the face and then rinse off.'
@@ -37,27 +44,32 @@ export const productsData = [
   {
     id: 2,
     brand: 'SHORALUXE',
-    title: 'Charcoal Face wash | Daily Exfoliating & Brightening Cleanser',
+    title: 'Charcoal Face wash| Daily Exfoliating & Brightening Cleanser| Pollution clear & Removes the dirt| with Activated Charcoal, Tea Tree Oil, Salicylic Acid, Aloe Vera Extract| Suitable for all skin types',
     price: 459,
-    originalPrice: 559,
-    discount: '18% off',
+    originalPrice: 499,
+    discount: '8% off',
     offer: 'Pollution Clear & Detox',
     rating: 4.5,
     reviewsCount: 145,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/charcoalfacewash.png?v=1761301942&width=1000',
+    img: '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.34.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/charcoalfacewash.png?v=1761301942&width=1000'
+      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.34.jpeg',
+      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.34-2.jpeg',
+      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.35.jpeg',
+      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.35-4.jpeg',
+      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.37-8.jpeg'
     ],
     badge: 'NEW',
     isNew: true,
     isBestseller: false,
     size: JSON.stringify([
-      { label: '80ml', price: 459, mrp: 559, discount: '18% off', usp: '' }
+      { label: '80ml', price: 459, mrp: 499, discount: '8% off', usp: '' },
+      { label: 'Pack of 2', price: 799, mrp: 1118, discount: '28% off', usp: 'Super Saver', badge: 'SAVE BIG' }
     ]),
     netQuantity: '80 ml | 2.70 fl. oz',
-    benefit: 'Deeply cleanses and controls excess oil',
-    skinType: 'Suitable for oily and combination skin',
-    idealFor: ['Oily skin', 'pollution-prone skin', 'uneven tone', 'deep cleansing'],
+    benefit: 'Pollution & Oil Control',
+    skinType: 'All Skin Types',
+    idealFor: ['Oily skin', 'pollution-prone skin', 'uneven tone', 'and deep cleansing'],
     description: 'Experience a refreshing detox with our Charcoal Face Wash, designed to deeply cleanse and revive the skin. Activated Charcoal attracts and removes pollutants and toxins, while Tea Tree Oil and Salicylic Acid work together to reduce acne, refine pores, and prevent breakouts. Aloe Vera Extract provides a hydrating and soothing finish, ensuring the skin feels clean yet comfortable. A perfect daily cleanser for clearer, healthier, and more refined-looking skin.',
     benefits: 'Charcoal Face Wash helps to clean impurities from pores. Deeply cleanses and controls excess oil',
     howToUse: [
@@ -70,22 +82,23 @@ export const productsData = [
   {
     id: 3,
     brand: 'SHORALUXE',
-    title: 'Rice Water Face Wash | for Even Skin Tone & Glass Skin',
+    title: 'Rice Water Face Wash |for Even Skin Tone & Glass Skin| with Rice Water & Niacinamide |Suitable for skin types',
     price: 459,
-    originalPrice: 559,
-    discount: '18% off',
-    offer: 'Glass Skin Glow',
-    rating: 4.8,
-    reviewsCount: 112,
+    originalPrice: 499,
+    discount: '8% off',
+    offer: 'Even Skin Tone',
+    rating: 4.6,
+    reviewsCount: 92,
     img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=1000',
     gallery: [
       'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=1000'
     ],
-    badge: 'BESTSELLER',
-    isNew: false,
-    isBestseller: true,
+    badge: 'NEW',
+    isNew: true,
+    isBestseller: false,
     size: JSON.stringify([
-      { label: '80ml', price: 459, mrp: 559, discount: '18% off', usp: '' }
+      { label: '80ml', price: 459, mrp: 499, discount: '8% off', usp: '' },
+      { label: 'Pack of 2', price: 799, mrp: 1118, discount: '28% off', usp: 'Glow Bundle', badge: 'BEST DEAL' }
     ]),
     netQuantity: '80 ml | 2.70 fl. oz',
     benefit: 'Even Skin Tone',
@@ -103,27 +116,31 @@ export const productsData = [
   {
     id: 4,
     brand: 'SHORALUXE',
-    title: 'Vitamin C Ubtan Face Wash | Illuminating & Brightening',
+    title: 'Vitamin C Ubtan Face Wash| for Illuminating & Brightening Skin tone, Removes tan| with Vitamin C &Turmeric extract| Made for All skin types',
     price: 459,
-    originalPrice: 559,
-    discount: '18% off',
-    offer: 'Tan Removal',
+    originalPrice: 499,
+    discount: '8% off',
+    offer: 'Illuminating & Brightening',
     rating: 4.6,
     reviewsCount: 92,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=1000',
+    img: '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.35-2.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=1000'
+      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.35-2.jpeg',
+      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.35-3.jpeg',
+      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.36-2.jpeg',
+      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.37.jpeg'
     ],
     badge: 'NEW',
     isNew: true,
     isBestseller: false,
     size: JSON.stringify([
-      { label: '80ml', price: 459, mrp: 559, discount: '18% off', usp: '' }
+      { label: '80ml', price: 459, mrp: 499, discount: '8% off', usp: '' },
+      { label: 'Pack of 2', price: 799, mrp: 1118, discount: '28% off', usp: 'Duo Pack', badge: 'SAVINGS' }
     ]),
     netQuantity: '80 ml | 2.70 fl. oz',
-    benefit: 'Illuminating Glow',
-    skinType: 'Suitable for all skin types (oily, dry, sensitive, combination)',
-    idealFor: ['Skin illumination', 'uneven tone', 'dullness', 'restoring natural glow'],
+    benefit: 'Skin Illumination',
+    skinType: 'All Skin Types',
+    idealFor: ['Skin illumination', 'uneven tone', 'dullness', 'and restoring natural glow'],
     description: 'Reveal a natural golden glow with our Vitamin C Ubtan Face Wash, a luxurious blend of Vitamin C and Turmeric Extract. This nourishing formula cleanses deeply while energizing the skin and enhancing brightness. Vitamin C uplifts dull skin and improves clarity, while Turmeric helps reduce tan, even the complexion, and soothe the skin. With every wash, your face feels fresh, soft, and radiantly illuminated—true beauty, powered by tradition and nature.',
     benefits: 'Vitamin C Ubtan Face Wash helps to enhance natural radiance, remove dirt and impurities, and helps to brighten dull skin, evens out skin tone, and leaves the skin fresh, soft, and glowing.',
     howToUse: [
@@ -136,27 +153,30 @@ export const productsData = [
   {
     id: 5,
     brand: 'SHORALUXE',
-    title: 'Hyaluronic Acid Hydrating gel Face wash',
+    title: 'Hyaluronic Acid Hydrating gel Face wash| for Smooth & Hydrated Skin | with Hyaluronic Acid, Glycerin, Centella Asiatica Extract | Suitable for all skin types',
     price: 459,
-    originalPrice: 559,
-    discount: '18% off',
-    offer: 'Deep Hydration',
+    originalPrice: 499,
+    discount: '8% off',
+    offer: 'Smooth & Hydrated Skin',
     rating: 4.7,
     reviewsCount: 88,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=1000',
+    img: '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=1000'
+      '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02.jpeg',
+      '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02-2.jpeg',
+      '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02-3.jpeg'
     ],
     badge: 'HYDRATING',
     isNew: false,
     isBestseller: false,
     size: JSON.stringify([
-      { label: '80ml', price: 459, mrp: 559, discount: '18% off', usp: '' }
+      { label: '80ml', price: 459, mrp: 499, discount: '8% off', usp: '' },
+      { label: 'Pack of 2', price: 799, mrp: 1118, discount: '28% off', usp: 'Moisture Duo', badge: 'HYDRATION+' }
     ]),
     netQuantity: '80 ml | 2.70 fl. oz',
-    benefit: 'Deep Hydration',
-    skinType: 'Suitable for all skin types',
-    idealFor: ['Dryness-prone skin', 'sensitive skin', 'maintaining hydration', 'skin barrier health'],
+    benefit: 'Hydrates & protects skin barrier',
+    skinType: 'All Skin Types',
+    idealFor: ['Dryness-prone skin', 'sensitive skin', 'maintaining hydration and skin barrier health'],
     description: 'Give your skin a refreshing boost of hydration with our Hyaluronic Acid Hydrating Gel Face Wash. Infused with Hyaluronic Acid, Glycerin, and Centella Asiatica Extract, this gentle cleanser removes dirt and impurities without stripping natural moisture. Hyaluronic Acid and Glycerin help lock in hydration, leaving the skin soft, plump, and healthy-looking, while Centella Asiatica helps soothe and calm irritation. Suitable for daily use and all skin types, especially dry and sensitive skin.',
     benefits: 'Gently cleanses • Hydrates & protects skin barrier • Prevents dryness, irritation, roughness, tightness • Maintains healthy skin barrier',
     howToUse: [
@@ -169,29 +189,32 @@ export const productsData = [
   {
     id: 6,
     brand: 'SHORALUXE',
-    title: 'Vitamin C & Niacinamide Face Serum',
+    title: 'Vitamin C & Niacinamide Face Serum | 30 ml',
     price: 359,
-    originalPrice: 399,
-    discount: '10% off',
-    offer: 'Illuminating Glow',
+    originalPrice: 459,
+    discount: '22% off',
+    offer: 'Radiant & Youthful Glow',
     rating: 4.3,
     reviewsCount: 128,
-    img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
+    img: '/products images/Vitamun C & Niacinamide serum 30ml/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
     gallery: [
-      '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
-      '/Vitamin C & Niacinamide Face Serum/0B854F8D-9D8D-4F9F-A7C3-586B00A2921C.png',
-      '/Vitamin C & Niacinamide Face Serum/22D1B635-B0B4-4642-801F-3D1F8EFAEE80.png',
-      '/Vitamin C & Niacinamide Face Serum/3C3E2161-147D-4A76-ADFF-64471E27912C.png'
+      '/products images/Vitamun C & Niacinamide serum 30ml/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
+      '/products images/Vitamun C & Niacinamide serum 30ml/0B854F8D-9D8D-4F9F-A7C3-586B00A2921C.png',
+      '/products images/Vitamun C & Niacinamide serum 30ml/22D1B635-B0B4-4642-801F-3D1F8EFAEE80.png',
+      '/products images/Vitamun C & Niacinamide serum 30ml/3C3E2161-147D-4A76-ADFF-64471E27912C.png',
+      '/products images/Vitamun C & Niacinamide serum 30ml/491AA1B9-AB96-4170-A651-0C43BBACF160.png',
+      '/products images/Vitamun C & Niacinamide serum 30ml/50AC8D9A-E0BF-4D26-9867-1F811B25C718.png',
+      '/products images/Vitamun C & Niacinamide serum 30ml/67AE1B19-61C1-4F5C-A2D1-EAFC96DA6616.png',
+      '/products images/Vitamun C & Niacinamide serum 30ml/95D473CC-8AB3-4E45-B0E9-BF0A08A9B4E2.png'
     ],
     badge: 'GLOW',
     isNew: false,
     isBestseller: false,
     size: JSON.stringify([
-      { label: '30ml', price: 359, mrp: 399, discount: '10% off', usp: '' }
+      { label: '30ml', price: 359, mrp: 459, discount: '22% off', usp: '' },
+      { label: 'Pack of 2', price: 649, mrp: 798, discount: '18% off', usp: 'Brightening Duo', badge: 'SAVER' }
     ]),
     netQuantity: '30 ml',
-    benefit: 'Glow & Spot Correction',
-    skinType: 'Normal, Dry, Oily/Combination, Sensitive Skin',
     idealFor: ['Sun Damage', 'Blue Light Damage', 'Dullness', 'Tan'],
     description: 'Unlock your skin\'s luminous potential with our Vitamin C & Niacinamide Face Serum, a scientifically formulated powerhouse designed to transform your complexion. This advanced serum combines stabilized Vitamin C, renowned for its brightening and antioxidant properties, with niacinamide to strengthen your skin barrier and minimize pores. Together, these potent actives work synergistically to fade dark spots, even out skin tone, and restore a radiant glow that speaks to healthy, resilient skin. Lightweight and fast absorbing, this serum integrates seamlessly into any skincare routine, delivering visible results with consistent use. Experience the dual benefits of radiance and repair in every precious drop, revealing the luminous, even-toned complexion you deserve.',
     benefits: 'A skin-enhancing face serum formulated with Vitamin C and Niacinamide to reduce dark spots, boost collagen, and improve skin texture. Gives a radiant and youthful glow.',
@@ -205,26 +228,31 @@ export const productsData = [
   {
     id: 7,
     brand: 'SHORALUXE',
-    title: 'Brightening day cream with SPF | UV Rays Protection',
+    title: 'Brightening day cream with SPF| Skin Brightening| UV Rays Protection| with Niacinamide, Vitamin C, Alpha Arbutin, Ceramide NP, Sunshield | Suitable for all skin types',
     price: 559,
-    originalPrice: 659,
-    discount: '15% off',
-    offer: 'Skin Brightening',
+    originalPrice: 699,
+    discount: '20% off',
+    offer: 'Skin Brightening & UV Protection',
     rating: 4.6,
     reviewsCount: 156,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=1000',
+    img: '/products images/Brightening Day cream with spf/33FCBBA3-F820-4F42-A95F-DC7AB5415A73.png',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=1000'
+      '/products images/Brightening Day cream with spf/33FCBBA3-F820-4F42-A95F-DC7AB5415A73.png',
+      '/products images/Brightening Day cream with spf/46DC317D-CE93-416B-963C-1BD947FC7693.png',
+      '/products images/Brightening Day cream with spf/C194294A-BF8B-47B2-9A46-4973B0252D85.png',
+      '/products images/Brightening Day cream with spf/D218EF0D-F87D-4789-919C-7F0045451756.jpeg',
+      '/products images/Brightening Day cream with spf/WhatsApp Image 2026-04-14 at 19.24.36-6.jpeg'
     ],
     badge: 'SPF',
     isNew: false,
     isBestseller: true,
     size: JSON.stringify([
-      { label: '50gm', price: 559, mrp: 659, discount: '15% off', usp: '' }
+      { label: '50gm', price: 559, mrp: 699, discount: '20% off', usp: '' },
+      { label: 'Pack of 2', price: 999, mrp: 1318, discount: '24% off', usp: 'Full Day Care', badge: 'BEST VALUE' }
     ]),
     netQuantity: '50 gm | 1.76 oz',
-    benefit: 'Skin Brightening',
-    skinType: 'Normal, Dry, Oily/Combination, Sensitive Skin',
+    benefit: 'Skin Brightening & UV Protection',
+    skinType: 'All Skin Types',
     idealFor: ['Daily hydration', 'sun protection', 'skin brightening', 'anti-aging care'],
     description: 'Start your day with luminous, protected skin. Our Brightening Day Cream combines Niacinamide, Vitamin C, Alpha Arbutin, and Ceramide NP with broad-spectrum sun protection to refine, brighten, and shield the skin. This lightweight yet nourishing formula helps fade dark spots, improve clarity, support barrier strength, and guard against UV-induced pigmentation. Skin feels hydrated, supple, and beautifully radiant from morning to evening.',
     benefits: 'Brightening day cream with spf helps to hydrate, protect, and brighten the skin. It helps even out skin tone, reduce dullness, and shield the skin from harmful UV rays for a healthy, radiant glow',
@@ -238,26 +266,27 @@ export const productsData = [
   {
     id: 8,
     brand: 'SHORALUXE',
-    title: 'Retinol Night cream | Even Skin tone | Age Spots, Fine lines & Wrinkles Reduction',
+    title: 'Retinol Night cream| Even Skin tone| Age Spots, Fine lines & Wrinkles Reduction| with Retinol, Bakuchi, Peptides, Hyaluronic Acid, Niacinamide | Suitable for all skin types',
     price: 559,
     originalPrice: 699,
     discount: '20% off',
-    offer: 'Anti-Aging',
+    offer: 'Age Spots & Wrinkles Reduction',
     rating: 4.9,
     reviewsCount: 62,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=1000',
+    img: '/products images/Retinol night cream/WhatsApp Image 2026-04-14 at 19.24.38-3.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=1000'
+      '/products images/Retinol night cream/WhatsApp Image 2026-04-14 at 19.24.38-3.jpeg'
     ],
     badge: 'BESTSELLER',
     isNew: false,
     isBestseller: true,
     size: JSON.stringify([
-      { label: '50gm', price: 559, mrp: 699, discount: '20% off', usp: '' }
+      { label: '50gm', price: 559, mrp: 699, discount: '20% off', usp: '' },
+      { label: 'Pack of 2', price: 999, mrp: 1398, discount: '28% off', usp: 'Youth Duo', badge: 'SAVER PACK' }
     ]),
     netQuantity: '50 gm | 1.76 oz',
-    benefit: 'Fine Lines Reduction',
-    skinType: 'All Skin types',
+    benefit: 'Even Skin tone & Age Spots Reduction',
+    skinType: 'All Skin Types',
     idealFor: ['Dull Skin', 'Age Spots', 'Wrinkles', 'Fine Lines'],
     description: 'Revitalize your skin overnight with our Retinol Night Cream, a powerful blend of Retinol, Bakuchi, Peptides, Hyaluronic Acid and Niacinamide. This advanced formula helps improve skin texture, reduce fine lines and wrinkles, and support cell renewal while you sleep. Peptides strengthen the skin, Hyaluronic Acid provides deep hydration, and Niacinamide helps even out skin tone and strengthen the barrier. Wake up to smoother, firmer, and visibly more youthful-looking skin.',
     benefits: 'This Retinol Night cream helps to reduce fine lines, wrinkles, and uneven skin tone. It helps boost cell renewal, improve skin texture, and promote smoother, firmer, and youthful-looking skin overnight.',
@@ -271,29 +300,38 @@ export const productsData = [
   {
     id: 9,
     brand: 'SHORALUXE',
-    title: 'Non-Sticky Moisturizer | with Hyaluronic Acid and Aloe Vera',
+    title: 'Non-Sticky Moisturizer |with Hyaluronic Acid and Aloe Vera | 100 gm',
     price: 389,
-    originalPrice: 489,
-    discount: '20% off',
+    originalPrice: 499,
+    discount: '22% off',
     offer: 'Waitless Hydration',
     rating: 4.7,
     reviewsCount: 89,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=1000',
+    img: '/products images/NON STICKY MOISTURIZER 50GM/001 (2).png',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=1000',
-      'http://www.shoraluxe.com/cdn/shop/files/001_2.png?v=1768804151&width=1000'
+      '/products images/NON STICKY MOISTURIZER 50GM/001 (2).png',
+      '/products images/NON STICKY MOISTURIZER 50GM/001 (3).png',
+      '/products images/NON STICKY MOISTURIZER 50GM/15D71A3D-E428-4A2B-BDB9-A20AC0B44BC7.png',
+      '/products images/NON STICKY MOISTURIZER 50GM/60498BD6-85C7-412F-A100-BE25DEEDF747.png',
+      '/products images/NON STICKY MOISTURIZER 50GM/65E69D5D-A742-4DB4-A9D2-4B08FA7195B2.png',
+      '/products images/NON STICKY MOISTURIZER 100gm/001.jpg',
+      '/products images/NON STICKY MOISTURIZER 100gm/poster-01.png',
+      '/products images/NON STICKY MOISTURIZER 100gm/poster-03.png',
+      '/products images/NON STICKY MOISTURIZER 100gm/poster-04-1.png',
+      '/products images/NON STICKY MOISTURIZER 100gm/poster-05.png'
     ],
     badge: 'BESTSELLER',
     isNew: false,
     isBestseller: true,
     size: JSON.stringify([
-      { label: '50gm', price: 389, mrp: 489, discount: '20% off', usp: '' },
-      { label: '100gm', price: 459, mrp: 559, discount: '18% off', usp: 'Best Value' }
+      { label: '50gm', price: 389, mrp: 499, discount: '22% off', usp: '' },
+      { label: '100gm', price: 459, mrp: 599, discount: '23% off', usp: 'Best Value' },
+      { label: 'Pack of 2', price: 749, mrp: 998, discount: '25% off', usp: 'Moisture Duo', badge: 'SAVER' }
     ]),
     netQuantity: '100 gm, 50gm, pack of 2',
-    benefit: 'Intense Hydration',
-    skinType: 'Normal, Dry, Oily/Combination, Sensitive Skin',
-    idealFor: ['Sun Damage', 'Blue Light Damage', 'Dullness', 'Tan'],
+    benefit: 'Deep Hydration & Soothing',
+    skinType: 'All Skin Types',
+    idealFor: ['Normal Skin', 'Dry Skin', 'Oily / Combination Skin', 'Sensitive Skin', 'Sun Damage', 'Blue Light Damage', 'Dullness', 'Tan'],
     description: 'Give your skin the perfect daily boost with this ultra-light, non-greasy moisturizer. Powered by Hyaluronic Acid, it delivers deep, long-lasting hydration, while Aloe Vera soothes and refreshes the skin. The fast-absorbing formula sinks in instantly, leaving your skin soft, supple, and comfortably moisturized—never sticky or heavy.\nIdeal for all skin types, this moisturizer provides the perfect balance of hydration and breathability, making it your go-to for everyday nourishment.\n✔ Lightweight & non-sticky\n✔ Deep hydration with Hyaluronic Acid\n✔ Soothing, calming nourishment from Aloe Vera\n✔ Perfect for daily use',
     benefits: 'A non-comedogenic moisturizer enriched with Hyaluronic Acid and Aloe Vera for long-lasting hydration without greasiness. Keeps skin soft, supple, and refreshed.',
     howToUse: [
@@ -306,24 +344,31 @@ export const productsData = [
   {
     id: 10,
     brand: 'SHORALUXE',
-    title: 'Sunscreen Cream SPF 50+++ | Broad-spectrum sunscreen for daily UV defense',
+    title: 'Sunscreen Cream SPF 50+++ | Broad-spectrum sunscreen for daily UV defense | 50 gm',
     price: 359,
-    originalPrice: 449,
-    discount: '20% off',
-    offer: 'Broad Spectrum',
+    originalPrice: 499,
+    discount: '28% off',
+    offer: 'Broad Spectrum Protection',
     rating: 4.8,
     reviewsCount: 124,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=1000',
+    img: '/products images/Sunscreen cream spf 50+++ 50gm/poster_3-04-1.png',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=1000',
-      'http://www.shoraluxe.com/cdn/shop/files/poster_3-03.png?v=1768804180&width=1000'
+      '/products images/Sunscreen cream spf 50+++ 50gm/poster_3-04-1.png',
+      '/products images/Sunscreen cream spf 50+++ 50gm/253C20A7-0CFB-486D-9F7F-C5C5FA19785F.png',
+      '/products images/Sunscreen cream spf 50+++ 50gm/68C83D98-A465-4311-AA62-BB22239BCC91.png',
+      '/products images/Sunscreen cream spf 50+++ 50gm/791713D2-8EE6-440E-94A3-F0FC3DDDE647.png',
+      '/products images/Sunscreen cream spf 50+++ 100gm/3377F8A0-B710-43B4-99D8-202232DD2961.png',
+      '/products images/Sunscreen cream spf 50+++ 100gm/7797CF4D-47FF-4FDE-9DCD-A20FECE5A4AB.png',
+      '/products images/Sunscreen cream spf 50+++ 100gm/791713D2-8EE6-440E-94A3-F0FC3DDDE647.png',
+      '/products images/Sunscreen cream spf 50+++ 100gm/8758E36F-E32B-4905-8460-79313A554ECE.png'
     ],
     badge: 'BESTSELLER',
     isNew: false,
     isBestseller: true,
     size: JSON.stringify([
-      { label: '50gm', price: 359, mrp: 449, discount: '20% off', usp: '' },
-      { label: '100gm', price: 489, mrp: 599, discount: '18% off', usp: 'Best Value' }
+      { label: '50gm', price: 359, mrp: 499, discount: '28% off', usp: '' },
+      { label: '100gm', price: 489, mrp: 649, discount: '25% off', usp: 'Best Value' },
+      { label: 'Pack of 2', price: 679, mrp: 998, discount: '32% off', usp: 'Sun Protection Pack', badge: 'POPULAR' }
     ]),
     netQuantity: '50 gm, 100gm, pack of 2',
     benefit: 'SPF 50+++ Protection',
@@ -341,27 +386,30 @@ export const productsData = [
   {
     id: 11,
     brand: 'SHORALUXE',
-    title: 'Lavender Body wash | Cleanse and relax the Skin',
+    title: 'Lavender Body wash| Cleanse and relax the Skin| Hydrates the Skin| with Lavender Extract, Aloe Vera Extract, Chamomile Extract, Vitamin B5| Suitable for all skin types',
     price: 549,
-    originalPrice: 649,
-    discount: '15% off',
-    offer: 'Soothing Therapy',
+    originalPrice: 659,
+    discount: '16% off',
+    offer: 'Cleanse & Relax',
     rating: 4.5,
     reviewsCount: 212,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/LavenderBodyWash.png?v=1761305931&width=1000',
+    img: '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-6.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/LavenderBodyWash.png?v=1761305931&width=1000'
+      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-6.jpeg',
+      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-7.jpeg',
+      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-9.jpeg',
+      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-10.jpeg'
     ],
     badge: 'RELAX',
     isNew: false,
-    isBestseller: false,
+    isBestseller: true,
     size: JSON.stringify([
-      { label: '200ml', price: 549, mrp: 649, discount: '15% off', usp: '' }
+      { label: '200ml', price: 549, mrp: 659, discount: '16% off', usp: '' }
     ]),
     netQuantity: '200 ml | 6.76 fl. oz',
-    benefit: 'Hydrates & Relaxes',
-    skinType: 'All Skin types',
-    idealFor: ['Body cleansing', 'relaxation'],
+    benefit: 'Calms and refreshes skin',
+    skinType: 'All Skin Types',
+    idealFor: ['Normal Skin', 'Dry Skin', 'Oily / Combination Skin', 'Sensitive Skin', 'All Skin types'],
     description: 'Transform your bathing routine into a calming ritual with our Lavender Body Wash. Infused with Lavender, Aloe Vera, Chamomile, and Vitamin B5, this luxurious formula gently cleanses while soothing both skin and senses. Lavender and Chamomile offer aromatherapeutic relaxation, Aloe Vera hydrates and cools the skin, and Vitamin B5 helps maintain softness and suppleness. Skin feels refreshed, relaxed, and delicately scented—an indulgent moment of tranquility every day.',
     benefits: 'Helps to calm and refresh skin, maintain skin\'s natural softness, gently cleans & keeps skin felling fresh.',
     howToUse: [
@@ -374,28 +422,30 @@ export const productsData = [
   {
     id: 12,
     brand: 'SHORALUXE',
-    title: 'Daily Hydrating Body lotion | Hydrates the Skin & Deep Moisturization',
+    title: 'Daily Hydrating Body lotion| Hydrates the Skin & Deep Moisturization| Long Lasting Hydration| Smooth & Supple Skin| with Hyaluronic Acid, Panthenol, Glycerin, Oatmeal Extract| Suitable for all skin types',
     price: 799,
-    originalPrice: 999,
-    discount: '20% off',
+    originalPrice: 899,
+    discount: '11% off',
     offer: 'Long Lasting Hydration',
     rating: 4.2,
     reviewsCount: 94,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=1000',
+    img: '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=1000',
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.18_2.jpg?v=1764316589&width=1000'
+      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36.jpeg',
+      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36-3.jpeg',
+      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36-4.jpeg',
+      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36-5.jpeg'
     ],
     badge: 'HYDRATING',
     isNew: false,
     isBestseller: false,
     size: JSON.stringify([
-      { label: '100ml', price: 799, mrp: 999, discount: '20% off', usp: '' }
+      { label: '100ml', price: 799, mrp: 899, discount: '11% off', usp: '' }
     ]),
     netQuantity: '100 ml | 3.38 fl. oz',
-    benefit: 'Deep Moisturization',
-    skinType: 'Suitable for all skin types (women & men)',
-    idealFor: ['Dry skin', 'hydration maintenance', 'daily skin care routine.'],
+    benefit: 'Long - lasting hydration',
+    skinType: 'All Skin Types (Women & Men)',
+    idealFor: ['Dry skin', 'hydration maintenance', 'daily skin care routine'],
     description: 'Experience silky, beautifully hydrated skin with our Daily Hydrating Body Lotion. This luxurious formula blends Hyaluronic Acid, Panthenol, Glycerin, and soothing Oatmeal Extract to deeply moisturize while maintaining the skin’s natural softness. It absorbs effortlessly, keeping the skin calm, balanced, and nourished all day without any greasy feel. Ideal for daily self-care, it leaves the skin refreshed, supple, and naturally radiant.',
     benefits: 'Daily Hydrating Body Lotion helps to provide long - lasting hydration, keep skin supple, soothe dryness and maintain smooth texture.',
     howToUse: [
@@ -408,27 +458,29 @@ export const productsData = [
   {
     id: 13,
     brand: 'SHORALUXE',
-    title: 'Shea Butter Body lotion | Rejuvenating Skin | Smooth & Soft',
+    title: 'Shea Butter Body lotion | Rejuvenating Skin | Smooth & Soft | with Shea Butter + Vitamin E| Suitable for all skin types',
     price: 789,
-    originalPrice: 989,
-    discount: '20% off',
-    offer: 'Shea + Vitamin E',
+    originalPrice: 899,
+    discount: '12% off',
+    offer: 'Rejuvenating & Smooth',
     rating: 4.5,
     reviewsCount: 76,
-    img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11.jpg?v=1774992113&width=1000',
+    img: '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-2.jpeg',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11.jpg?v=1774992113&width=1000',
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_5.jpg?v=1774992113&width=1000'
+      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-2.jpeg',
+      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-3.jpeg',
+      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-4.jpeg',
+      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-5.jpeg'
     ],
     badge: 'NOURISH',
     isNew: false,
-    isBestseller: false,
+    isBestseller: true,
     size: JSON.stringify([
-      { label: '100ml', price: 789, mrp: 989, discount: '20% off', usp: '' }
+      { label: '100ml', price: 789, mrp: 899, discount: '12% off', usp: '' }
     ]),
     netQuantity: '100 ml | 3.38 fl. oz',
-    benefit: 'Softening & Rejuvenating',
-    skinType: 'Suitable for all skin types (women & men)',
+    benefit: 'Rejuvenates the skin',
+    skinType: 'All Skin Types (Women & Men)',
     idealFor: ['Dry skin', 'maintaining smooth & nourished skin'],
     description: 'Pamper your dry skin with our Shea Butter Body Lotion, enriched with nourishing Shea Butter and Vitamin E. This rich yet fast-absorbing formula deeply moisturizes, softens, and smoothens the skin while helping to restore its natural elasticity. Shea Butter provides long-lasting hydration, and Vitamin E supports skin repair and protection from dryness and environmental stress. Daily use leaves your skin moisturized, supple, and beautifully cared for.',
     benefits: 'A rich, creamy body lotion infused with Shea Butter helps to intensely hydrate and rejuvenate the skin. It helps soften rough areas, improve texture, and leave the skin feeling silky-smooth and luxuriously nourished.',

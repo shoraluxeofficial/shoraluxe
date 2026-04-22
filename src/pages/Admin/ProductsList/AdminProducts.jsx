@@ -704,79 +704,115 @@ const AdminProducts = () => {
                       </div>
 
                       <div className="pf-row">
-                        <div className="pf-field full" style={{background: '#f9fafb', padding: '1rem', borderRadius: '8px', border: '1px solid #e5e7eb'}}>
-                          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
-                            <label style={{margin: 0}}>Available Sizes & Combos 🌟</label>
-                            <button 
-                              type="button" 
-                              onClick={() => {
-                                const newVariants = [...(form.variants || []), { label: '', price: '', mrp: '', discount: '', usp: '', badge: '' }];
-                                setForm({...form, variants: newVariants, size: JSON.stringify(newVariants) });
-                              }}
-                              style={{padding: '0.4rem 0.8rem', background: '#611C28', color: '#fff', borderRadius: '6px', border: 'none', fontSize: '0.8rem', cursor: 'pointer'}}
-                            >
-                              + Add Size / Combo
-                            </button>
+                        <div className="pf-field full" style={{background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'}}>
+                          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem'}}>
+                            <div>
+                                <label style={{margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#1e293b'}}>Available Sizes & Combos 🌟</label>
+                                <p style={{fontSize: '0.75rem', color: '#64748b', marginTop: '2px'}}>Create saver packs or multiple size options (e.g. 50ml, 100ml, Pack of 2)</p>
+                            </div>
+                            <div style={{display: 'flex', gap: '0.6rem'}}>
+                              <button 
+                                type="button" 
+                                onClick={() => {
+                                  const baseLabel = form.size.includes('ml') ? '50ml' : 'Standard';
+                                  const basePrice = Number(form.price) || 0;
+                                  const baseMrp = Number(form.originalPrice) || 0;
+                                  
+                                  const comboPrice = Math.round(basePrice * 1.75);
+                                  const comboMrp = baseMrp * 2;
+                                  const comboDiscount = `${Math.round((1 - comboPrice / comboMrp) * 100)}% off`;
+
+                                  const newVariant = { 
+                                    label: 'Pack of 2', 
+                                    price: comboPrice, 
+                                    mrp: comboMrp, 
+                                    discount: comboDiscount, 
+                                    usp: 'Saver Pack', 
+                                    badge: 'BEST DEAL' 
+                                  };
+                                  
+                                  const currentVariants = Array.isArray(form.variants) ? form.variants : [];
+                                  const updated = [...currentVariants, newVariant];
+                                  setForm({...form, variants: updated, size: JSON.stringify(updated) });
+                                  notify('Smart Pack of 2 added!', 'success');
+                                }}
+                                style={{padding: '0.5rem 1rem', background: '#f5f3ff', color: '#7c3aed', borderRadius: '8px', border: '1px solid #ddd6fe', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'}}
+                              >
+                                🎁 Add Pack of 2
+                              </button>
+                              <button 
+                                type="button" 
+                                onClick={() => {
+                                  const newVariants = [...(form.variants || []), { label: '', price: '', mrp: '', discount: '', usp: '', badge: '' }];
+                                  setForm({...form, variants: newVariants, size: JSON.stringify(newVariants) });
+                                }}
+                                style={{padding: '0.5rem 1rem', background: '#611C28', color: '#fff', borderRadius: '8px', border: 'none', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(97, 28, 40, 0.2)'}}
+                              >
+                                + Custom Size
+                              </button>
+                            </div>
                           </div>
                           
                           {(!form.variants || form.variants.length === 0) ? (
-                            <p style={{fontSize: '0.85rem', color: '#6b7280'}}>No combos added yet. Standard price will be used.</p>
+                            <div style={{textAlign: 'center', padding: '1.5rem', background: '#fff', borderRadius: '8px', border: '1px dashed #cbd5e1'}}>
+                                <p style={{fontSize: '0.85rem', color: '#64748b', margin: 0}}>No combos added yet. The standard price above will be used.</p>
+                            </div>
                           ) : (
-                            <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '1.25rem'}}>
                               {form.variants.map((v, i) => (
-                                <div key={i} style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem', background: '#fff', padding: '1.25rem', borderRadius: '8px', border: '1px solid #ddd', position: 'relative'}}>
+                                <div key={i} style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', background: '#fff', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', position: 'relative', boxShadow: '0 2px 10px rgba(0,0,0,0.03)', overflow: 'hidden'}}>
                                   
                                   <button type="button" onClick={() => {
                                       const arr = form.variants.filter((_, idx) => idx !== i);
                                       setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                  }} style={{position: 'absolute', top: '8px', right: '8px', width: '24px', height: '24px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>✕</button>
+                                  }} style={{position: 'absolute', top: '12px', right: '12px', width: '28px', height: '28px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 5}} title="Remove variant">✕</button>
 
-                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
-                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Combo Title (e.g. Pack of 2)</label>
-                                    <input type="text" placeholder="Single Pack (50gm)" value={v.label} onChange={e => {
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Label (e.g. 100ml)</label>
+                                    <input type="text" placeholder="50ml / Pack of 2" value={v.label} onChange={e => {
                                         const arr = [...form.variants]; arr[i].label = e.target.value; 
                                         setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                    }} style={{width: '100%', boxSizing: 'border-box', padding: '0.6rem', border: '1.5px solid #e2e8f0', borderRadius:'8px', fontSize:'0.9rem', outline: 'none'}} />
                                   </div>
 
-                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
-                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Selling Price (₹)</label>
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Selling Price (₹)</label>
                                     <input type="number" placeholder="449" value={v.price} onChange={e => {
                                         const arr = [...form.variants]; arr[i].price = e.target.value; 
                                         setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                    }} style={{width: '100%', boxSizing: 'border-box', padding: '0.6rem', border: '1.5px solid #e2e8f0', borderRadius:'8px', fontSize:'0.9rem', outline: 'none'}} />
                                   </div>
                                   
-                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
-                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Original MRP (₹)</label>
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>MRP (₹)</label>
                                     <input type="number" placeholder="599" value={v.mrp} onChange={e => {
                                         const arr = [...form.variants]; arr[i].mrp = e.target.value; 
                                         setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                    }} style={{width: '100%', boxSizing: 'border-box', padding: '0.6rem', border: '1.5px solid #e2e8f0', borderRadius:'8px', fontSize:'0.9rem', outline: 'none'}} />
                                   </div>
 
-                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
-                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Discount Tag</label>
-                                    <input type="text" placeholder="e.g. 30% off" value={v.discount} onChange={e => {
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Discount Tag</label>
+                                    <input type="text" placeholder="25% off" value={v.discount} onChange={e => {
                                         const arr = [...form.variants]; arr[i].discount = e.target.value; 
                                         setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                    }} style={{width: '100%', boxSizing: 'border-box', padding: '0.6rem', border: '1.5px solid #e2e8f0', borderRadius:'8px', fontSize:'0.9rem', outline: 'none'}} />
                                   </div>
 
-                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
-                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>USP Text</label>
-                                    <input type="text" placeholder="e.g. USP: ₹8.98/g" value={v.usp} onChange={e => {
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Highlight Note</label>
+                                    <input type="text" placeholder="e.g. Save Money / Best Value" value={v.usp} onChange={e => {
                                         const arr = [...form.variants]; arr[i].usp = e.target.value; 
                                         setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                    }} style={{width: '100%', boxSizing: 'border-box', padding: '0.6rem', border: '1.5px solid #e2e8f0', borderRadius:'8px', fontSize:'0.9rem', outline: 'none'}} />
                                   </div>
 
-                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
-                                    <label style={{fontSize: '0.75rem', fontWeight: 600, color: '#555', margin: 0}}>Top Badge (Optional)</label>
-                                    <input type="text" placeholder="e.g. 1h:25m left" value={v.badge} onChange={e => {
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Card Badge</label>
+                                    <input type="text" placeholder="POPULAR" value={v.badge} onChange={e => {
                                         const arr = [...form.variants]; arr[i].badge = e.target.value; 
                                         setForm({...form, variants: arr, size: JSON.stringify(arr)});
-                                    }} style={{padding: '0.5rem', border: '1px solid #ccc', borderRadius:'4px', fontSize:'0.85rem'}} />
+                                    }} style={{width: '100%', boxSizing: 'border-box', padding: '0.6rem', border: '1.5px solid #e2e8f0', borderRadius:'8px', fontSize:'0.9rem', outline: 'none'}} />
                                   </div>
                                 </div>
                               ))}
