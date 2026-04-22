@@ -13,6 +13,7 @@ import AdminHomepage from './pages/Admin/Homepage/HomepageManager';
 import AdminRevenue from './pages/Admin/Revenue/AdminRevenue';
 import AdminSecurity from './pages/Admin/Security/AdminSecurity';
 import AdminLogin from './pages/Admin/Login/AdminLogin';
+import AdminPromoCodes from './pages/Admin/PromoCodes/AdminPromoCodes';
 import Home from './pages/Home';
 import Shop from './pages/Shop/Shop';
 import ProductDetail from './pages/ProductDetail/ProductDetail';
@@ -66,6 +67,7 @@ function App() {
               <Route path="security" element={<AdminSecurity />} />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="homepage" element={<AdminHomepage />} />
+              <Route path="promo-codes" element={<AdminPromoCodes />} />
             </Route>
           </Routes>
         </div>

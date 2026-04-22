@@ -12,7 +12,8 @@ import {
   ClipboardList,
   IndianRupee,
   ShieldCheck,
-  Home as HomeIcon
+  Home as HomeIcon,
+  Tag
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -36,6 +37,7 @@ const AdminLayout = () => {
     { path: '/admin/homepage', icon: <HomeIcon size={20} />, label: 'Home Page CMS' },
     { path: '/admin/products', icon: <ShoppingBag size={20} />, label: 'Products' },
     { path: '/admin/orders', icon: <ClipboardList size={20} />, label: 'Orders' },
+    { path: '/admin/promo-codes', icon: <Tag size={20} />, label: 'Promo Codes' },
     { path: '/admin/revenue', icon: <IndianRupee size={20} />, label: 'Revenue' },
     { path: '/admin/security', icon: <ShieldCheck size={20} />, label: 'Firewall' },
     { path: '/admin/reviews', icon: <MessageSquare size={20} />, label: 'Testimonials' },

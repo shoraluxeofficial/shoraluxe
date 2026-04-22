@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
 import { supabase } from '../../lib/supabase';
-import { CheckCircle, Truck, ShieldCheck, MapPin, CreditCard, User, Navigation } from 'lucide-react';
+import { CheckCircle, Truck, ShieldCheck, MapPin, CreditCard, User, Navigation, Tag, X } from 'lucide-react';
 import { useNotify } from '../../components/common/Notification/Notification';
 import './Checkout.css';
 
@@ -16,7 +16,13 @@ const Checkout = () => {
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
   const [shippingFee, setShippingFee] = useState(0);
-  
+
+  // Promo code state
+  const [promoInput, setPromoInput] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState(null); // { code, discount_type, discount_value, id }
+  const [promoError, setPromoError] = useState('');
+
   const [formData, setFormData] = useState({
     firstName: user?.name?.split(' ')[0] || '',
     lastName: user?.name?.split(' ')[1] || '',
@@ -80,6 +86,67 @@ const Checkout = () => {
       setShippingFee(60);
     }
   };
+
+  const applyPromoCode = async () => {
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return;
+    setPromoError('');
+    setPromoLoading(true);
+    const { data, error } = await supabase
+      .from('promo_codes')
+      .select('*')
+      .eq('code', code)
+      .eq('is_active', true)
+      .single();
+
+    if (error || !data) {
+      setPromoError('Invalid or expired promo code.');
+      setAppliedPromo(null);
+      setPromoLoading(false);
+      return;
+    }
+
+    if (data.expires_at && new Date(data.expires_at) < new Date()) {
+      setPromoError('This promo code has expired.');
+      setAppliedPromo(null);
+      setPromoLoading(false);
+      return;
+    }
+
+    if (data.max_uses && data.uses_count >= data.max_uses) {
+      setPromoError('This promo code has reached its usage limit.');
+      setAppliedPromo(null);
+      setPromoLoading(false);
+      return;
+    }
+
+    if (data.min_order_amount && cartTotal < data.min_order_amount) {
+      setPromoError(`Minimum order of ₹${data.min_order_amount} required for this code.`);
+      setAppliedPromo(null);
+      setPromoLoading(false);
+      return;
+    }
+
+    setAppliedPromo(data);
+    notify(`🎉 Promo code "${code}" applied!`, 'success');
+    setPromoLoading(false);
+  };
+
+  const removePromo = () => {
+    setAppliedPromo(null);
+    setPromoInput('');
+    setPromoError('');
+  };
+
+  // Compute discount amount
+  const discountAmount = appliedPromo
+    ? appliedPromo.discount_type === 'percentage'
+      ? Math.round(cartTotal * appliedPromo.discount_value / 100)
+      : Math.min(appliedPromo.discount_value, cartTotal)
+    : 0;
+
+  const finalTotal = Math.max(0, cartTotal - discountAmount + shippingFee);
+
 
   const fetchAddressByPincode = async (pin) => {
     if (pin.length !== 6) return;
@@ -166,7 +233,7 @@ const Checkout = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        amount: cartTotal + shippingFee,
+        amount: finalTotal,
         currency: 'INR',
         receipt: `receipt_${Date.now()}`
       })
@@ -279,9 +346,11 @@ const Checkout = () => {
         customer_phone: formData.phone,
         customer_email: formData.email,
         shipping_address: shipping_address,
-        total_amount: cartTotal + shippingFee,
+        total_amount: finalTotal,
         subtotal: cartTotal,
         shipping_fee: shippingFee,
+        discount_amount: discountAmount,
+        promo_code: appliedPromo?.code || null,
         payment_status: paymentStatus,
         payment_method: formData.paymentMethod,
         order_status: 'placed',
@@ -323,7 +392,15 @@ const Checkout = () => {
       
       setSuccess(true);
       clearCart();
-      
+
+      // Increment promo code usage count
+      if (appliedPromo?.id) {
+        await supabase
+          .from('promo_codes')
+          .update({ uses_count: (appliedPromo.uses_count || 0) + 1 })
+          .eq('id', appliedPromo.id);
+      }
+
       // Auto redirect after 5 seconds
       setTimeout(() => {
         window.location.href = '/'; 
@@ -448,10 +525,46 @@ const Checkout = () => {
             </div>
           </div>
 
+          {/* PROMO CODE SECTION */}
+          <div className="checkout-section">
+            <div className="section-title-wrap">
+              <Tag size={20} className="section-icon" />
+              <h3>3. Promo Code</h3>
+            </div>
+            {appliedPromo ? (
+              <div className="promo-applied-box">
+                <div className="promo-applied-info">
+                  <span className="promo-applied-tag">{appliedPromo.code}</span>
+                  <span className="promo-applied-save">
+                    You save ₹{discountAmount.toLocaleString('en-IN')}!
+                  </span>
+                </div>
+                <button type="button" className="promo-remove-btn" onClick={removePromo}>
+                  <X size={16} /> Remove
+                </button>
+              </div>
+            ) : (
+              <div className="promo-input-row">
+                <input
+                  type="text"
+                  value={promoInput}
+                  onChange={e => { setPromoInput(e.target.value.toUpperCase()); setPromoError(''); }}
+                  placeholder="Enter promo / coupon code"
+                  className={`promo-input ${promoError ? 'error-input' : ''}`}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyPromoCode())}
+                />
+                <button type="button" className="promo-apply-btn" onClick={applyPromoCode} disabled={promoLoading}>
+                  {promoLoading ? 'Checking...' : 'Apply'}
+                </button>
+              </div>
+            )}
+            {promoError && <p className="promo-error">{promoError}</p>}
+          </div>
+
           <div className="checkout-section">
             <div className="section-title-wrap">
                <CreditCard size={20} className="section-icon" />
-               <h3>3. Payment Method</h3>
+               <h3>4. Payment Method</h3>
             </div>
             <div className="payment-options">
               <label className={`pay-option ${formData.paymentMethod === 'razorpay' ? 'selected' : ''}`}>
@@ -465,7 +578,7 @@ const Checkout = () => {
           </div>
 
           <button type="submit" className="pay-button" disabled={loading}>
-            {loading ? 'Processing Securely...' : <><ShieldCheck size={20} /> Securely Pay ₹{(cartTotal + shippingFee).toLocaleString('en-IN')}</>}
+            {loading ? 'Processing Securely...' : <><ShieldCheck size={20} /> Securely Pay ₹{finalTotal.toLocaleString('en-IN')}</>}
           </button>
         </form>
       </div>
@@ -500,9 +613,15 @@ const Checkout = () => {
               </span>
               <span>{shippingFee === 0 ? <span className="free-tag">FREE</span> : `₹${shippingFee}`}</span>
             </div>
+            {appliedPromo && (
+              <div className="tot-row promo-saving-row">
+                <span><Tag size={14} /> Promo ({appliedPromo.code})</span>
+                <span className="saving-amt">−₹{discountAmount.toLocaleString('en-IN')}</span>
+              </div>
+            )}
             <div className="tot-row final">
               <span>Total Payable</span>
-              <span className="final-amt">₹{(cartTotal + shippingFee).toLocaleString('en-IN')}</span>
+              <span className="final-amt">₹{finalTotal.toLocaleString('en-IN')}</span>
             </div>
           </div>
           <div className="secure-badge-checkout">
