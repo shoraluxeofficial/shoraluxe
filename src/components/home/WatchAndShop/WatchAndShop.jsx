@@ -1,88 +1,104 @@
 import React, { useRef } from 'react';
-import { ChevronLeft, ChevronRight, Heart, Send, Eye } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, Send, Eye, ShoppingBag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
 import './WatchAndShop.css';
 
-const storiesData = [
+const fallbackStories = [
   {
     id: 1,
-    title: 'Rewind Age Reversing Gel...',
-    price: 1234,
-    originalPrice: 1899,
-    discount: '35% off',
-    views: '904',
-    img: 'https://images.unsplash.com/photo-1590736962386-38703a987679?auto=format&fit=crop&q=80&w=400',
-    overlayText: 'To reduce wrinkles by 11% in 5 days'
+    productId: 9, // Moisturizer
+    title: 'Non-Sticky Moisturizer',
+    price: 389,
+    originalPrice: 489,
+    discount: '20% off',
+    views: '1.2K',
+    video: '/Watch&shop/1_Tube Moisturiser.mp4',
+    img: '',
+    overlayText: 'Deep hydration without the stickiness'
   },
   {
     id: 2,
-    title: 'Legend 13 Multiactive Super...',
-    price: 551,
-    originalPrice: 849,
-    discount: '35% off',
-    views: '1.0K',
-    img: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=400',
-    overlayText: 'Repairs Skin Barrier'
+    productId: 6, // Serum
+    title: 'Vitamin C & Niacinamide Serum',
+    price: 359,
+    originalPrice: 399,
+    discount: '10% off',
+    views: '2.5K',
+    video: '/Watch&shop/2_Serum.mp4',
+    img: '',
+    overlayText: 'Glow-boosting daily serum'
   },
   {
     id: 3,
-    title: 'C-Bionic 20% Vitamin C Face...',
-    price: 551,
-    originalPrice: 849,
-    discount: '35% off',
-    views: '718',
-    img: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=400',
-    overlayText: 'Dark spot reducing Niacinamide'
+    productId: 1, // Face Wash
+    title: 'Salicylic Acid Face Wash',
+    price: 319,
+    originalPrice: 399,
+    discount: '20% off',
+    views: '3.1K',
+    video: '/Watch&shop/3_Face Wash.mp4',
+    img: '',
+    overlayText: 'Clear acne and prevent breakouts'
   },
   {
     id: 4,
-    title: 'Lay Bare Profoliator...',
-    price: 454,
-    originalPrice: 699,
-    discount: '35% off',
-    views: '2.4K',
-    img: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&q=80&w=400',
-    overlayText: 'LAY BARE POFOLIATOR'
+    productId: 7, // Day Cream / Moisturizer 2
+    title: 'Brightening Day Cream SPF',
+    price: 559,
+    originalPrice: 659,
+    discount: '15% off',
+    views: '840',
+    video: '/Watch&shop/4_Moisturiser.mp4',
+    img: '',
+    overlayText: 'UV protection & brightening'
   },
   {
     id: 5,
-    title: 'SUNSTOPPABLE SPF45 PA++...',
-    price: 389,
-    originalPrice: 599,
-    discount: '35% off',
-    views: '2.3K',
-    img: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=400',
-    overlayText: '4 steps for Hi-Glaze glow ✨'
+    productId: 10, // Sunscreen Tube
+    title: 'Sunscreen Cream SPF 50+++',
+    price: 359,
+    originalPrice: 449,
+    discount: '20% off',
+    views: '4.2K',
+    video: '/Watch&shop/5_Tube Sunscreen_1.mp4',
+    img: '',
+    overlayText: 'No white cast daily defense'
+  },
+  {
+    id: 6,
+    productId: 10, // Sunscreen Pump/Other
+    title: 'Sunscreen SPF 50 Broad Spectrum',
+    price: 359,
+    originalPrice: 449,
+    discount: '20% off',
+    views: '1.9K',
+    video: '/Watch&shop/6_Sunscreen.mp4',
+    img: '',
+    overlayText: 'Ultimate sun protection'
+  },
+  {
+    id: 7,
+    productId: 142, // Combo Pack
+    title: 'Complete Skincare Trio Combo',
+    price: 899,
+    originalPrice: 1299,
+    discount: '30% off',
+    views: '5.5K',
+    video: '/Watch&shop/7_Combo Pack.mp4',
+    img: '',
+    overlayText: 'Your full skincare routine'
   }
 ];
 
 const WatchAndShop = () => {
   const scrollRef = useRef(null);
-  const [stories, setStories] = React.useState(storiesData);
-  const [loading, setLoading] = React.useState(true);
+  const navigate = useNavigate();
+  const [stories, setStories] = React.useState(fallbackStories);
+  const [loading, setLoading] = React.useState(false);
 
-  React.useEffect(() => {
-    fetchStories();
-  }, []);
-
-  const fetchStories = async () => {
-    try {
-      setLoading(true);
-      const { data } = await supabase
-        .from('homepage_sections')
-        .select('content')
-        .eq('section_name', 'watchAndShop')
-        .single();
-      
-      if (data && data.content) {
-        setStories(data.content);
-      }
-    } catch (err) {
-      console.error('Error fetching watch & shop:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // You can still fetch from Supabase if needed, but we'll use fallback directly for now 
+  // to ensure the new videos show up immediately.
 
   const scroll = (direction) => {
     if (scrollRef.current) {
@@ -91,6 +107,12 @@ const WatchAndShop = () => {
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
       });
+    }
+  };
+
+  const handleProductClick = (productId) => {
+    if (productId) {
+      navigate(`/product/${productId}`);
     }
   };
 
@@ -109,21 +131,17 @@ const WatchAndShop = () => {
 
         <div className="watch-grid" ref={scrollRef}>
           {stories.map((story, index) => (
-            <div key={index} className="story-card">
+            <div key={index} className="story-card" onClick={() => handleProductClick(story.productId)}>
               <div className="story-media-wrap">
                 {story.video ? (
                    <video 
                      className="story-video"
-                     src={story.video}
+                     src={encodeURI(story.video)}
                      poster={story.img}
                      muted
                      loop
+                     autoPlay
                      playsInline
-                     onMouseEnter={e => e.target.play()}
-                     onMouseLeave={e => {
-                       e.target.pause();
-                       e.target.currentTime = 0;
-                     }}
                    />
                 ) : (
                    <img src={story.img} alt={story.title} className="story-img" />
@@ -145,8 +163,8 @@ const WatchAndShop = () => {
 
                 {/* Interaction Icons */}
                 <div className="story-actions">
-                  <button className="story-icon-btn"><Heart size={18} /></button>
-                  <button className="story-icon-btn"><Send size={18} /></button>
+                  <button className="story-icon-btn" onClick={(e) => { e.stopPropagation(); }}><Heart size={18} /></button>
+                  <button className="story-icon-btn" onClick={(e) => { e.stopPropagation(); }}><Send size={18} /></button>
                 </div>
               </div>
 
@@ -156,7 +174,9 @@ const WatchAndShop = () => {
                   <span className="story-current-price">₹ {story.price}</span>
                   {story.originalPrice && <span className="story-original-price">₹ {story.originalPrice}</span>}
                 </div>
-                <button className="story-buy-btn">Buy Now</button>
+                <button className="story-buy-btn">
+                  <ShoppingBag size={16} /> Shop Now
+                </button>
               </div>
             </div>
           ))}
