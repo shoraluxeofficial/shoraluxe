@@ -16,9 +16,9 @@ export const productsData = [
       '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0019.jpg',
       '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0020.jpg',
       '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0022.jpg',
-      '/products images/Salicylic acid face wash 100gm/Copy of IMG-20260112-WA0001.jpg',
-      '/products images/Salicylic acid face wash 100gm/Copy of IMG-20260112-WA0012.jpg',
-      '/products images/Salicylic acid face wash 100gm/Copy of IMG-20260112-WA0019.jpg'
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0023.jpg',
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0024.jpg',
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0026.jpg'
     ],
     badge: 'BESTSELLER',
     isNew: true,

@@ -799,6 +799,56 @@
   .pd-trust-luxe { flex-direction: column; gap: 2rem; }
 }
 
+/* PAYMENT METHODS SECTION */
+.pd-payment-methods-wrap {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eaeaea;
+  text-align: center;
+}
+
+.payment-title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #888;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.pd-payment-logos-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pd-payment-logos-grid img {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.8;
+  filter: grayscale(0.2);
+  transition: all 0.3s ease;
+}
+
+.pd-payment-logos-grid img:hover {
+  opacity: 1;
+  filter: grayscale(0);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .pd-payment-logos-grid {
+    gap: 0.75rem;
+  }
+  .pd-payment-logos-grid img {
+    height: 20px;
+  }
+}
+
 /* IDEAL FOR TAGS */
 .ideal-for-tags {
   display: flex;

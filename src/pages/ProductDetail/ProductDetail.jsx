@@ -344,6 +344,22 @@ const ProductDetail = () => {
             <div className="trust-col"><Truck strokeWidth={1.5} size={24} /> <span>Pan India Delivery</span></div>
             <div className="trust-col"><ShieldCheck strokeWidth={1.5} size={24} /> <span>Dermatologist Approved</span></div>
           </div>
+
+          {/* PAYMENT LOGOS */}
+          <div className="pd-payment-methods-wrap">
+            <span className="payment-title">SECURE PAYMENT OPTIONS</span>
+            <div className="pd-payment-logos-grid">
+              <img src="/Visa.png" alt="Visa" />
+              <img src="/Master Card.png" alt="Mastercard" />
+              <img src="/american express.png" alt="American Express" />
+              <img src="/rupay.png" alt="RuPay" />
+              <img src="/Google_Pay_Logo.svg.png" alt="Google Pay" />
+              <img src="/Phonepe.png" alt="PhonePe" />
+              <img src="/Paytm.jfif" alt="Paytm" />
+              <img src="/Upi.png" alt="UPI" />
+              <img src="/Razorpay.png" alt="Razorpay" />
+            </div>
+          </div>
         </div>
       </div>
 
