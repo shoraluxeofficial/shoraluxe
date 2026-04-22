@@ -9,9 +9,9 @@ import imageCompression from 'browser-image-compression';
 import './HomepageManager.css';
 
 const HERO_DEFAULTS = [
-  { img: '/Banners/1000000387.jpg.jpeg', url: '/shop', alt: 'Premium Care' },
-  { img: '/Banners/1000000389 (1).jpg.jpeg', url: '/shop', alt: 'Luxury Serums' },
-  { img: '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp', url: '/shop', alt: 'Special Offer' }
+  { desktopImg: '/Banners/1000000387.jpg.jpeg', mobileImg: '/Banners/1000000387.jpg.jpeg', url: '/shop', alt: 'Premium Care' },
+  { desktopImg: '/Banners/1000000389 (1).jpg.jpeg', mobileImg: '/Banners/1000000389 (1).jpg.jpeg', url: '/shop', alt: 'Luxury Serums' },
+  { desktopImg: '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp', mobileImg: '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp', url: '/shop', alt: 'Special Offer' }
 ];
 const CTA_DEFAULTS = { heading: 'Your Journey to Radiant Skin Starts Here', text: 'Discover the perfect blend of science and nature.', tag: 'Limited Edition', buttonText: 'SHOP THE COLLECTION', bgImage: '' };
 const QUIZ_DEFAULTS = { heading: 'Build Your Perfect Routine, Instantly.', text: 'Answer a few quick questions.', buttonText: 'Start The Quiz' };
@@ -149,7 +149,7 @@ const HomepageManager = () => {
   // ── ADD NEW ITEM ──────────────────────────────────────────────────────────
   const handleAdd = () => {
     const blanks = {
-      hero: { img: '', url: '', alt: '' },
+      hero: { desktopImg: '', mobileImg: '', url: '', alt: '' },
       videoBanners: { url: '', title: '', desc: '' },
       watchAndShop: { title: '', price: '', originalPrice: '', discount: '', views: '0', img: '', video: '', overlayText: '' },
     };
@@ -211,18 +211,44 @@ const HomepageManager = () => {
       </select>
     );
 
+    const renderVisualUpload = (field, label, isMobile = false) => {
+      const isUploading = uploading === field;
+      const url = d[field] || '';
+      return (
+        <div className="hm-visual-upload">
+          <label>{label}</label>
+          <label className={`hm-visual-preview ${url ? 'has-img' : ''} ${isMobile ? 'hm-mobile-preview' : ''}`}>
+            <input type="file" accept="image/*" hidden onChange={e => handleUpload(e, field)} />
+            {url ? (
+              <>
+                <img src={url} alt="" />
+                <div className="hm-visual-overlay"><Upload size={16}/> Change Image</div>
+              </>
+            ) : (
+              <div className="hm-visual-empty">
+                <Upload size={24}/>
+                <span>Click to Upload</span>
+              </div>
+            )}
+            {isUploading && (
+              <div className="hm-visual-loading">
+                <div className="hm-loader-spinner" style={{ width: 24, height: 24 }} />
+                <span>Uploading...</span>
+              </div>
+            )}
+          </label>
+          <div className="hm-visual-input-group">
+             <input type="text" value={url} onChange={e => upd(field, e.target.value)} placeholder="Or paste image URL here..." />
+          </div>
+        </div>
+      );
+    };
+
     if (activeTab === 'hero') return (
       <div className="hm-edit-fields">
-        <div className="hm-field">
-          <label>Banner Image</label>
-          <div className="hm-field-row">
-            <input type="text" value={d.img || ''} onChange={e => upd('img', e.target.value)} placeholder="https://..." />
-            <label className={`hm-upload-btn ${uploading === 'img' ? 'loading' : ''}`}>
-              <Upload size={14}/> {uploading === 'img' ? 'Uploading...' : 'Upload'}
-              <input type="file" accept="image/*" hidden onChange={e => handleUpload(e, 'img')} />
-            </label>
-          </div>
-          {d.img && <img src={d.img} alt="" className="hm-img-preview" onError={e => e.target.style.display='none'} />}
+        <div className="hm-field-grid">
+          {renderVisualUpload('desktopImg', 'Desktop Banner (16:9)')}
+          {renderVisualUpload('mobileImg', 'Mobile Banner (9:16 or 4:5)', true)}
         </div>
         <div className="hm-field-grid">
           <div className="hm-field">
@@ -261,14 +287,7 @@ const HomepageManager = () => {
           <textarea value={d.text || ''} onChange={e => upd('text', e.target.value)} rows={3} />
         </div>
         <div className="hm-field">
-          <label>Background Image URL</label>
-          <div className="hm-field-row">
-            <input type="text" value={d.bgImage || ''} onChange={e => upd('bgImage', e.target.value)} placeholder="https://..." />
-            <label className={`hm-upload-btn ${uploading === 'bgImage' ? 'loading' : ''}`}>
-              <Upload size={14}/> Upload
-              <input type="file" accept="image/*" hidden onChange={e => handleUpload(e, 'bgImage')} />
-            </label>
-          </div>
+          {renderVisualUpload('bgImage', 'Background Image URL')}
         </div>
       </div>
     );
@@ -374,15 +393,7 @@ const HomepageManager = () => {
           <input type="text" value={d.overlayText || ''} onChange={e => upd('overlayText', e.target.value)} placeholder="Tagline shown on video..." />
         </div>
         <div className="hm-field">
-          <label>Product Image / Thumbnail</label>
-          <div className="hm-field-row">
-            <input type="text" value={d.img || ''} onChange={e => upd('img', e.target.value)} placeholder="https://..." />
-            <label className={`hm-upload-btn ${uploading === 'img' ? 'loading' : ''}`}>
-              <Upload size={14}/> Upload
-              <input type="file" accept="image/*" hidden onChange={e => handleUpload(e, 'img')} />
-            </label>
-          </div>
-          {d.img && <img src={d.img} alt="" className="hm-img-preview" onError={e => e.target.style.display='none'} />}
+          {renderVisualUpload('img', 'Product Image / Thumbnail')}
         </div>
         <div className="hm-field">
           <label>Short Video (.mp4, 10–15 sec)</label>
@@ -403,13 +414,24 @@ const HomepageManager = () => {
     if (activeTab === 'hero') return (
       <div className="hm-card" key={index}>
         <div className="hm-card-preview">
-          {item.img
-            ? <img src={item.img} alt={item.alt} className="hm-card-img" onError={e => e.target.style.display='none'} />
-            : <div className="hm-card-no-img"><ImageIcon size={20}/></div>
-          }
+          <div className="hm-dual-preview">
+            <div className="hm-preview-item">
+              <span className="hm-preview-label">Desktop</span>
+              {(item.desktopImg || item.img) 
+                ? <img src={item.desktopImg || item.img} alt="" className="hm-card-img" />
+                : <div className="hm-card-no-img"><ImageIcon size={14}/></div>
+              }
+            </div>
+            <div className="hm-preview-item">
+              <span className="hm-preview-label">Mobile</span>
+              {(item.mobileImg || item.img) 
+                ? <img src={item.mobileImg || item.img} alt="" className="hm-card-img mobile-v" />
+                : <div className="hm-card-no-img"><ImageIcon size={14}/></div>
+              }
+            </div>
+          </div>
           <div className="hm-card-info">
             <p className="hm-card-title">{item.alt || 'Untitled Slide'}</p>
-            <p className="hm-card-sub">{item.img ? item.img.split('/').pop() : 'No image set'}</p>
             <span className="hm-chip hm-chip-blue">{item.url || '/shop'}</span>
           </div>
         </div>

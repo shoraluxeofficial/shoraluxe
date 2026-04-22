@@ -130,13 +130,19 @@
 }
 
 @media (max-width: 768px) {
-  .hero-slider-wrap {
-    height: 480px;
+  .hero-section {
+    padding: 0.5rem;
   }
-}
-
-@media (max-width: 480px) {
   .hero-slider-wrap {
-    height: 380px;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    border-radius: 16px;
+  }
+  .slider-arrow {
+    width: 40px;
+    height: 40px;
+  }
+  .hero-pagination {
+    bottom: 15px;
   }
 }

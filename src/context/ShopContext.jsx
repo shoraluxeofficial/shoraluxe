@@ -33,6 +33,9 @@ export const ShopProvider = ({ children }) => {
     isNew: p.is_new,
     isBestseller: p.is_bestseller,
     isSale: p.is_sale,
+    netQuantity: p.net_quantity,
+    idealFor: p.ideal_for,
+    cautions: p.cautions
   });
 
   // Fetch products from Supabase
@@ -48,7 +51,6 @@ export const ShopProvider = ({ children }) => {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .eq('status', 'active')
         .order('id', { ascending: true });
 
       if (error) throw error;
@@ -56,7 +58,6 @@ export const ShopProvider = ({ children }) => {
       if (data && data.length > 0) {
         setProducts(data.map(normalizeProduct));
       } else {
-        // Fallback to local data if Supabase table is empty
         setProducts(fallbackProducts);
       }
     } catch (error) {

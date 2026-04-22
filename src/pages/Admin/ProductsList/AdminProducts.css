@@ -653,6 +653,31 @@
   flex-direction: column;
   align-items: center;
   gap: 0.3rem;
+  position: relative;
+}
+
+.gallery-thumb-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.gallery-thumb-remove:hover {
+  transform: scale(1.15);
+  background: #dc2626;
 }
 
 .gallery-thumb img {

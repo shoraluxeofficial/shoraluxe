@@ -154,18 +154,44 @@
 .hm-card-preview {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   flex: 1;
   min-width: 0;
 }
 
+.hm-dual-preview {
+  display: flex;
+  gap: 0.8rem;
+  flex-shrink: 0;
+}
+
+.hm-preview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hm-preview-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
 .hm-card-img {
   width: 100px;
-  height: 60px;
+  height: 56px;
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
   border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.hm-card-img.mobile-v {
+  width: 45px;
 }
 
 .hm-card-video-thumb {
@@ -620,15 +646,108 @@
   margin-top: 0.25rem;
 }
 
-/* ── LEGACY SUPPORT (for shared admin styles) ───────────────────── */
-.admin-loader {
+/* ── VISUAL UPLOAD ──────────────────────────────────────────────── */
+.hm-visual-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hm-visual-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/7;
+  background: #f9fafb;
+  border: 2px dashed #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 300px;
-  font-size: 1.1rem;
-  color: #6b7280;
-  font-weight: 500;
 }
 
-.cms-container { display: none; } /* Hide old container if lingering */
+.hm-visual-preview:hover {
+  border-color: #111827;
+  background: #f3f4f6;
+}
+
+.hm-visual-preview.has-img {
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
+.hm-visual-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hm-visual-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.hm-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 0.5rem;
+  backdrop-filter: blur(2px);
+}
+
+.hm-visual-preview:hover .hm-visual-overlay {
+  opacity: 1;
+}
+
+.hm-visual-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.hm-mobile-preview {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 190px;
+  margin: 0;
+}
+
+.hm-visual-input-group {
+  display: flex;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.hm-visual-input-group input {
+  font-size: 0.75rem !important;
+  padding: 0.4rem 0.6rem !important;
+  color: #6b7280 !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* For mobile input to match the mobile preview width */
+.hm-visual-upload:has(.hm-mobile-preview) .hm-visual-input-group input {
+  max-width: 190px;
+}

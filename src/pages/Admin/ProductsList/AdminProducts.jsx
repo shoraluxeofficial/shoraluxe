@@ -34,6 +34,10 @@ const EMPTY_FORM = {
   stock: '',
   status: 'active',
   variants: [],
+  netQuantity: '',
+  idealFor: '',
+  cautions: '',
+  benefits: '',
 };
 
 const CATEGORIES = ['All Skin Types', 'Oily & Acne-Prone', 'Dry & Dehydrated', 'Dull & Uneven Tone', 'Mature Skin', 'Sensitive Skin', 'Very Dry Skin', 'Combination Skin'];
@@ -55,6 +59,12 @@ const AdminProducts = () => {
       console.error("Compression failed, using original file.", error);
       return file;
     }
+  };
+
+  const removeGalleryImage = (index) => {
+    const images = (typeof form.gallery === 'string' ? form.gallery : '').split('\n').filter(Boolean);
+    images.splice(index, 1);
+    setForm({ ...form, gallery: images.join('\n') });
   };
 
   const handleImageUpload = async (e) => {
@@ -233,6 +243,10 @@ const AdminProducts = () => {
       isSale: product.isSale || false,
       stock: product.stock || '',
       status: product.status || 'active',
+      netQuantity: product.netQuantity || '',
+      idealFor: Array.isArray(product.idealFor) ? product.idealFor.join('\n') : (product.idealFor || ''),
+      cautions: product.cautions || '',
+      benefits: product.benefits || '',
       variants: (() => {
         try {
            return JSON.parse(product.size);
@@ -306,6 +320,10 @@ const AdminProducts = () => {
         is_sale: form.badge === 'SALE',
         stock: form.stock !== '' ? Number(form.stock) : 100,
         status: form.status || 'active',
+        net_quantity: (form.netQuantity || '').trim(),
+        ideal_for: Array.isArray(form.idealFor) ? form.idealFor : form.idealFor?.split('\n').map(s => s.trim()).filter(Boolean) || [],
+        cautions: (form.cautions || '').trim(),
+        benefits: (form.benefits || '').trim(),
         updated_at: new Date()
       };
 
@@ -837,7 +855,18 @@ const AdminProducts = () => {
                       <div className="pf-section-title">Product Imagery</div>
 
                       <div className="pf-field full">
-                        <label>Primary Showcase Image <span className="req">*</span></label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                          <label style={{ marginBottom: 0 }}>Primary Showcase Image <span className="req">*</span></label>
+                          {form.img && (
+                            <button 
+                              type="button" 
+                              onClick={() => setForm({ ...form, img: '' })}
+                              style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            >
+                              <X size={12} /> Clear
+                            </button>
+                          )}
+                        </div>
                         <div className="pf-img-input-wrap">
                           <ImagePlus size={18} color="#6b7280" />
                           <input
@@ -865,7 +894,18 @@ const AdminProducts = () => {
                       </div>
 
                       <div className="pf-field full">
-                        <label>Additional Gallery Images (Bulk Upload)</label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                          <label style={{ marginBottom: 0 }}>Additional Gallery Images (Bulk Upload)</label>
+                          {form.gallery && (
+                            <button 
+                              type="button" 
+                              onClick={() => setForm({ ...form, gallery: '' })}
+                              style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            >
+                              <Trash2 size={12} /> Clear All
+                            </button>
+                          )}
+                        </div>
                         <input
                           type="file"
                           accept="image/*"
@@ -887,7 +927,15 @@ const AdminProducts = () => {
                         <div className="pf-gallery-previews">
                           {form.gallery.split('\n').filter(Boolean).map((url, i) => (
                             <div key={i} className="gallery-thumb">
-                              <img src={url.trim()} alt={`Gallery ${i + 1}`} onError={e => { e.target.style.display = 'none'; }} />
+                              <button 
+                                type="button" 
+                                className="gallery-thumb-remove" 
+                                onClick={() => removeGalleryImage(i)}
+                                title="Remove Image"
+                              >
+                                <X size={12} />
+                              </button>
+                              <img src={url.trim()} alt={`Gallery ${i + 1}`} onError={e => { e.target.parentElement.style.display = 'none'; }} />
                               <span>Image {i + 1}</span>
                             </div>
                           ))}
@@ -931,6 +979,47 @@ const AdminProducts = () => {
                           value={form.ingredients}
                           onChange={e => set('ingredients', e.target.value)}
                           placeholder="e.g. Zinc Oxide, Titanium Dioxide, Vitamin E, Aloe Vera Extract, Hyaluronic Acid."
+                        />
+                      </div>
+
+                      <div className="pf-field full">
+                        <label>Net Quantity</label>
+                        <input
+                          type="text"
+                          value={form.netQuantity}
+                          onChange={e => set('netQuantity', e.target.value)}
+                          placeholder="e.g. 100 ml, 50ml, pack of 2"
+                        />
+                      </div>
+
+                      <div className="pf-field full">
+                        <label>Ideal For (Skin Concerns)</label>
+                        <textarea
+                          rows={3}
+                          value={form.idealFor}
+                          onChange={e => set('idealFor', e.target.value)}
+                          placeholder={"Oily skin\nAcne-prone skin\nCombination skin"}
+                        />
+                        <span className="pf-hint">Write one concern per line.</span>
+                      </div>
+
+                      <div className="pf-field full">
+                        <label>Key Benefits (Bullet Points)</label>
+                        <textarea
+                          rows={3}
+                          value={form.benefits}
+                          onChange={e => set('benefits', e.target.value)}
+                          placeholder="Explain 3-5 main benefits of using this product."
+                        />
+                      </div>
+
+                      <div className="pf-field full">
+                        <label>Cautions & Warnings</label>
+                        <textarea
+                          rows={2}
+                          value={form.cautions}
+                          onChange={e => set('cautions', e.target.value)}
+                          placeholder="e.g. For external use only. Store in a cool, dry place."
                         />
                       </div>
 

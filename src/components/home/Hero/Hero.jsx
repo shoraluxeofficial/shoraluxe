@@ -4,9 +4,9 @@ import { supabase } from '../../../lib/supabase';
 import './Hero.css';
 
 const defaultBanners = [
-  { id: 1, url: '/shop', img: '/Banners/1000000387.jpg.jpeg', alt: 'Premium Care' },
-  { id: 2, url: '/shop', img: '/Banners/1000000389 (1).jpg.jpeg', alt: 'Luxury Serums' },
-  { id: 3, url: '/shop', img: '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp', alt: 'Special Offer' }
+  { id: 1, url: '/shop', desktopImg: '/Banners/1000000387.jpg.jpeg', mobileImg: '/Banners/1000000387.jpg.jpeg', alt: 'Premium Care' },
+  { id: 2, url: '/shop', desktopImg: '/Banners/1000000389 (1).jpg.jpeg', mobileImg: '/Banners/1000000389 (1).jpg.jpeg', alt: 'Luxury Serums' },
+  { id: 3, url: '/shop', desktopImg: '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp', mobileImg: '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp', alt: 'Special Offer' }
 ];
 
 const Hero = () => {
@@ -65,7 +65,14 @@ const Hero = () => {
           {bannerData.map((banner) => (
             <a key={banner.id} href={banner.url} className="hero-slide-link">
               <div className="hero-slide-item">
-                <img src={banner.img} alt={banner.alt} className="hero-slide-img" />
+                <picture>
+                  <source media="(max-width: 768px)" srcSet={banner.mobileImg || banner.img} />
+                  <img 
+                    src={banner.desktopImg || banner.img} 
+                    alt={banner.alt} 
+                    className="hero-slide-img" 
+                  />
+                </picture>
                 <div className="hero-hover-overlay"></div>
               </div>
             </a>
