@@ -4,7 +4,6 @@ import Categories from '../components/home/Categories/Categories';
 import QuizSection from '../components/home/QuizSection/QuizSection';
 import Products from '../components/home/Products/Products';
 import Bestsellers from '../components/home/Bestsellers/Bestsellers';
-import ComboOffers from '../components/home/ComboOffers/ComboOffers';
 import ShopByConcern from '../components/home/ShopByConcern/ShopByConcern';
 import WatchAndShop from '../components/home/WatchAndShop/WatchAndShop';
 import VideoBanners from '../components/home/VideoBanners/VideoBanners';
@@ -20,7 +19,6 @@ const Home = () => {
       <QuizSection />
       <Products />
       <Bestsellers />
-      <ComboOffers />
       <ShopByConcern />
       <WatchAndShop />
       <VideoBanners />

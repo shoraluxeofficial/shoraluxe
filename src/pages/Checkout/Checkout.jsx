@@ -147,6 +147,11 @@ const Checkout = () => {
 
   const finalTotal = Math.max(0, cartTotal - discountAmount + shippingFee);
 
+  // Compute total savings (item-level discounts + promo code)
+  const totalOriginalPrice = cartItems.reduce((acc, item) => acc + ((item.originalPrice || item.price) * item.quantity), 0);
+  const itemSavings = totalOriginalPrice > cartTotal ? totalOriginalPrice - cartTotal : 0;
+  const totalSavings = itemSavings + discountAmount;
+
   const formatSize = (sizeStr) => {
     if (!sizeStr) return '';
     try {
@@ -607,10 +612,17 @@ const Checkout = () => {
                   <span className="s-qty-badge">{item.quantity}</span>
                 </div>
                 <div className="s-info">
-                  <h4>{item.title.split('|')[0]}</h4>
-                  <p>{formatSize(item.size)}</p>
+                  <h4>{item.title}</h4>
+                  <p>{formatSize(item.size)} <span style={{ opacity: 0.7, margin: '0 4px' }}>|</span> Qty: {item.quantity}</p>
                 </div>
-                <div className="s-price">₹{(item.price * item.quantity).toLocaleString('en-IN')}</div>
+                <div className="s-price">
+                  {item.originalPrice > item.price && (
+                    <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '0.75rem', display: 'block', textAlign: 'right' }}>
+                      ₹{(item.originalPrice * item.quantity).toLocaleString('en-IN')}
+                    </span>
+                  )}
+                  <span>₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -630,6 +642,12 @@ const Checkout = () => {
               <div className="tot-row promo-saving-row">
                 <span><Tag size={14} /> Promo ({appliedPromo.code})</span>
                 <span className="saving-amt">−₹{discountAmount.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            {totalSavings > 0 && (
+              <div className="tot-row promo-saving-row" style={{ color: '#10b981', fontWeight: '600' }}>
+                <span>Total Savings</span>
+                <span className="saving-amt">₹{totalSavings.toLocaleString('en-IN')}</span>
               </div>
             )}
             <div className="tot-row final">

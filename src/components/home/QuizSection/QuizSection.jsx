@@ -124,6 +124,16 @@ const QuizSection = () => {
 
   const handleSelectOption = (questionId, value) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
+
+    // Auto-advance after a short delay so the user sees their selection
+    setTimeout(() => {
+      if (currentStepIndex < QUIZ_QUESTIONS.length - 1) {
+        setCurrentStepIndex(currentStepIndex + 1);
+      } else {
+        setViewState('analyzing');
+        runAnalyzeSequence();
+      }
+    }, 450);
   };
 
   const handleNext = () => {
@@ -214,7 +224,7 @@ const QuizSection = () => {
     if (viewState === 'results' && liveProducts.length > 0) {
       setSelectedProductIds(liveProducts.map(p => p.id));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewState]);
 
   /* ─── START ─── */
@@ -230,19 +240,18 @@ const QuizSection = () => {
           {/* Left content */}
           <div className="qs-start-left">
             <span className="qs-eyebrow">
-              <Zap size={12} /> RADIANCE ANALYST™ · Personalized For You
+              <Zap size={12} /> INTRODUCING THE RADIANCE ANALYST
             </span>
             <h1 className="qs-start-h1">
-              Your Skin Has a<br />
-              <em>Story.</em> Let Us<br />
-              <span className="qs-h1-accent">Read It.</span>
+              <span style={{ color: 'var(--brand-burgundy, #900b3b)' }}>Discover Your Glow:</span><br />
+              <em>The Personalized Skin Quiz For Gen Z Indian Skin</em>
             </h1>
             <p className="qs-start-desc">
               Answer 8 quick questions. Our algorithm analyzes your skin type, environment, lifestyle &amp; concerns to build a bespoke ritual — in under 3 minutes.
             </p>
 
             <button className="qs-cta-btn" onClick={startQuiz}>
-              <span>Begin My Analysis</span>
+              <span>Start The Quiz</span>
               <ArrowRight size={18} />
             </button>
 
@@ -416,13 +425,6 @@ const QuizSection = () => {
                   />
                 ))}
               </div>
-              <button
-                className={`qs-next-btn ${canContinue ? '' : 'qs-next-btn--disabled'}`}
-                onClick={() => canContinue && handleNext()}
-              >
-                {currentStepIndex === QUIZ_QUESTIONS.length - 1 ? 'Analyze My Profile' : 'Continue'}
-                <ArrowRight size={18} />
-              </button>
             </div>
           </div>
 

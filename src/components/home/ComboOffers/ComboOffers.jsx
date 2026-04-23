@@ -7,8 +7,17 @@ import './ComboOffers.css';
 const ComboOffers = () => {
   const { products } = useShop();
 
-  // Filter for products that include "Combo" in their title
-  const comboProducts = products.filter(p => p.title.toLowerCase().includes('combo')).slice(0, 3);
+  // Filter for products that include "Combo" in their title, and sort so the "Trio" (featured) is always first
+  const comboProducts = products
+    .filter(p => p.title.toLowerCase().includes('combo'))
+    .sort((a, b) => {
+      const aTrio = a.title.toLowerCase().includes('trio');
+      const bTrio = b.title.toLowerCase().includes('trio');
+      if (aTrio && !bTrio) return -1;
+      if (!aTrio && bTrio) return 1;
+      return 0;
+    })
+    .slice(0, 3);
 
   if (comboProducts.length === 0) return null;
 

@@ -11,6 +11,7 @@ const categoryData = [
   { name: 'Day Creams',    slug: 'day-cream',   img: '/Prodcuts/Day Creams.jpg' },
   { name: 'Night Creams',  slug: 'night-cream', img: '/Prodcuts/Night Creams.jpg' },
   { name: 'Body Lotions',  slug: 'body-lotion', img: '/Prodcuts/Body Lotions.jpg' },
+  { name: 'Combos',        slug: 'combo',       img: '/Prodcuts/Combo.jpeg' },
 ];
 
 const Categories = () => {

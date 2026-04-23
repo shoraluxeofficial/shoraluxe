@@ -24,7 +24,9 @@ const Footer = () => {
       <div className="footer-content-wrap">
         {/* TOP BRAND SIGNATURE */}
         <div className="footer-top-signature">
-          <h2 className="footer-grand-logo">SHORALUXE</h2>
+          <a href="/" className="footer-logo-link">
+            <img src="/Logo.png" alt="Shoraluxe" className="footer-logo-img" />
+          </a>
           <p className="footer-mission-text">Elevating your daily ritual through the science of luxury skincare.</p>
         </div>
 

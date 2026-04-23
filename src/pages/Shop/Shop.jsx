@@ -1,31 +1,31 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search } from 'lucide-react';
+import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import './Shop.css';
 
 const CONCERNS = [
-  { id: 'all',                    label: 'All Products',              emoji: '🛍️' },
-  { id: 'acne-breakouts',         label: 'Acne & Breakouts',          emoji: '🧼' },
-  { id: 'pigmentation-dark-spots',label: 'Pigmentation & Dark Spots', emoji: '✨' },
-  { id: 'dullness-uneven-tone',   label: 'Dullness & Uneven Tone',    emoji: '🌟' },
-  { id: 'anti-aging-fine-lines',  label: 'Anti-Aging & Fine Lines',   emoji: '⏳' },
-  { id: 'sensitivity-redness',    label: 'Sensitivity & Redness',     emoji: '🌿' },
-  { id: 'dryness-dehydration',    label: 'Dryness & Dehydration',     emoji: '💧' },
-  { id: 'oily-skin-pore-control', label: 'Oily Skin & Pore Control',  emoji: '🫧' },
-  { id: 'sun-protection',         label: 'Sun Protection',            emoji: '☀️' },
+  { id: 'all', label: 'All Products', emoji: '🛍️' },
+  { id: 'acne-breakouts', label: 'Acne & Breakouts', emoji: '🧼' },
+  { id: 'pigmentation-dark-spots', label: 'Pigmentation & Dark Spots', emoji: '✨' },
+  { id: 'dullness-uneven-tone', label: 'Dullness & Uneven Tone', emoji: '🌟' },
+  { id: 'anti-aging-fine-lines', label: 'Anti-Aging & Fine Lines', emoji: '⏳' },
+  { id: 'sensitivity-redness', label: 'Sensitivity & Redness', emoji: '🌿' },
+  { id: 'dryness-dehydration', label: 'Dryness & Dehydration', emoji: '💧' },
+  { id: 'oily-skin-pore-control', label: 'Oily Skin & Pore Control', emoji: '🫧' },
+  { id: 'sun-protection', label: 'Sun Protection', emoji: '☀️' },
 ];
 
 // Exact product title keywords per concern (matches ShopByConcern section)
 const CONCERN_KEYWORDS = {
-  'acne-breakouts':          ['salicylic', 'charcoal', 'ubtan', 'non sticky moisturizer', 'non-sticky moisturizer', 'sunscreen'],
+  'acne-breakouts': ['salicylic', 'charcoal', 'ubtan', 'non sticky moisturizer', 'non-sticky moisturizer', 'sunscreen'],
   'pigmentation-dark-spots': ['vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'ubtan', 'rice water', 'sunscreen'],
-  'dullness-uneven-tone':    ['vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'ubtan', 'rice water', 'hyaluronic acid hydrating', 'body lotion', 'lavender body wash'],
-  'anti-aging-fine-lines':   ['retinol', 'vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'hyaluronic acid hydrating', 'sunscreen'],
-  'sensitivity-redness':     ['rice water', 'hyaluronic acid hydrating', 'non sticky moisturizer', 'non-sticky moisturizer', 'body lotion', 'shea butter', 'lavender body wash'],
-  'dryness-dehydration':     ['non sticky moisturizer', 'non-sticky moisturizer', 'body lotion', 'shea butter', 'hyaluronic acid hydrating', 'rice water', 'retinol'],
-  'oily-skin-pore-control':  ['salicylic', 'charcoal', 'non sticky moisturizer', 'non-sticky moisturizer', 'sunscreen'],
-  'sun-protection':          ['sunscreen', 'brightening day cream'],
+  'dullness-uneven-tone': ['vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'ubtan', 'rice water', 'hyaluronic acid hydrating', 'body lotion', 'lavender body wash'],
+  'anti-aging-fine-lines': ['retinol', 'vitamin c & niacinamide', 'niacinamide face serum', 'brightening day cream', 'hyaluronic acid hydrating', 'sunscreen'],
+  'sensitivity-redness': ['rice water', 'hyaluronic acid hydrating', 'non sticky moisturizer', 'non-sticky moisturizer', 'body lotion', 'shea butter', 'lavender body wash'],
+  'dryness-dehydration': ['non sticky moisturizer', 'non-sticky moisturizer', 'body lotion', 'shea butter', 'hyaluronic acid hydrating', 'rice water', 'retinol'],
+  'oily-skin-pore-control': ['salicylic', 'charcoal', 'non sticky moisturizer', 'non-sticky moisturizer', 'sunscreen'],
+  'sun-protection': ['sunscreen', 'brightening day cream'],
 };
 
 const CATEGORY_LABELS = {
@@ -36,10 +36,17 @@ const CATEGORY_LABELS = {
   'body-wash': 'Body Washes',
   'day-cream': 'Day Creams',
   'night-cream': 'Night Creams',
-  'body-lotion': 'Body Lotions'
+  'body-lotion': 'Body Lotions',
+  'combo': 'Combos'
 };
 
 const SKIN_TYPES = ['All', 'Dry', 'Oily', 'Normal', 'Acne-Prone', 'Sensitive'];
+
+const HERO_BANNERS = [
+  '/Banners/1000000387.jpg.jpeg',
+  '/Banners/1000000389 (1).jpg.jpeg',
+  '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp'
+];
 
 const Shop = () => {
   const { products, addToCart, loading } = useShop();
@@ -57,6 +64,17 @@ const Shop = () => {
   const [wishlist, setWishlist] = useState([]);
   const [addedToCart, setAddedToCart] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % HERO_BANNERS.length);
+    }, 5000);
+    return () => clearInterval(slideInterval);
+  }, []);
+
+  const nextSlide = () => setActiveSlide((prev) => (prev + 1) % HERO_BANNERS.length);
+  const prevSlide = () => setActiveSlide((prev) => (prev - 1 + HERO_BANNERS.length) % HERO_BANNERS.length);
 
   useEffect(() => {
     setActiveConcern(queryParams.get('concern') || 'all');
@@ -123,7 +141,7 @@ const Shop = () => {
         const title = p.title.toLowerCase();
         const desc = (p.description || '').toLowerCase();
         const type = (p.skinType || '').toLowerCase();
-        
+
         if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser');
         if (cat === 'serum') return title.includes('serum');
         if (cat === 'moisturizer') return title.includes('moisturizer') || title.includes('gel');
@@ -132,7 +150,8 @@ const Shop = () => {
         if (cat === 'day-cream') return title.includes('day cream');
         if (cat === 'night-cream') return title.includes('night cream');
         if (cat === 'body-lotion') return title.includes('body lotion');
-        
+        if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio');
+
         return title.includes(cat) || desc.includes(cat) || type.includes(cat);
       });
     }
@@ -197,32 +216,36 @@ const Shop = () => {
     <main className="shop-page">
       {/* HERO */}
       <header className="shop-hero">
-        <div className="shop-hero-inner">
-          <p className="shop-hero-eyebrow">Shoraluxe Collection</p>
-          <h1 className="shop-hero-title">Luxury Skincare</h1>
-          <p className="shop-hero-subtitle">Science-backed formulas crafted for exceptional results</p>
-          <div className="shop-hero-search">
-            <Search size={16} className="shop-hero-search-icon" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="shop-hero-search-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button className="shop-hero-search-clear" onClick={() => setSearchQuery('')}>
-                <X size={14} />
-              </button>
-            )}
-          </div>
-        </div>
-        <div className="shop-hero-scroll-hint">
-          <span>Explore</span>
-          <div className="scroll-line" />
-        </div>
-      </header>
+        {/* Slider Backgrounds */}
+        {HERO_BANNERS.map((banner, index) => (
+          <div 
+            key={index}
+            className={`hero-slide ${index === activeSlide ? 'active' : ''}`}
+            style={{ backgroundImage: `url("${banner}")` }}
+          />
+        ))}
 
+        {/* Slider Controls */}
+        <button className="hero-slide-btn prev" onClick={prevSlide}>
+          <ChevronLeft size={28} />
+        </button>
+        <button className="hero-slide-btn next" onClick={nextSlide}>
+          <ChevronRight size={28} />
+        </button>
+
+        {/* Slider Indicators */}
+        <div className="hero-slide-indicators">
+          {HERO_BANNERS.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator-dot ${index === activeSlide ? 'active' : ''}`}
+              onClick={() => setActiveSlide(index)}
+            />
+          ))}
+        </div>
+
+
+      </header>
       {/* CONCERN PILLS (horizontal scroll on mobile) */}
       <div className="concern-strip-wrap">
         <div className="concern-strip">
@@ -419,7 +442,7 @@ const Shop = () => {
                             )}
                           </div>
                         </Link>
-                        
+
                         {/* Wishlist */}
                         <button
                           className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
@@ -493,7 +516,7 @@ const Shop = () => {
                                 if (Array.isArray(parsed) && parsed.length > 0) {
                                   return parsed[0].label + (parsed.length > 1 ? ' & More' : '');
                                 }
-                              } catch (e) {}
+                              } catch (e) { }
                               // Fallback to old logic
                               return product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size.split(':')[0];
                             })()}

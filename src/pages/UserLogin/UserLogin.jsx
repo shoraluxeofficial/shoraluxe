@@ -20,11 +20,22 @@ const UserLogin = () => {
   const [verificationId, setVerificationId] = useState(null);
   const [toast, setToast] = useState(null); // { message: '', type: 'success' }
   const [userId, setUserId] = useState(null);
-  
+
   const { setUser } = useShop();
   const navigate = useNavigate();
   const location = useLocation();
 
+
+  // Lock body scroll on login page
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -45,7 +56,7 @@ const UserLogin = () => {
   const showToast = (message) => {
     setToast({ message });
     if (message.includes('Success')) {
-        confetti({ particleCount: 100, spread: 70, origin: { x: 0.9, y: 0.1 } });
+      confetti({ particleCount: 100, spread: 70, origin: { x: 0.9, y: 0.1 } });
     }
   };
 
@@ -85,9 +96,9 @@ const UserLogin = () => {
         const res = await fetch(`${API_URL}/oauth-login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-             credential: credentialResponse.credential, // Send the token to the backend for secure validation
-             deviceId: 'browser_id' 
+          body: JSON.stringify({
+            credential: credentialResponse.credential, // Send the token to the backend for secure validation
+            deviceId: 'browser_id'
           })
         });
         const data = await res.json();
@@ -107,7 +118,7 @@ const UserLogin = () => {
     setLoading(true);
     try {
       const phoneWithCode = `+91${form.phone}`;
-      
+
       // 1. Verify OTP with backend
       const verifyRes = await fetch(`${API_URL}/verify-backend-otp`, {
         method: 'POST',
@@ -115,7 +126,7 @@ const UserLogin = () => {
         body: JSON.stringify({ mobile: phoneWithCode, otp: form.otp })
       });
       const verifyData = await verifyRes.json();
-      
+
       if (!verifyRes.ok) throw new Error(verifyData.error || 'Invalid OTP');
 
       // 2. Check if user exists to decide next step
@@ -127,9 +138,9 @@ const UserLogin = () => {
       const data = await res.json();
 
       if (res.status === 404 || (data && data.error === 'User not found')) {
-          setStep(3); // New User -> Ask for Details
+        setStep(3); // New User -> Ask for Details
       } else {
-          handleFinalSuccess(data.user || { name: 'User', mobile: phoneWithCode }, 'success_login');
+        handleFinalSuccess(data.user || { name: 'User', mobile: phoneWithCode }, 'success_login');
       }
     } catch (err) {
       setError(err.message || 'Invalid OTP code.');
@@ -142,30 +153,30 @@ const UserLogin = () => {
   const handleRegisterDetails = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || form.passcode.length !== 6) {
-        setError('Please fill all fields and 6-digit PIN.');
-        return;
+      setError('Please fill all fields and 6-digit PIN.');
+      return;
     }
     if (form.passcode !== form.confirmPasscode) {
-        setError('PIN and Confirm PIN do not match.');
-        return;
+      setError('PIN and Confirm PIN do not match.');
+      return;
     }
 
     setLoading(true);
     try {
-        const phoneWithCode = `+91${form.phone}`;
-        const res = await fetch(`${API_URL}/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: form.name, mobile: phoneWithCode, email: form.email, initialPasscode: form.passcode })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+      const phoneWithCode = `+91${form.phone}`;
+      const res = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, mobile: phoneWithCode, email: form.email, initialPasscode: form.passcode })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
 
-        handleFinalSuccess({ name: form.name, mobile: phoneWithCode }, 'success_reg');
+      handleFinalSuccess({ name: form.name, mobile: phoneWithCode }, 'success_reg');
     } catch (err) {
-        setError(err.message);
+      setError(err.message);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -173,25 +184,25 @@ const UserLogin = () => {
   const handleReturningLogin = async (e) => {
     e.preventDefault();
     if (form.passcode.length !== 6) {
-        setError('Please enter your 6-digit PIN.');
-        return;
+      setError('Please enter your 6-digit PIN.');
+      return;
     }
     setLoading(true);
     try {
-        const phoneWithCode = `+91${form.phone}`;
-        const res = await fetch(`${API_URL}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mobile: phoneWithCode, passcode: form.passcode, deviceId: 'browser_id' })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+      const phoneWithCode = `+91${form.phone}`;
+      const res = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile: phoneWithCode, passcode: form.passcode, deviceId: 'browser_id' })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
 
-        handleFinalSuccess(data.user, 'success_login');
+      handleFinalSuccess(data.user, 'success_login');
     } catch (err) {
-        setError(err.message || 'Incorrect PIN.');
+      setError(err.message || 'Incorrect PIN.');
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -200,16 +211,16 @@ const UserLogin = () => {
       console.warn('Login success but user data missing name. Using form data as fallback.');
       userData = { ...userData, name: form.name || 'User', mobile: `+91${form.phone}` };
     }
-    
+
     console.log('Final Login Success. Setting user:', userData);
     localStorage.setItem('shoraluxe_user', JSON.stringify(userData));
     setUser(userData);
-    
+
     showToast(type === 'success_reg' ? 'Successfully Registered! 🎉' : 'Successfully login! 🎉');
-    
+
     setTimeout(() => {
-        const redirect = new URLSearchParams(location.search).get('redirect');
-        window.location.href = redirect || '/';
+      const redirect = new URLSearchParams(location.search).get('redirect');
+      window.location.href = redirect || '/';
     }, 1500);
   };
 
@@ -218,35 +229,31 @@ const UserLogin = () => {
       {/* TOAST NOTIFICATION */}
       {toast && (
         <div className="shora-toast anim-fade-in shadow-lg">
-           <div className="toast-content">
-              <div className="toast-icon-bg">
-                <CheckCircle size={18} color="#fff" />
-              </div>
-              <span>{toast.message}</span>
-           </div>
-           <button className="toast-close" onClick={() => setToast(null)}><X size={14} /></button>
+          <div className="toast-content">
+            <div className="toast-icon-bg">
+              <CheckCircle size={18} color="#fff" />
+            </div>
+            <span>{toast.message}</span>
+          </div>
+          <button className="toast-close" onClick={() => setToast(null)}><X size={14} /></button>
         </div>
       )}
 
       <div className="user-login-split">
         <div className="user-brand-panel">
           <div className="brand-panel-content">
+            <Link to="/" className="brand-panel-logo-link">
+              <img src="/Logo.png" alt="Shoraluxe" className="brand-panel-logo" />
+            </Link>
             <div className="brand-badge">SHORALUXE SECURE</div>
             <h1>Premium beauty verified in seconds.</h1>
-            <p>Your account is protected by industry-leading 256-bit encryption for safe & fast shopping.</p>
+            <p>Your account is protected by industry-leading 256-bit encryption for safe &amp; fast shopping.</p>
           </div>
         </div>
 
         <div className="user-form-panel">
           <div className="user-form-wrap">
 
-            {/* Logo */}
-            <div className="login-logo-wrap" style={{ marginBottom: '2rem' }}>
-              <Link to="/" className="logo" style={{ textDecoration: 'none', fontSize: '28px', fontWeight: '800', letterSpacing: '2px', display: 'inline-block' }}>
-                <span style={{ color: '#000' }}>SHORA</span>
-                <span style={{ color: '#888' }}>LUXE</span>
-              </Link>
-            </div>
 
             {/* EMAIL LOGIN - Primary flow */}
             <div className="anim-slide-in">
@@ -257,14 +264,14 @@ const UserLogin = () => {
                   <label>Email Address</label>
                   <div className="ul-input-wrap">
                     <Mail size={18} className="ul-icon" />
-                    <input type="email" name="email" placeholder="john@example.com" value={form.email} onChange={(e)=>setForm({...form, email: e.target.value})} required />
+                    <input type="email" name="email" placeholder="john@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
                   </div>
                 </div>
                 <div className="ul-field">
                   <label>6-Digit PIN</label>
                   <div className="ul-input-wrap">
                     <Lock size={18} className="ul-icon" />
-                    <input type="password" name="passcode" placeholder="••••••" value={form.passcode} onChange={(e)=>setForm({...form, passcode: e.target.value})} maxLength={6} required />
+                    <input type="password" name="passcode" placeholder="••••••" value={form.passcode} onChange={(e) => setForm({ ...form, passcode: e.target.value })} maxLength={6} required />
                   </div>
                 </div>
                 {error && <div className="ul-error">{error}</div>}
@@ -277,7 +284,7 @@ const UserLogin = () => {
                 <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: '#e0e0e0', zIndex: 1 }}></div>
                 <span style={{ position: 'relative', zIndex: 2, background: '#fff', padding: '0 10px', color: '#666', fontSize: '0.9rem' }}>or continue with</span>
               </div>
-              
+
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}

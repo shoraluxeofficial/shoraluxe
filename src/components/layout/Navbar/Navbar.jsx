@@ -49,11 +49,10 @@ const Navbar = () => {
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          {/* Logo - Adjusted for SHORA (Gold) and LUXE (Silver) */}
+          {/* Logo */}
           <div className="logo-wrap">
             <a href="/" className="logo">
-              <span className="logo-shora">SHORA</span>
-              <span className="logo-luxe">LUXE</span>
+              <img src="/Logo.png" alt="Shoraluxe" className="logo-img" />
             </a>
           </div>
 
