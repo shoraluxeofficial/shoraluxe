@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { Search, ShoppingBag, User, Menu, X, ChevronDown, LogOut } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Search, ShoppingBag, User, Menu, X, ChevronDown, LogOut, Droplets, Sparkles, Sun, Hourglass, Leaf, Waves, Wind, Shield } from 'lucide-react';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useShop } from '../../../context/ShopContext';
 import './Navbar.css';
 
 const CONCERNS = [
-  { emoji: '🧼', label: 'Acne & Breakouts',          slug: 'acne-breakouts' },
-  { emoji: '✨', label: 'Pigmentation & Dark Spots',  slug: 'pigmentation-dark-spots' },
-  { emoji: '🌟', label: 'Dullness & Uneven Tone',     slug: 'dullness-uneven-tone' },
-  { emoji: '⏳', label: 'Anti‑Aging & Fine Lines',    slug: 'anti-aging-fine-lines' },
-  { emoji: '🌿', label: 'Sensitivity & Redness',      slug: 'sensitivity-redness' },
-  { emoji: '💧', label: 'Dryness & Dehydration',      slug: 'dryness-dehydration' },
-  { emoji: '🫧', label: 'Oily Skin & Pore Control',   slug: 'oily-skin-pore-control' },
-  { emoji: '☀️', label: 'Sun Protection',              slug: 'sun-protection' },
+  { icon: Droplets,  label: 'Acne & Breakouts',          slug: 'acne-breakouts' },
+  { icon: Sparkles,  label: 'Pigmentation & Dark Spots',  slug: 'pigmentation-dark-spots' },
+  { icon: Sun,       label: 'Dullness & Uneven Tone',     slug: 'dullness-uneven-tone' },
+  { icon: Hourglass, label: 'Anti‑Aging & Fine Lines',    slug: 'anti-aging-fine-lines' },
+  { icon: Leaf,      label: 'Sensitivity & Redness',      slug: 'sensitivity-redness' },
+  { icon: Waves,     label: 'Dryness & Dehydration',      slug: 'dryness-dehydration' },
+  { icon: Wind,      label: 'Oily Skin & Pore Control',   slug: 'oily-skin-pore-control' },
+  { icon: Shield,    label: 'Sun Protection',              slug: 'sun-protection' },
 ];
 
 const Navbar = () => {
@@ -59,8 +59,8 @@ const Navbar = () => {
           {/* Center Navigation - RESTORED LINKS */}
           <nav className="desktop-main-nav desktop-only">
             <ul className="main-nav-list">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/shop">Shop All</Link></li>
+              <li><NavLink to="/" end>Home</NavLink></li>
+              <li><NavLink to="/shop" end>Shop All</NavLink></li>
               <li className="nav-dropdown-wrapper">
                 <a href="#concern" className="nav-dropdown-trigger" onClick={e => e.preventDefault()}>
                   Shop by Concern <ChevronDown size={14} className="dropdown-arrow" />
@@ -71,7 +71,9 @@ const Navbar = () => {
                     {CONCERNS.map(c => (
                       <li key={c.slug}>
                         <Link to={`/shop?concern=${c.slug}`}>
-                          <span className="concern-dd-emoji">{c.emoji}</span>
+                          <span className="concern-dd-icon">
+                            <c.icon size={16} strokeWidth={2} />
+                          </span>
                           <span className="concern-dd-label">{c.label}</span>
                         </Link>
                       </li>
@@ -79,8 +81,8 @@ const Navbar = () => {
                   </ul>
                 </div>
               </li>
-              <li><Link to="/track-order">Track Order</Link></li>
-              <li><Link to="/quiz">Glow Up Quiz</Link></li>
+              <li><NavLink to="/track-order">Track Order</NavLink></li>
+              <li><NavLink to="/quiz">Glow Up Quiz</NavLink></li>
             </ul>
           </nav>
 
@@ -161,7 +163,9 @@ const Navbar = () => {
                         to={`/shop?concern=${c.slug}`}
                         onClick={() => { setMenuOpen(false); setConcernOpen(false); }}
                       >
-                        <span>{c.emoji}</span> {c.label}
+                        <span className="mobile-concern-icon">
+                          <c.icon size={16} strokeWidth={2} />
+                        </span> {c.label}
                       </Link>
                     </li>
                   ))}

@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Droplets, Sparkles, Sun, Hourglass, Leaf, Waves, Wind, Shield } from 'lucide-react';
 import './ShopByConcern.css';
 
 const concernData = [
   {
     id: 'acne-breakouts',
     title: 'Acne & Breakouts',
-    emoji: '🧼',
-    color: '#e8f4e8',
-    accent: '#3a7d44',
+    icon: Droplets,
     desc: 'Unclogs pores, reduces oil, and treats active breakouts.',
     products: [
       { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=600' },
@@ -21,9 +20,7 @@ const concernData = [
   {
     id: 'pigmentation-dark-spots',
     title: 'Pigmentation & Dark Spots',
-    emoji: '✨',
-    color: '#fef9ec',
-    accent: '#c9a226',
+    icon: Sparkles,
     desc: 'Brightens skin, fades marks, and evens out skin tone.',
     products: [
       { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
@@ -36,9 +33,7 @@ const concernData = [
   {
     id: 'dullness-uneven-tone',
     title: 'Dullness & Uneven Tone',
-    emoji: '🌟',
-    color: '#fff8f0',
-    accent: '#e07b39',
+    icon: Sun,
     desc: 'Glow-boosting, brightening & radiance-enhancing products.',
     products: [
       { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
@@ -53,9 +48,7 @@ const concernData = [
   {
     id: 'anti-aging-fine-lines',
     title: 'Anti‑Aging & Fine Lines',
-    emoji: '⏳',
-    color: '#f3f0ff',
-    accent: '#7c5cbf',
+    icon: Hourglass,
     desc: 'Supports collagen, smooths texture & reduces early aging.',
     products: [
       { name: 'Retinol Night Cream', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=600' },
@@ -68,9 +61,7 @@ const concernData = [
   {
     id: 'sensitivity-redness',
     title: 'Sensitivity & Redness',
-    emoji: '🌿',
-    color: '#edf7f3',
-    accent: '#2e8b6a',
+    icon: Leaf,
     desc: 'Gentle, soothing & barrier-supporting formulas.',
     products: [
       { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
@@ -84,9 +75,7 @@ const concernData = [
   {
     id: 'dryness-dehydration',
     title: 'Dryness & Dehydration',
-    emoji: '💧',
-    color: '#eaf4fb',
-    accent: '#1a7abf',
+    icon: Waves,
     desc: 'Deep hydration, nourishment & moisture-locking care.',
     products: [
       { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
@@ -100,9 +89,7 @@ const concernData = [
   {
     id: 'oily-skin-pore-control',
     title: 'Oily Skin & Pore Control',
-    emoji: '🫧',
-    color: '#f0f7ff',
-    accent: '#2563b8',
+    icon: Wind,
     desc: 'Oil-balancing, pore-clearing & mattifying products.',
     products: [
       { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=600' },
@@ -114,9 +101,7 @@ const concernData = [
   {
     id: 'sun-protection',
     title: 'Sun Protection',
-    emoji: '☀️',
-    color: '#fff4e0',
-    accent: '#d97706',
+    icon: Shield,
     desc: 'Protect from UV damage, tanning & premature aging.',
     products: [
       { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
@@ -152,10 +137,11 @@ const ShopByConcern = () => {
             <button
               key={c.id}
               className={`sbc-tab ${active === idx ? 'sbc-tab--active' : ''}`}
-              style={active === idx ? { '--tab-accent': c.accent, '--tab-bg': c.color } : {}}
               onClick={() => { setActive(idx); setHoveredProduct(null); }}
             >
-              <span className="sbc-tab-emoji">{c.emoji}</span>
+              <span className="sbc-tab-icon">
+                <c.icon size={16} strokeWidth={2.5} />
+              </span>
               <span className="sbc-tab-label">{c.title}</span>
             </button>
           ))}
@@ -163,11 +149,13 @@ const ShopByConcern = () => {
       </div>
 
       {/* CONTENT CARD */}
-      <div className="sbc-card" key={current.id} style={{ '--accent': current.accent, '--bg': current.color }}>
+      <div className="sbc-card" key={current.id}>
 
         {/* LEFT: product list */}
         <div className="sbc-card-left">
-          <div className="sbc-card-icon">{current.emoji}</div>
+          <div className="sbc-card-icon">
+            <current.icon size={48} strokeWidth={1.5} />
+          </div>
           <h3 className="sbc-card-title">{current.title}</h3>
           <p className="sbc-card-desc">{current.desc}</p>
           <div className="sbc-divider" />
@@ -243,7 +231,10 @@ const ShopByConcern = () => {
           </div>
 
           {/* concern label */}
-          <p className="sbc-right-label">{current.emoji} {current.title}</p>
+          <p className="sbc-right-label">
+            <current.icon size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            {current.title}
+          </p>
         </div>
 
       </div>
