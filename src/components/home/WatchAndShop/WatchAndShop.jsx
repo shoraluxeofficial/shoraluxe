@@ -94,14 +94,12 @@ const fallbackStories = [
 const WatchAndShop = () => {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
-  const [stories, setStories] = React.useState(fallbackStories);
-  const [loading, setLoading] = React.useState(false);
+  const [stories, setStories] = React.useState(null);
 
   // Fetch data and subscribe to realtime changes
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
         const { data, error } = await supabase
           .from('homepage_sections')
           .select('content')
@@ -109,11 +107,12 @@ const WatchAndShop = () => {
           .single();
         if (data && data.content && data.content.length > 0) {
           setStories(data.content);
+        } else {
+          setStories(fallbackStories);
         }
       } catch (e) {
         console.error(e);
-      } finally {
-        setLoading(false);
+        setStories(fallbackStories);
       }
     };
     fetchData();
@@ -146,7 +145,13 @@ const WatchAndShop = () => {
     }
   };
 
-  if (loading) return null;
+  if (!stories) {
+    return (
+      <section className="watch-section">
+        <div className="watch-inner" style={{ minHeight: '400px', background: '#f5f5f5', borderRadius: '20px', animation: 'pulse 1.5s infinite' }}></div>
+      </section>
+    );
+  }
 
   return (
     <section className="watch-section">
@@ -164,22 +169,22 @@ const WatchAndShop = () => {
             <div key={index} className="story-card" onClick={() => handleProductClick(story.productId)}>
               <div className="story-media-wrap">
                 {story.video ? (
-                   <video 
-                     className="story-video"
-                     src={encodeURI(story.video)}
-                     poster={story.img}
-                     muted
-                     loop
-                     autoPlay
-                     playsInline
-                   />
+                  <video
+                    className="story-video"
+                    src={encodeURI(story.video)}
+                    poster={story.img}
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                  />
                 ) : (
-                   <img src={story.img} alt={story.title} className="story-img" />
+                  <img src={story.img} alt={story.title} className="story-img" />
                 )}
-                
+
                 {/* Top Badge: Discount */}
                 <div className="story-discount-badge">{story.discount}</div>
-                
+
                 {/* Top Right: Views */}
                 <div className="story-views-badge">
                   <Eye size={12} />

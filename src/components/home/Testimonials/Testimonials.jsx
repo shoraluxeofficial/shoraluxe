@@ -49,21 +49,21 @@ const Testimonials = () => {
 
         <div className="testi-slider">
           {reviews.map((review, i) => (
-            <div 
+            <div
               key={review.id}
               className={`testi-card ${i === index ? 'active' : ''} ${i === (index - 1 + reviews.length) % reviews.length ? 'prev' : ''}`}
             >
               <div className="testi-quote-icon">
                 <Quote size={40} fill="var(--brand-gold)" stroke="none" opacity={0.2} />
               </div>
-              
+
               <div className="testi-rating">
                 {[...Array(5)].map((_, starI) => (
-                  <Star 
-                    key={starI} 
-                    size={16} 
-                    fill={starI < review.rating ? "var(--brand-gold)" : "none"} 
-                    stroke={starI < review.rating ? "var(--brand-gold)" : "#ddd"} 
+                  <Star
+                    key={starI}
+                    size={16}
+                    fill={starI < review.rating ? "var(--brand-gold)" : "none"}
+                    stroke={starI < review.rating ? "var(--brand-gold)" : "#ddd"}
                   />
                 ))}
               </div>
@@ -82,8 +82,8 @@ const Testimonials = () => {
 
         <div className="testi-dots">
           {reviews.map((_, i) => (
-            <button 
-              key={i} 
+            <button
+              key={i}
               className={`testi-dot ${i === index ? 'active' : ''}`}
               onClick={() => setIndex(i)}
             />

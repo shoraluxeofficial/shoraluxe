@@ -33,7 +33,8 @@
 /* SLIDER ENGINE */
 .testi-slider {
   position: relative;
-  height: 450px; /* Base height for all cards */
+  height: 450px;
+  /* Base height for all cards */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,7 +47,7 @@
   background: #fff;
   padding: 4rem;
   border-radius: 40px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.05);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -146,7 +147,16 @@
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .testi-heading { font-size: 2.2rem; }
-  .testi-card { padding: 3rem 2rem; border-radius: 30px; }
-  .testi-text { font-size: 1.25rem; }
+  .testi-heading {
+    font-size: 2.2rem;
+  }
+
+  .testi-card {
+    padding: 3rem 2rem;
+    border-radius: 30px;
+  }
+
+  .testi-text {
+    font-size: 1.25rem;
+  }
 }

@@ -10,7 +10,7 @@ const defaultBanners = [
 ];
 
 const Hero = () => {
-  const [bannerData, setBannerData] = useState(defaultBanners);
+  const [bannerData, setBannerData] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const timeoutRef = useRef(null);
 
@@ -28,8 +28,10 @@ const Hero = () => {
             .eq('section_name', 'hero')
             .single();
         
-        if (data && data.content) {
+        if (data && data.content && data.content.length > 0) {
             setBannerData(data.content);
+        } else {
+            setBannerData(defaultBanners);
         }
     };
     fetchBanners();
@@ -48,13 +50,23 @@ const Hero = () => {
 
   useEffect(() => {
     resetTimeout();
+    if (!bannerData) return;
+    
     timeoutRef.current = setTimeout(
       () => setCurrentIndex((prevIndex) => (prevIndex + 1) % bannerData.length),
       6000
     );
 
     return () => resetTimeout();
-  }, [currentIndex, bannerData.length]);
+  }, [currentIndex, bannerData?.length]);
+
+  if (!bannerData) {
+    return (
+      <section className="hero-section">
+        <div className="hero-slider-wrap" style={{ background: '#f5f5f5', animation: 'pulse 1.5s infinite' }}></div>
+      </section>
+    );
+  }
 
   const goToPrev = (e) => {
     e.preventDefault();
