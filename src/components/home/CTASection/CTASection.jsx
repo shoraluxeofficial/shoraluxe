@@ -24,6 +24,17 @@ const CTASection = () => {
       }
     };
     fetchData();
+
+    const subscription = supabase
+      .channel('public:cta')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.cta" }, (payload) => {
+        if (payload.new && payload.new.content) {
+          setData(payload.new.content);
+        }
+      })
+      .subscribe();
+
+    return () => supabase.removeChannel(subscription);
   }, []);
 
   return (

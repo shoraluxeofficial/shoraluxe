@@ -107,8 +107,27 @@ const HomepageManager = () => {
       setUploading(field);
       let f = file;
       if (file.type.startsWith('image/')) {
-        try { f = await imageCompression(file, { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true }); } catch(_) {}
+        try { 
+          f = await imageCompression(file, { 
+            maxSizeMB: 0.4, 
+            maxWidthOrHeight: 1200, 
+            useWebWorker: true,
+            fileType: 'image/webp',
+            initialQuality: 0.8
+          }); 
+          if (f.size > 2 * 1024 * 1024) throw new Error('File too large');
+        } catch(err) {
+          notify('Image compression failed or file too large.', 'error');
+          return;
+        }
+      } else if (file.type.startsWith('video/')) {
+        // Browsers cannot natively compress videos. We enforce a 5MB limit.
+        if (file.size > 5 * 1024 * 1024) {
+          notify('Video exceeds 5MB limit. Please compress it before uploading.', 'error');
+          return;
+        }
       }
+      
       const url = await uploadFile(f, 'brand-assets', activeTab);
       setEditModal(prev => ({ ...prev, draft: { ...prev.draft, [field]: url } }));
       notify('File uploaded!', 'success');

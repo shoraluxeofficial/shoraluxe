@@ -29,6 +29,17 @@ const VideoBanners = () => {
 
   React.useEffect(() => {
     fetchBanners();
+
+    const subscription = supabase
+      .channel('public:videoBanners')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.videoBanners" }, (payload) => {
+        if (payload.new && payload.new.content) {
+          setBanners(payload.new.content);
+        }
+      })
+      .subscribe();
+
+    return () => supabase.removeChannel(subscription);
   }, []);
 
   const fetchBanners = async () => {

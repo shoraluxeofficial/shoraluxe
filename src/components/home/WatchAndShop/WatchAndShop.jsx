@@ -97,8 +97,38 @@ const WatchAndShop = () => {
   const [stories, setStories] = React.useState(fallbackStories);
   const [loading, setLoading] = React.useState(false);
 
-  // You can still fetch from Supabase if needed, but we'll use fallback directly for now 
-  // to ensure the new videos show up immediately.
+  // Fetch data and subscribe to realtime changes
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('homepage_sections')
+          .select('content')
+          .eq('section_name', 'watchAndShop')
+          .single();
+        if (data && data.content && data.content.length > 0) {
+          setStories(data.content);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+
+    const subscription = supabase
+      .channel('public:watchAndShop')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.watchAndShop" }, (payload) => {
+        if (payload.new && payload.new.content && payload.new.content.length > 0) {
+          setStories(payload.new.content);
+        }
+      })
+      .subscribe();
+
+    return () => supabase.removeChannel(subscription);
+  }, []);
 
   const scroll = (direction) => {
     if (scrollRef.current) {

@@ -39,15 +39,15 @@ export const ShopProvider = ({ children }) => {
   });
 
   // Fetch products from Supabase
-  const fetchProducts = async () => {
+  const fetchProducts = async (isBackground = false) => {
     if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
       console.warn('Supabase keys missing. Using local fallback data.');
-      setLoading(false);
+      if (!isBackground) setLoading(false);
       return;
     }
 
     try {
-      setLoading(true);
+      if (!isBackground) setLoading(true);
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -64,12 +64,23 @@ export const ShopProvider = ({ children }) => {
       console.error('Error fetching products:', error.message);
       setProducts(fallbackProducts);
     } finally {
-      setLoading(false);
+      if (!isBackground) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchProducts();
+
+    const subscription = supabase
+      .channel('public:products')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+        fetchProducts(true);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, []);
 
   // Sync cart to LocalStorage

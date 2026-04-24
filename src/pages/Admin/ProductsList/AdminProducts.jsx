@@ -52,12 +52,25 @@ const AdminProducts = () => {
   const { notify } = useNotify();
 
   const compressImage = async (file) => {
-    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true };
+    // Force aggressive compression and convert to WebP to prevent massive PNGs
+    const options = { 
+      maxSizeMB: 0.4, 
+      maxWidthOrHeight: 1200, 
+      useWebWorker: true,
+      fileType: 'image/webp',
+      initialQuality: 0.8
+    };
     try {
-      return await imageCompression(file, options);
+      const compressed = await imageCompression(file, options);
+      // Fallback safeguard: if it still somehow exceeds 2MB after compression, alert the user
+      if (compressed.size > 2 * 1024 * 1024) {
+         notify('Image is still too large after compression. Please use a smaller file.', 'error');
+         throw new Error('File too large');
+      }
+      return compressed;
     } catch (error) {
-      console.error("Compression failed, using original file.", error);
-      return file;
+      console.error("Compression failed.", error);
+      throw error; // Prevent uploading the original 20MB file if compression fails
     }
   };
 
@@ -79,6 +92,7 @@ const AdminProducts = () => {
       notify('Product image uploaded and compressed successfully!', 'success');
     } catch (err) {
       console.error('Upload error:', err);
+      if (err.message === 'File too large') return;
       notify('Upload failed. Ensure "brand-assets" bucket exists.', 'error');
     } finally {
       setUploading(false);
@@ -112,6 +126,7 @@ const AdminProducts = () => {
       notify(`${files.length} gallery images uploaded & compressed!`, 'success');
     } catch (err) {
       console.error('Gallery upload error:', err);
+      if (err.message === 'File too large') return;
       notify('Gallery upload failed.', 'error');
     } finally {
       setUploading(false);

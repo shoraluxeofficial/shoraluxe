@@ -113,10 +113,30 @@ const QuizSection = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeStep, setAnalyzeStep] = useState(0);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [quizData, setQuizData] = useState({
+    heading: 'Discover Your Glow:',
+    text: 'Answer 8 quick questions. Our algorithm analyzes your skin type, environment, lifestyle & concerns to build a bespoke ritual — in under 3 minutes.',
+    buttonText: 'Start The Quiz'
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [viewState, currentStepIndex]);
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      const { data } = await supabase.from('homepage_sections').select('content').eq('section_name', 'quiz').single();
+      if (data && data.content) setQuizData(data.content);
+    };
+    fetchQuiz();
+    
+    const subscription = supabase.channel('public:quiz')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.quiz" }, (payload) => {
+        if (payload.new && payload.new.content) setQuizData(payload.new.content);
+      }).subscribe();
+      
+    return () => supabase.removeChannel(subscription);
+  }, []);
 
   const startQuiz = () => setViewState('quiz');
 
@@ -243,15 +263,15 @@ const QuizSection = () => {
               <Zap size={12} /> INTRODUCING THE RADIANCE ANALYST
             </span>
             <h1 className="qs-start-h1">
-              <span style={{ color: 'var(--brand-burgundy, #900b3b)' }}>Discover Your Glow:</span><br />
+              <span style={{ color: 'var(--brand-burgundy, #900b3b)' }}>{quizData.heading}</span><br />
               <em>The Personalized Skin Quiz For Gen Z Indian Skin</em>
             </h1>
             <p className="qs-start-desc">
-              Answer 8 quick questions. Our algorithm analyzes your skin type, environment, lifestyle &amp; concerns to build a bespoke ritual — in under 3 minutes.
+              {quizData.text}
             </p>
 
             <button className="qs-cta-btn" onClick={startQuiz}>
-              <span>Start The Quiz</span>
+              <span>{quizData.buttonText}</span>
               <ArrowRight size={18} />
             </button>
 

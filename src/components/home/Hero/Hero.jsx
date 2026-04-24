@@ -33,6 +33,17 @@ const Hero = () => {
         }
     };
     fetchBanners();
+
+    const subscription = supabase
+      .channel('public:hero')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.hero" }, (payload) => {
+        if (payload.new && payload.new.content) {
+          setBannerData(payload.new.content);
+        }
+      })
+      .subscribe();
+
+    return () => supabase.removeChannel(subscription);
   }, []);
 
   useEffect(() => {
