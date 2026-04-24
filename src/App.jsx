@@ -43,9 +43,12 @@ const PageLoader = () => (
   </div>
 );
 
+import SEO from './components/SEO/SEO';
+
 function App() {
   return (
     <Router>
+        <SEO />
         <div className="app-container">
           <Suspense fallback={<PageLoader />}>
             <Routes>

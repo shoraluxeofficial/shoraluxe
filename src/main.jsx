@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { HelmetProvider } from 'react-helmet-async'
 import './styles/index.css'
 import App from './App.jsx'
 import { ShopProvider } from './context/ShopContext.jsx'
@@ -11,14 +12,16 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '996608521333-
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <ShopProvider>
-        <NotificationProvider>
-          <TrackingProvider>
-            <App />
-          </TrackingProvider>
-        </NotificationProvider>
-      </ShopProvider>
-    </GoogleOAuthProvider>
+    <HelmetProvider>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <ShopProvider>
+          <NotificationProvider>
+            <TrackingProvider>
+              <App />
+            </TrackingProvider>
+          </NotificationProvider>
+        </ShopProvider>
+      </GoogleOAuthProvider>
+    </HelmetProvider>
   </StrictMode>,
 )

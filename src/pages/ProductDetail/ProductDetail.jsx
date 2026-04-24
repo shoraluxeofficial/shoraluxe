@@ -16,6 +16,7 @@ import {
   Beaker
 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
+import SEO from '../../components/SEO/SEO';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -128,6 +129,31 @@ const ProductDetail = () => {
 
   return (
     <div className="product-page-wrap">
+      <SEO 
+        title={product.title} 
+        description={truncatedDesc} 
+        image={activeImg} 
+        type="product"
+        jsonLd={{
+          "@context": "https://schema.org/",
+          "@type": "Product",
+          "name": product.title,
+          "image": activeImg,
+          "description": truncatedDesc,
+          "sku": product.id,
+          "brand": {
+            "@type": "Brand",
+            "name": "Shoraluxe"
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": window.location.href,
+            "priceCurrency": "INR",
+            "price": currentPrice,
+            "availability": isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"
+          }
+        }}
+      />
       {/* ... (rest of the Nav) ... */}
       <nav className="breadcrumbs">
         <Link to="/">Home</Link>
