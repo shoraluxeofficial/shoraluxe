@@ -7,7 +7,7 @@
 
 .hero-slider-wrap {
   width: 100%;
-  aspect-ratio: 21 / 9; /* Exact Dot & Key ultra-wide cinematic aspect ratio */
+  aspect-ratio: 16 / 6; /* Slimmer ultra-wide aspect ratio to reduce vertical height */
   height: auto;
   overflow: hidden;
   position: relative;
@@ -141,14 +141,12 @@
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 0.5rem;
+    padding: 0; /* Flush to edges on mobile */
   }
   .hero-slider-wrap {
     height: auto;
-    /* Use 16:9 for mobile as well to prevent cropping if mobile banners are 16:9. 
-       If they are 1:1, this can be changed back to 1 / 1. */
-    aspect-ratio: 16 / 9;
-    border-radius: 16px;
+    aspect-ratio: 4 / 5; /* Standard mobile portrait ratio */
+    border-radius: 0; /* Flush edge-to-edge on mobile too */
   }
   .slider-arrow {
     width: 40px;

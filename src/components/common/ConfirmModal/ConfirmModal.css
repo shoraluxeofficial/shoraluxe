@@ -1,4 +1,9 @@
 .confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 11000 !important;
     background: rgba(0, 0, 0, 0.4) !important;
     backdrop-filter: blur(4px);

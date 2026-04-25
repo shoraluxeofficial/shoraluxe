@@ -109,13 +109,13 @@ const HomepageManager = () => {
       if (file.type.startsWith('image/')) {
         try { 
           f = await imageCompression(file, { 
-            maxSizeMB: 0.4, 
-            maxWidthOrHeight: 1200, 
+            maxSizeMB: 2.5,  /* Increased from 0.4MB to preserve HD quality */
+            maxWidthOrHeight: 2560, /* Increased from 1200px to allow ultra-wide 4K displays */
             useWebWorker: true,
             fileType: 'image/webp',
-            initialQuality: 0.8
+            initialQuality: 0.95 /* Increased from 0.8 to keep it sharp */
           }); 
-          if (f.size > 2 * 1024 * 1024) throw new Error('File too large');
+          if (f.size > 5 * 1024 * 1024) throw new Error('File too large');
         } catch(err) {
           notify('Image compression failed or file too large.', 'error');
           return;
@@ -271,8 +271,8 @@ const HomepageManager = () => {
     if (activeTab === 'hero') return (
       <div className="hm-edit-fields">
         <div className="hm-field-grid">
-          {renderVisualUpload('desktopImg', 'Desktop Banner (16:9)')}
-          {renderVisualUpload('mobileImg', 'Mobile Banner (9:16 or 4:5)', true)}
+          {renderVisualUpload('desktopImg', 'Desktop Banner (2560 x 960 px)')}
+          {renderVisualUpload('mobileImg', 'Mobile Banner (1080 x 1350 px)', true)}
         </div>
         <div className="hm-field-grid">
           <div className="hm-field">

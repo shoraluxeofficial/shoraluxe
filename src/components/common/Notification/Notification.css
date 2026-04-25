@@ -36,7 +36,7 @@
   height: 3px;
   width: 100%;
   background: linear-gradient(to right, #6d0e2c, #907253);
-  animation: progress 4s linear forwards;
+  animation: progress 2s linear forwards;
 }
 
 @keyframes progress {

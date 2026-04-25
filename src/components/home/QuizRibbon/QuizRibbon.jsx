@@ -28,7 +28,7 @@ const QuizRibbon = () => {
           </h2>
 
           <p className="quiz-ribbon-sub">
-            Take our 5-minute quiz and get your personalised routine →
+            Take our 3-minute quiz and get your personalised routine →
           </p>
         </div>
 

@@ -10,7 +10,7 @@ export const NotificationProvider = ({ children }) => {
   const notify = (message, type = 'success', options = {}) => {
     setNotification({ message, type, ...options });
     if (type !== 'confirm') {
-      setTimeout(() => setNotification(null), 4000);
+      setTimeout(() => setNotification(null), 2000);
     }
   };
 
