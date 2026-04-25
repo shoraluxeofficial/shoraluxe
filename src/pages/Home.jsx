@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import Hero from '../components/home/Hero/Hero';
 import Categories from '../components/home/Categories/Categories';
-import QuizSection from '../components/home/QuizSection/QuizSection';
+import QuizRibbon from '../components/home/QuizRibbon/QuizRibbon';
 
 // Lazy load below-the-fold components to improve initial homepage load speed
 const Products = lazy(() => import('../components/home/Products/Products'));
@@ -25,7 +25,7 @@ const Home = () => {
       {/* Top of page components load immediately */}
       <Hero />
       <Categories />
-      <QuizSection />
+      <QuizRibbon />
 
       {/* Below the fold components load asynchronously */}
       <Suspense fallback={<SectionLoader />}>

@@ -3,7 +3,6 @@
   background-color: var(--bg-main);
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
 }
 
 /* Shared button helper */

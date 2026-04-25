@@ -2,16 +2,16 @@
   width: 100%;
   overflow: hidden;
   position: relative;
-  padding: 1rem; /* Added padding to show the curves */
+  /* Removed padding to match Dot & Key edge-to-edge design */
 }
 
 .hero-slider-wrap {
   width: 100%;
-  height: 650px;
+  aspect-ratio: 21 / 9; /* Exact Dot & Key ultra-wide cinematic aspect ratio */
+  height: auto;
   overflow: hidden;
   position: relative;
-  border-radius: 20px; /* Modern curved corners */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  /* Removed border radius to match Dot & Key flush edge-to-edge design */
 }
 
 .hero-slider {
@@ -47,8 +47,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center; /* Ensures the sharpest focal point is centered */
   display: block;
-  image-rendering: high-quality;
+  image-rendering: auto; /* Uses smooth scaling for compressed images */
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -131,9 +132,10 @@
 }
 
 /* ===== RESPONSIVE ===== */
+/* Removed fixed height for 1024px to let aspect-ratio handle it */
 @media (max-width: 1024px) {
   .hero-slider-wrap {
-    height: 550px;
+    /* Height will automatically scale based on 16:9 aspect ratio */
   }
 }
 
@@ -143,7 +145,9 @@
   }
   .hero-slider-wrap {
     height: auto;
-    aspect-ratio: 1 / 1;
+    /* Use 16:9 for mobile as well to prevent cropping if mobile banners are 16:9. 
+       If they are 1:1, this can be changed back to 1 / 1. */
+    aspect-ratio: 16 / 9;
     border-radius: 16px;
   }
   .slider-arrow {
