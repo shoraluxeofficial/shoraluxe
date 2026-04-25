@@ -113,6 +113,31 @@ const Bestsellers = () => {
                           {justAdded ? '✓ Added to Bag' : <><ShoppingBag size={14} /> Quick Add</>}
                         </button>
                       </div>
+
+                      {/* Image Bottom Stats (Rating & Quantity) */}
+                      <div className="bs-image-stats">
+                        {product.rating && (
+                          <div className="bs-stat-pill">
+                            <Star size={10} fill="currentColor" />
+                            <span>{product.rating}</span>
+                            {product.reviewsCount && <span className="bs-stat-sep">|</span>}
+                            {product.reviewsCount && <span className="bs-stat-reviews">{product.reviewsCount}</span>}
+                          </div>
+                        )}
+                        {product.size && (
+                          <div className="bs-stat-pill size-pill">
+                            {(() => {
+                              try {
+                                const parsed = JSON.parse(product.size);
+                                if (Array.isArray(parsed) && parsed.length > 0) {
+                                  return parsed[0].label;
+                                }
+                              } catch (e) {}
+                              return product.size.split(',')[0].split(':')[0].trim();
+                            })()}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </Link>
 
@@ -120,15 +145,6 @@ const Bestsellers = () => {
                   <div className="bs-card-info">
                     <div className="bs-card-meta">
                       <span className="bs-skin-type">{product.skinType}</span>
-                      {product.rating && (
-                        <div className="bs-rating">
-                          <Star size={11} fill="#907253" color="#907253" />
-                          <span>{product.rating}</span>
-                          {product.reviewsCount && (
-                            <span className="bs-reviews">({product.reviewsCount})</span>
-                          )}
-                        </div>
-                      )}
                     </div>
 
                     <Link to={`/product/${product.id}`} className="bs-name-link">

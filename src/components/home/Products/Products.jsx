@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
 import './Products.css';
 
@@ -47,15 +47,7 @@ const Products = () => {
       <div className="products-inner">
         <div className="products-header">
           <h2 className="section-heading">New Arrivals</h2>
-          <div className="products-controls">
-            <button className="scroll-btn" onClick={() => scroll('left')} aria-label="Scroll left">
-              <ChevronLeft size={20} />
-            </button>
-            <button className="scroll-btn" onClick={() => scroll('right')} aria-label="Scroll right">
-              <ChevronRight size={20} />
-            </button>
-            <Link to="/shop" className="view-all-link">View All</Link>
-          </div>
+          <Link to="/shop" className="view-all-link">View All</Link>
         </div>
 
         <div className="products-row-wrapper">
@@ -84,6 +76,29 @@ const Products = () => {
                       {product.stock > 0 && product.stock <= 5 && (
                         <div className="stock-overlay-badge hurry">Hurry! Only {product.stock} Left</div>
                       )}
+
+                      {/* Image Bottom Stats (Rating & Quantity) */}
+                      <div className="product-image-stats">
+                        <div className="product-stat-pill">
+                          <Star size={10} fill="currentColor" />
+                          <span>{(product.id % 5) + 4.2}</span>
+                          <span className="product-stat-sep">|</span>
+                          <span className="product-stat-reviews">{(product.id * 7) % 200 + 50}</span>
+                        </div>
+                        {product.size && (
+                          <div className="product-stat-pill size-pill">
+                            {(() => {
+                              try {
+                                const parsed = JSON.parse(product.size);
+                                if (Array.isArray(parsed) && parsed.length > 0) {
+                                  return parsed[0].label;
+                                }
+                              } catch (e) {}
+                              return product.size.split(',')[0].split(':')[0].trim();
+                            })()}
+                          </div>
+                        )}
+                      </div>
                     </Link>
 
                     <div className="product-info">
@@ -93,17 +108,6 @@ const Products = () => {
                       
                       <div className="product-desc-row">
                         <span>{product.benefit}</span>
-                        <span className="pipe">|</span>
-                        <span>{(() => {
-                          if (!product.size) return '';
-                          try {
-                            const parsed = JSON.parse(product.size);
-                            if (Array.isArray(parsed) && parsed.length > 0) {
-                              return parsed[0].label + (parsed.length > 1 ? ' & More' : '');
-                            }
-                          } catch (e) {}
-                          return product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size?.split(':')[0];
-                        })()}</span>
                       </div>
 
                       <div className="product-offer-text">{product.offer}</div>

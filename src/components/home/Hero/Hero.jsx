@@ -85,8 +85,8 @@ const Hero = () => {
           className="hero-slider" 
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {bannerData.map((banner) => (
-            <a key={banner.id} href={banner.url} className="hero-slide-link">
+          {bannerData.map((banner, index) => (
+            <a key={index} href={banner.url} className="hero-slide-link">
               <div className="hero-slide-item">
                 {/* Desktop Media */}
                 <div className="hero-media-desktop">

@@ -21,7 +21,8 @@
   justify-content: center;
   text-align: center;
   overflow: hidden;
-  background: #1a0b12; /* Fallback */
+  background: #1a0b12;
+  /* Fallback */
 }
 
 /* Slider Backgrounds */
@@ -669,7 +670,7 @@
 
 .shop-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 3.5rem 2rem;
 }
 
@@ -677,6 +678,9 @@
 .product-card {
   position: relative;
   background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Image wrap */
@@ -905,6 +909,9 @@
 /* Info Block */
 .product-card-info {
   padding: 1.2rem 0 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .product-card-top {
@@ -1019,6 +1026,7 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.25s;
+  margin-top: auto;
 }
 
 .atc-btn:hover {
@@ -1084,7 +1092,7 @@
    ========================================== */
 @media (max-width: 1280px) {
   .shop-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 3rem 1.5rem;
   }
 
@@ -1205,9 +1213,10 @@
   }
 
   .shop-grid {
-    grid-template-columns: 1fr;
-    max-width: 380px;
-    margin: 0 auto;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 0.8rem;
+    max-width: none;
+    margin: 0;
   }
 
   .shop-container {
