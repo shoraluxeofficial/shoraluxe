@@ -842,7 +842,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 0.5rem;
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 3.5rem;
   z-index: 4;
   opacity: 0;
   transition: opacity 0.35s ease;
@@ -855,8 +855,8 @@
 
 .quick-add-btn {
   width: 100%;
-  background: #fff;
-  color: #111;
+  background: var(--logo-red-base);
+  color: #fff;
   border: none;
   padding: 0.85rem 1rem;
   font-size: 0.72rem;

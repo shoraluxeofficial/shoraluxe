@@ -10,10 +10,48 @@ const Bestsellers = () => {
   const [wishlist, setWishlist] = useState([]);
 
   // Pick the 4 bestseller products (filter isBestseller, fallback to first 4 real products)
+  // Preferred Sequence from user image
+  const preferredSequence = [
+    "Sunscreen Cream SPF 50+++",
+    "Charcoal Face wash/Cleanser",
+    "Non-Sticky Moisturizer",
+    "Brightening day cream with spf",
+    "Lavender Body wash",
+    "Salicylic Acid Face Wash",
+    "Rice Water Face Wash/Cleaner",
+    "Vitamin C Ubtan Face Wash",
+    "Hyaluronic Acid hydrating gel cleanser/face wash",
+    "Shea Butter Body lotion",
+    "Daily Hydrating Body lotion",
+    "Night cream",
+    "Vitamin C & Niacinamide Face Serum"
+  ];
+
   const bestsellers = (() => {
+    // 1. Filter out placeholder id 999
     const real = products.filter(p => p.id !== 999);
-    const best = real.filter(p => p.isBestseller);
-    return (best.length >= 4 ? best : real).slice(0, 4);
+    
+    // 2. Map real products to their index in the preferred sequence (using partial matching)
+    const sorted = [...real].sort((a, b) => {
+      const getIndex = (title) => {
+        const lowerTitle = title.toLowerCase();
+        return preferredSequence.findIndex(item => 
+          lowerTitle.includes(item.toLowerCase().split('|')[0].trim()) || 
+          item.toLowerCase().includes(lowerTitle.split('|')[0].trim())
+        );
+      };
+
+      const indexA = getIndex(a.title);
+      const indexB = getIndex(b.title);
+      
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return 0;
+    });
+
+    // 3. Return the top 4
+    return sorted.slice(0, 4);
   })();
 
   const handleAddToCart = (e, product) => {
@@ -118,7 +156,7 @@ const Bestsellers = () => {
                       <div className="bs-image-stats">
                         {product.rating && (
                           <div className="bs-stat-pill">
-                            <Star size={10} fill="currentColor" />
+                            <Star size={10} fill="var(--brand-gold)" color="var(--brand-gold)" />
                             <span>{product.rating}</span>
                             {product.reviewsCount && <span className="bs-stat-sep">|</span>}
                             {product.reviewsCount && <span className="bs-stat-reviews">{product.reviewsCount}</span>}
