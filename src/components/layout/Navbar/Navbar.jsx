@@ -146,8 +146,8 @@ const Navbar = () => {
             <div className="nav-actions">
               {/* Removed redundant mobile search button as the shared one is now above */}
               
-              {/* Track Order Icon */}
-              <Link to="/track-order" className="action-icon-btn desktop-only">
+              {/* Track Order Icon (Now on Mobile too) */}
+              <Link to="/track-order" className="action-icon-btn">
                 <Truck size={22} strokeWidth={1.5} />
               </Link>
 
