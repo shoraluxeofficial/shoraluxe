@@ -38,6 +38,7 @@ const AdminLayout = () => {
     { path: '/admin/products', icon: <ShoppingBag size={20} />, label: 'Products' },
     { path: '/admin/orders', icon: <ClipboardList size={20} />, label: 'Orders' },
     { path: '/admin/promo-codes', icon: <Tag size={20} />, label: 'Promo Codes' },
+    { path: '/admin/promo-ribbons', icon: <Tag size={20} />, label: 'Promo Ribbons' },
     { path: '/admin/revenue', icon: <IndianRupee size={20} />, label: 'Revenue' },
     { path: '/admin/security', icon: <ShieldCheck size={20} />, label: 'Firewall' },
     { path: '/admin/reviews', icon: <MessageSquare size={20} />, label: 'Testimonials' },

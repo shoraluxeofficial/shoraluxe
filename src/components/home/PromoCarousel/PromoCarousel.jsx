@@ -1,60 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Ticket, ChevronRight, Zap } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
 import './PromoCarousel.css';
 
-const PROMO_OFFERS = [
-  {
-    id: 1,
-    text: "UPTO 20% OFF + Luxury Free Gifts",
-    link: "/shop",
-  },
-  {
-    id: 2,
-    text: "BUY 2 GET 1 FREE - Premium Collection",
-    link: "/shop?promo=B2G1_FACEWASH",
-  },
-  {
-    id: 3,
-    text: "EXCLUSIVE FLAT ₹500 OFF TODAY",
-    link: "/shop",
-  }
-];
-
 const PromoCarousel = () => {
+  const [ribbons, setRibbons] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % PROMO_OFFERS.length);
-    }, 4500);
-    return () => clearInterval(timer);
+    fetchRibbons();
   }, []);
 
-  const offer = PROMO_OFFERS[currentIndex];
+  const fetchRibbons = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('promo_ribbons')
+        .select('*')
+        .eq('is_active', true)
+        .order('id', { ascending: true });
+
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        setRibbons(data);
+      } else {
+        // Fallback if no data in DB yet
+        setRibbons([
+          {
+            id: 0,
+            text: "UPTO 20% OFF + Luxury Free Gifts",
+            link: "/shop",
+            design_type: "design-royal-cyan",
+            image_url: "/favicon.png"
+          }
+        ]);
+      }
+    } catch (err) {
+      console.error("Error fetching promo ribbons:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (ribbons.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % ribbons.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [ribbons]);
+
+  if (loading || ribbons.length === 0) return null;
+
+  const currentRibbon = ribbons[currentIndex];
 
   return (
     <section className="promo-ribbon-wrapper">
       <Link 
-        to={offer.link} 
-        className="promo-ribbon-container"
+        to={currentRibbon.link} 
+        className={`promo-ribbon-container ${currentRibbon.design_type}`}
       >
         <div className="promo-ribbon-content">
-          <div className="promo-icon-wrapper">
-            <Ticket className="promo-ribbon-icon" size={28} strokeWidth={1.5} />
-          </div>
+          {currentRibbon.image_url && (
+            <img 
+              src={currentRibbon.image_url} 
+              alt="Promo" 
+              className="promo-small-img" 
+            />
+          )}
           
           <h2 className="promo-ribbon-text">
-            {offer.text}
+            {currentRibbon.text}
           </h2>
           
-          <div className="promo-arrow-wrapper">
-            <ChevronRight className="promo-ribbon-arrow" size={24} />
-          </div>
+          <ChevronRight className="promo-ribbon-arrow" size={20} />
         </div>
-        
-        {/* Animated Background Elements */}
-        <div className="royal-shimmer"></div>
       </Link>
     </section>
   );

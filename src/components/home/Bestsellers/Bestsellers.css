@@ -218,10 +218,10 @@
   background: #6d0e2c;
   border: 1px solid #c8a882;
 }
-  text-transform: uppercase;
-  color: #fff;
-  padding: 4px 10px;
-  z-index: 3;
+.text-transform: uppercase;
+color: #fff;
+padding: 4px 10px;
+z-index: 3;
 }
 
 .bs-pill.best {
