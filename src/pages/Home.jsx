@@ -48,7 +48,6 @@ const Home = () => {
     <>
       {/* Top of page components load immediately */}
       <Hero />
-      <PromoCarousel />
       <Categories />
       <QuizRibbon />
 
@@ -56,6 +55,8 @@ const Home = () => {
       <Suspense fallback={<SectionSkeleton height="600px" />}>
         <Products />
       </Suspense>
+
+      <PromoCarousel />
 
       <Suspense fallback={<SectionSkeleton height="700px" />}>
         <Bestsellers />
