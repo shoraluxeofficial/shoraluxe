@@ -573,12 +573,20 @@
 
   .nav-right-area {
     gap: 0.8rem;
+    min-width: auto; /* Reset for mobile */
+  }
+
+  .logo-wrap {
+    min-width: auto; /* Reset for mobile */
+    flex: 1;
+    display: flex;
+    justify-content: center;
   }
 
   .nav-actions {
     display: flex !important;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
 
   .action-icon-btn {
