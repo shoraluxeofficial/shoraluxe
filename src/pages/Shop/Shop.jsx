@@ -421,7 +421,12 @@ const Shop = () => {
                       <div className="product-card-img-container" style={{ position: 'relative' }}>
                         <Link to={`/product/${product.id}`} className="product-card-img-link">
                           <div className="product-card-img-wrap">
-                            <img src={product.img} alt={product.title} loading="lazy" />
+                            <div className={`shop-product-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
+                              <img src={product.img} alt={product.title} className="shop-product-img main" loading="lazy" />
+                              {product.gallery && product.gallery.length > 1 && (
+                                <img src={product.gallery[1]} alt={product.title} className="shop-product-img hover" loading="lazy" />
+                              )}
+                            </div>
 
                             {/* Badges */}
                             <div className="product-badges">

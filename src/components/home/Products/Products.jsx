@@ -62,7 +62,12 @@ const Products = () => {
                   <div className="product-card">
                     {/* Image */}
                     <Link to={`/product/${product.id}`} className="product-img-wrap" style={{ display: 'block' }}>
-                      <img src={product.img} alt={product.title} className="product-img" loading="lazy" />
+                      <div className={`product-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
+                        <img src={product.img} alt={product.title} className="product-img main" loading="lazy" />
+                        {product.gallery && product.gallery.length > 1 && (
+                          <img src={product.gallery[1]} alt={product.title} className="product-img hover" loading="lazy" />
+                        )}
+                      </div>
 
                       {/* Badge */}
                       {product.badge && (

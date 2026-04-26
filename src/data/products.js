@@ -91,7 +91,8 @@ export const productsData = [
     reviewsCount: 92,
     img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=1000',
     gallery: [
-      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=1000'
+      'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=1000',
+      '/products images/Rice Water face wash/hover.png'
     ],
     badge: 'NEW',
     isNew: true,
@@ -275,7 +276,8 @@ export const productsData = [
     reviewsCount: 62,
     img: '/products images/Retinol night cream/WhatsApp Image 2026-04-14 at 19.24.38-3.jpeg',
     gallery: [
-      '/products images/Retinol night cream/WhatsApp Image 2026-04-14 at 19.24.38-3.jpeg'
+      '/products images/Retinol night cream/WhatsApp Image 2026-04-14 at 19.24.38-3.jpeg',
+      '/products images/Retinol night cream/hover.png'
     ],
     badge: 'BESTSELLER',
     isNew: false,

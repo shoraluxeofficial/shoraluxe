@@ -123,7 +123,12 @@ const Bestsellers = () => {
                   {/* Image */}
                   <Link to={`/product/${product.id}`} className="bs-card-img-link">
                     <div className="bs-card-img-wrap">
-                      <img src={product.img} alt={product.title} loading="lazy" />
+                      <div className={`bs-card-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
+                        <img src={product.img} alt={product.title} className="bs-card-img main" loading="lazy" />
+                        {product.gallery && product.gallery.length > 1 && (
+                          <img src={product.gallery[1]} alt={product.title} className="bs-card-img hover" loading="lazy" />
+                        )}
+                      </div>
 
                       {/* Rank Badge */}
                       <div className="bs-rank-badge">#{index + 1}</div>
