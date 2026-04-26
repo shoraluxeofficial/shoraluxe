@@ -31,8 +31,11 @@
   width: 100%;
   opacity: 0;
   transform: translateX(30px);
-  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); /* Premium smooth easing */
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
 .promo-slide.active {
@@ -178,16 +181,7 @@
   }
 }
 
-/* ===== DESKTOP SEARCH BAR ===== */
-.desktop-search-bar {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.4rem 1rem;
-  width: 220px; /* Reduced further so nav links have space */
-}
+/* Removed desktop search styles */
 
 .desktop-search-icon {
   color: #555;
@@ -220,7 +214,7 @@
 .main-nav-list li a {
   text-decoration: none;
   color: #222;
-  font-size: 0.95rem; /* Balanced size */
+  font-size: 1.15rem; /* Increased text size as requested */
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -454,12 +448,12 @@
 }
 
 .search-layer-inner {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1.25rem 2rem;
+  padding: 1.5rem 2rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .search-input-wrap {

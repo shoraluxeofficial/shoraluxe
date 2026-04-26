@@ -137,18 +137,14 @@ const Navbar = () => {
 
           {/* Right Area: Search + Actions */}
           <div className="nav-right-area">
-            {/* Desktop Search Bar */}
-            <div className="desktop-search-bar desktop-only">
-              <Search size={16} className="desktop-search-icon" />
-              <input type="text" placeholder="Search For Moisturizer" />
-            </div>
+            {/* Search Icon (Now on Desktop & Mobile) */}
+            <button className="action-icon-btn" onClick={() => setSearchOpen(!searchOpen)}>
+              <Search size={22} strokeWidth={1.5} />
+            </button>
 
             {/* Actions */}
             <div className="nav-actions">
-              {/* Mobile Search Icon */}
-              <button className="action-icon-btn mobile-only" onClick={() => setSearchOpen(!searchOpen)}>
-                <Search size={22} strokeWidth={1.5} />
-              </button>
+              {/* Removed redundant mobile search button as the shared one is now above */}
               
               {/* Track Order Icon */}
               <Link to="/track-order" className="action-icon-btn desktop-only">
@@ -189,9 +185,9 @@ const Navbar = () => {
               </div>
             </div>
           </div>
-        </div>        {/* Mobile Search Dropdown */}
+        </div>        {/* Search Dropdown (Shared for Desktop and Mobile) */}
         {searchOpen && (
-          <div className="search-layer mobile-only">
+          <div className="search-layer">
             <div className="search-layer-inner">
               <div className="search-input-wrap">
                 <Search size={18} className="search-icon-inside" />
