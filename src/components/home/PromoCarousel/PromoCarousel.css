@@ -1,249 +1,151 @@
-.promo-carousel-section {
-  padding: 4rem 2rem;
-  background-color: #fafaf8;
+.promo-ribbon-wrapper {
+  padding: 2.5rem 0; /* More breathing room */
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
   overflow: hidden;
 }
 
-.promo-carousel-container {
-  max-width: 1440px;
-  margin: 0 auto;
-  position: relative;
-  height: 480px;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-.promo-slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-}
-
-.promo-slide.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.promo-slide-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.promo-slide-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 8s ease-out;
-}
-
-.promo-slide.active .promo-slide-bg img {
-  transform: scale(1.1);
-}
-
-.promo-slide-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
-  z-index: 2;
-}
-
-.promo-slide-content {
-  position: relative;
-  z-index: 3;
-  padding: 0 5rem;
-  color: #fff;
-  width: 60%;
-}
-
-.promo-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(200, 168, 130, 0.2);
-  border: 1px solid rgba(200, 168, 130, 0.4);
-  backdrop-filter: blur(8px);
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #c8a882;
-  margin-bottom: 1.5rem;
-  transform: translateY(20px);
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-}
-
-.promo-subtitle {
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 1rem;
-  transform: translateY(20px);
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
-}
-
-.promo-title {
-  font-family: var(--font-serif), 'Playfair Display', serif;
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  transform: translateY(20px);
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
-}
-
-.promo-description {
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.7);
-  max-width: 480px;
-  margin-bottom: 2.5rem;
-  line-height: 1.6;
-  transform: translateY(20px);
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.6s;
-}
-
-.promo-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  background: #fff;
-  color: #111;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateY(20px);
-  opacity: 0;
-}
-
-.promo-slide.active .promo-badge,
-.promo-slide.active .promo-subtitle,
-.promo-slide.active .promo-title,
-.promo-slide.active .promo-description,
-.promo-slide.active .promo-cta {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.promo-slide.active .promo-cta {
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.7s;
-}
-
-.promo-cta:hover {
-  background: #c8a882;
-  color: #fff;
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.promo-controls {
-  position: absolute;
-  bottom: 3rem;
-  right: 5rem;
-  display: flex;
-  gap: 1rem;
-  z-index: 10;
-}
-
-.promo-control-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(8px);
-  color: #fff;
+.promo-ribbon-container {
+  width: 92%;
+  max-width: 1400px;
+  height: 72px; /* Slightly taller for elegance */
+  border-radius: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  
+  /* Royal Cyan Gradient */
+  background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 50%, #00d2ff 100%);
+  background-size: 200% auto;
+  animation: royalGradient 6s linear infinite;
+  
+  box-shadow: 0 15px 35px rgba(58, 123, 213, 0.25);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  
+  /* Premium Border Glow */
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.promo-control-btn:hover {
-  background: #fff;
-  color: #111;
-  border-color: #fff;
-}
-
-.promo-indicators {
+.promo-ribbon-container::before {
+  content: '';
   position: absolute;
-  bottom: 3rem;
-  left: 5rem;
+  inset: 0;
+  background: linear-gradient(rgba(255,255,255,0.2), transparent);
+  pointer-events: none;
+}
+
+.promo-ribbon-container:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(58, 123, 213, 0.4);
+}
+
+.promo-ribbon-content {
   display: flex;
-  gap: 0.8rem;
-  z-index: 10;
+  align-items: center;
+  gap: 2rem;
+  z-index: 2;
+  padding: 0 3rem;
 }
 
-.promo-indicator {
-  width: 40px;
-  height: 3px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 2px;
-  transition: all 0.3s;
+.promo-ribbon-icon {
+  color: #fff;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));
 }
 
-.promo-indicator.active {
+.promo-ribbon-text {
+  color: #fff;
+  font-family: var(--font-serif), serif; /* Royal Serif Font */
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  
+  /* High Contrast Text Effect */
+  text-shadow: 
+    2px 2px 0px rgba(0,0,0,0.1),
+    0 0 20px rgba(255,255,255,0.3);
+  
+  white-space: nowrap;
+  font-style: italic; /* Added for that extra luxury feel */
+}
+
+.promo-ribbon-arrow {
+  color: #fff;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.promo-ribbon-container:hover .promo-ribbon-arrow {
   background: #fff;
-  width: 60px;
+  color: #3a7bd5;
+  transform: translateX(8px);
+}
+
+/* Premium Moving Shine */
+.promo-ribbon-container::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  transform: rotate(25deg);
+  animation: luxuryShine 5s infinite;
+}
+
+@keyframes royalGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes luxuryShine {
+  0% { left: -60%; }
+  25% { left: 120%; }
+  100% { left: 120%; }
 }
 
 @media (max-width: 1024px) {
-  .promo-carousel-container {
-    height: 400px;
-  }
-  .promo-title {
-    font-size: 2.5rem;
-  }
-  .promo-slide-content {
-    width: 80%;
-    padding: 0 3rem;
+  .promo-ribbon-text {
+    font-size: 1.2rem;
   }
 }
 
 @media (max-width: 768px) {
-  .promo-carousel-section {
-    padding: 2rem 1rem;
+  .promo-ribbon-wrapper {
+    padding: 1.5rem 0;
   }
-  .promo-carousel-container {
-    height: 500px;
-    border-radius: 16px;
+  
+  .promo-ribbon-container {
+    height: 56px;
+    width: 94%;
   }
-  .promo-slide-content {
-    width: 100%;
-    padding: 0 2rem;
-    text-align: center;
+  
+  .promo-ribbon-text {
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    padding: 0 0.5rem;
   }
-  .promo-slide-overlay {
-    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+  
+  .promo-ribbon-content {
+    gap: 1rem;
+    padding: 0 1rem;
   }
-  .promo-description {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .promo-indicators, .promo-controls {
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-  }
-  .promo-indicators {
-    bottom: 2rem;
-  }
-  .promo-controls {
-    bottom: 4rem;
+  
+  .promo-ribbon-icon {
+    width: 20px;
+    height: 20px;
   }
 }

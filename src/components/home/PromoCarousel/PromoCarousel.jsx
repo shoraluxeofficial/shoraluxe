@@ -1,93 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
+import { Ticket, ChevronRight, Zap } from 'lucide-react';
 import './PromoCarousel.css';
 
-const PROMO_SLIDES = [
+const PROMO_OFFERS = [
   {
     id: 1,
-    title: "Face Wash Bundle Offer",
-    subtitle: "BUY 2 GET 1 FREE",
-    description: "Get 3 premium face washes for just ₹698. Mix and match your favorites.",
-    image: "/Banners/facewash_b2g1.png",
-    link: "/shop?promo=B2G1_FACEWASH",
-    color: "#6d0e2c",
-    badge: "Limited Time Offer"
+    text: "UPTO 20% OFF + Luxury Free Gifts",
+    link: "/shop",
   },
   {
     id: 2,
-    title: "Body Lotion Bundle Deal",
-    subtitle: "BUY 2 GET 1 FREE",
-    description: "Experience deep hydration with 3 luxury lotions for ₹1,198.",
-    image: "/Banners/lotion_b2g1.png",
-    link: "/shop?promo=B2G1_LOTION",
-    color: "#2c4a3e",
-    badge: "Most Popular"
+    text: "BUY 2 GET 1 FREE - Premium Collection",
+    link: "/shop?promo=B2G1_FACEWASH",
+  },
+  {
+    id: 3,
+    text: "EXCLUSIVE FLAT ₹500 OFF TODAY",
+    link: "/shop",
   }
 ];
 
 const PromoCarousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % PROMO_SLIDES.length);
-    }, 6000);
+      setCurrentIndex((prev) => (prev + 1) % PROMO_OFFERS.length);
+    }, 4500);
     return () => clearInterval(timer);
   }, []);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % PROMO_SLIDES.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + PROMO_SLIDES.length) % PROMO_SLIDES.length);
+  const offer = PROMO_OFFERS[currentIndex];
 
   return (
-    <section className="promo-carousel-section">
-      <div className="promo-carousel-container">
-        {PROMO_SLIDES.map((slide, index) => (
-          <div 
-            key={slide.id} 
-            className={`promo-slide ${index === currentSlide ? 'active' : ''}`}
-          >
-            <div className="promo-slide-bg">
-              <img src={slide.image} alt={slide.title} />
-              <div className="promo-slide-overlay"></div>
-            </div>
-            
-            <div className="promo-slide-content">
-              <div className="promo-slide-inner">
-                <div className="promo-badge">
-                  <Sparkles size={14} /> {slide.badge}
-                </div>
-                <h3 className="promo-subtitle">{slide.subtitle}</h3>
-                <h2 className="promo-title">{slide.title}</h2>
-                <p className="promo-description">{slide.description}</p>
-                
-                <Link to={slide.link} className="promo-cta">
-                  Shop the Collection <ArrowRight size={18} />
-                </Link>
-              </div>
-            </div>
+    <section className="promo-ribbon-wrapper">
+      <Link 
+        to={offer.link} 
+        className="promo-ribbon-container"
+      >
+        <div className="promo-ribbon-content">
+          <div className="promo-icon-wrapper">
+            <Ticket className="promo-ribbon-icon" size={28} strokeWidth={1.5} />
           </div>
-        ))}
-
-        <div className="promo-controls">
-          <button className="promo-control-btn prev" onClick={prevSlide}>
-            <ChevronLeft size={24} />
-          </button>
-          <button className="promo-control-btn next" onClick={nextSlide}>
-            <ChevronRight size={24} />
-          </button>
+          
+          <h2 className="promo-ribbon-text">
+            {offer.text}
+          </h2>
+          
+          <div className="promo-arrow-wrapper">
+            <ChevronRight className="promo-ribbon-arrow" size={24} />
+          </div>
         </div>
-
-        <div className="promo-indicators">
-          {PROMO_SLIDES.map((_, index) => (
-            <button 
-              key={index} 
-              className={`promo-indicator ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-            />
-          ))}
-        </div>
-      </div>
+        
+        {/* Animated Background Elements */}
+        <div className="royal-shimmer"></div>
+      </Link>
     </section>
   );
 };
