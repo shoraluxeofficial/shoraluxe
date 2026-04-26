@@ -489,6 +489,21 @@
   transition: color 0.2s;
 }
 
+/* B2G1 PROMO BADGES */
+.product-badge.badge-promo {
+  background: #6d0e2c !important;
+  border: 1px solid #c8a882 !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  font-size: 0.6rem;
+  z-index: 10;
+  text-transform: uppercase;
+}
+
 .active-chip button:hover {
   color: #000;
 }
@@ -766,6 +781,13 @@
 
 .badge.discount {
   background: #111;
+}
+
+.badge.promo {
+  background: #6d0e2c; /* Brand burgundy */
+  border: 1px solid #c8a882; /* Gold accent */
+  color: #fff;
+  font-weight: 800;
 }
 
 .stock-overlay-badge {

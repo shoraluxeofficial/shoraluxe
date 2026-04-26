@@ -12,6 +12,8 @@ const CartSidebar = () => {
     updateQuantity, 
     removeFromCart, 
     cartTotal,
+    cartSubtotal,
+    cartDiscount,
     user
   } = useShop();
   const navigate = useNavigate();
@@ -104,7 +106,17 @@ const CartSidebar = () => {
           <div className="cart-footer">
             <div className="cart-subtotal-row">
               <span>Subtotal</span>
-              <span className="cart-subtotal-val">₹{cartTotal.toLocaleString('en-IN')}</span>
+              <span className="cart-subtotal-val">₹{cartSubtotal.toLocaleString('en-IN')}</span>
+            </div>
+            {cartDiscount > 0 && (
+              <div className="cart-subtotal-row discount-row">
+                <span>Bundle Offer Applied</span>
+                <span className="cart-subtotal-val" style={{ color: '#6d0e2c', fontWeight: 700 }}>-₹{cartDiscount.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            <div className="cart-subtotal-row total-row" style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #eee' }}>
+              <span style={{ fontWeight: 800 }}>Total</span>
+              <span className="cart-subtotal-val" style={{ fontWeight: 800, fontSize: '1.1rem' }}>₹{cartTotal.toLocaleString('en-IN')}</span>
             </div>
             <p className="cart-tax-note">Taxes and shipping calculated at checkout.</p>
             <button onClick={handleCheckoutClick} className="btn-luxe-checkout">

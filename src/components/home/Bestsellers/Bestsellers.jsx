@@ -134,9 +134,10 @@ const Bestsellers = () => {
                       <div className="bs-rank-badge">#{index + 1}</div>
 
                       {/* Sale / New pill */}
-                      {product.isBestseller && <span className="bs-pill best">Bestseller</span>}
-                      {product.isSale && <span className="bs-pill sale">Sale</span>}
-                      {product.isNew && !product.isBestseller && <span className="bs-pill new">New</span>}
+                      {product.promoGroup && <span className="bs-pill promo">B2G1 OFFER</span>}
+                      {product.isBestseller && !product.promoGroup && <span className="bs-pill best">Bestseller</span>}
+                      {product.isSale && !product.promoGroup && <span className="bs-pill sale">Sale</span>}
+                      {product.isNew && !product.isBestseller && !product.promoGroup && <span className="bs-pill new">New</span>}
 
                       {/* Wishlist */}
                       <button

@@ -70,7 +70,10 @@ const Products = () => {
                       </div>
 
                       {/* Badge */}
-                      {product.badge && (
+                      {product.promoGroup && (
+                        <span className="product-badge badge-promo">BUY 2 GET 1 FREE</span>
+                      )}
+                      {product.badge && !product.promoGroup && (
                         <span className={`product-badge ${product.isSale ? 'badge-sale' : product.isBestseller ? 'badge-best' : 'badge-new'}`}>
                           {product.badge}
                         </span>

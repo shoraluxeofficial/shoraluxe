@@ -119,7 +119,50 @@ export const ShopProvider = ({ children }) => {
     localStorage.removeItem('shoraluxe_cart');
   };
 
-  const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const calculateCartTotals = () => {
+    let subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    let total = 0;
+    let faceWashCount = 0;
+    let faceWashPrices = [];
+    let lotionCount = 0;
+    let lotionPrices = [];
+    let otherTotal = 0;
+
+    cartItems.forEach(item => {
+      if (item.promoGroup === 'B2G1_FACEWASH') {
+        faceWashCount += item.quantity;
+        for (let i = 0; i < item.quantity; i++) faceWashPrices.push(item.price);
+      } else if (item.promoGroup === 'B2G1_LOTION') {
+        lotionCount += item.quantity;
+        for (let i = 0; i < item.quantity; i++) lotionPrices.push(item.price);
+      } else {
+        otherTotal += item.price * item.quantity;
+      }
+    });
+
+    // Face Wash B2G1: 3 for 698
+    const fwBundles = Math.floor(faceWashCount / 3);
+    const fwRemainder = faceWashCount % 3;
+    total += fwBundles * 698;
+    faceWashPrices.sort((a, b) => b - a);
+    for (let i = 0; i < fwRemainder; i++) total += faceWashPrices[i];
+
+    // Lotion B2G1: 3 for 1198
+    const lBundles = Math.floor(lotionCount / 3);
+    const lRemainder = lotionCount % 3;
+    total += lBundles * 1198;
+    lotionPrices.sort((a, b) => b - a);
+    for (let i = 0; i < lRemainder; i++) total += lotionPrices[i];
+
+    const finalTotal = total + otherTotal;
+    return {
+      subtotal,
+      total: finalTotal,
+      discount: subtotal - finalTotal
+    };
+  };
+
+  const { subtotal: cartSubtotal, total: cartTotal, discount: cartDiscount } = calculateCartTotals();
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
   // Actions: Admin Database (Supabase)
@@ -210,6 +253,8 @@ export const ShopProvider = ({ children }) => {
       isCartOpen,
       setIsCartOpen,
       cartTotal,
+      cartSubtotal,
+      cartDiscount,
       cartCount,
       popupConfig,
       updatePopupConfig

@@ -55,9 +55,11 @@ const Shop = () => {
   const queryParams = new URLSearchParams(location.search);
   const initialConcern = queryParams.get('concern') || 'all';
   const initialCategory = queryParams.get('category') || '';
+  const initialPromo = queryParams.get('promo') || '';
 
   const [activeConcern, setActiveConcern] = useState(initialConcern);
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [activePromo, setActivePromo] = useState(initialPromo);
   const [activeType, setActiveType] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
@@ -79,6 +81,7 @@ const Shop = () => {
   useEffect(() => {
     setActiveConcern(queryParams.get('concern') || 'all');
     setActiveCategory(queryParams.get('category') || '');
+    setActivePromo(queryParams.get('promo') || '');
 
     // Scroll to products if we have a filter applied from URL
     if (queryParams.get('concern') || queryParams.get('category')) {
@@ -129,6 +132,10 @@ const Shop = () => {
           return keywords.some(kw => title.includes(kw.toLowerCase()));
         });
       }
+    }
+
+    if (activePromo) {
+      result = result.filter(p => p.promoGroup === activePromo);
     }
 
     if (activeType !== 'All') {
@@ -430,10 +437,13 @@ const Shop = () => {
 
                             {/* Badges */}
                             <div className="product-badges">
-                              {product.isBestseller && <span className="badge best">Bestseller</span>}
-                              {product.isNew && !product.isBestseller && <span className="badge new">New</span>}
-                              {product.isSale && <span className="badge sale">Sale</span>}
-                              {discount && !product.isBestseller && !product.isNew && (
+                              {product.promoGroup && (
+                                <span className="badge promo">BUY 2 GET 1 FREE</span>
+                              )}
+                              {product.isBestseller && !product.promoGroup && <span className="badge best">Bestseller</span>}
+                              {product.isNew && !product.isBestseller && !product.promoGroup && <span className="badge new">New</span>}
+                              {product.isSale && !product.promoGroup && <span className="badge sale">Sale</span>}
+                              {discount && !product.isBestseller && !product.isNew && !product.promoGroup && (
                                 <span className="badge discount">{discount}% Off</span>
                               )}
                             </div>

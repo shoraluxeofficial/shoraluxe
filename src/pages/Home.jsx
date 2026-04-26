@@ -5,6 +5,7 @@ import QuizRibbon from '../components/home/QuizRibbon/QuizRibbon';
 
 // Lazy load below-the-fold components to improve initial homepage load speed
 const Products = lazy(() => import('../components/home/Products/Products'));
+import PromoCarousel from '../components/home/PromoCarousel/PromoCarousel';
 const Bestsellers = lazy(() => import('../components/home/Bestsellers/Bestsellers'));
 const ShopByConcern = lazy(() => import('../components/home/ShopByConcern/ShopByConcern'));
 const WatchAndShop = lazy(() => import('../components/home/WatchAndShop/WatchAndShop'));
@@ -30,6 +31,7 @@ const Home = () => {
       {/* Below the fold components load asynchronously */}
       <Suspense fallback={<SectionLoader />}>
         <Products />
+        <PromoCarousel />
         <Bestsellers />
         <ShopByConcern />
         <WatchAndShop />
