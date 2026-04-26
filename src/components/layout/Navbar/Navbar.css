@@ -3,16 +3,17 @@
   background: var(--satin-red-bg);
   color: #fff;
   font-size: 0.65rem;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  padding: 0.5rem 1rem; /* Better padding for mobile wrap */
+  padding: 8px 10px;
   text-align: center;
-  min-height: 26px; /* Flexible height */
+  min-height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   line-height: 1.4;
+  position: relative;
+  z-index: 1001;
 }
 
 /* Slider Container */
@@ -30,18 +31,22 @@
   position: absolute;
   width: 100%;
   opacity: 0;
-  transform: translateX(30px);
-  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(20px);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   display: flex;
   justify-content: center;
+  align-items: center;
   text-align: center;
+  flex-wrap: wrap;
+  gap: 2px;
 }
 
 .promo-slide.active {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
+  position: relative;
 }
 
 .promo-highlight {
