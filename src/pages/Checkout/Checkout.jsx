@@ -7,7 +7,7 @@ import { useNotify } from '../../components/common/Notification/Notification';
 import './Checkout.css';
 
 const Checkout = () => {
-  const { cartItems, cartTotal, setIsCartOpen, user, clearCart } = useShop();
+  const { cartItems, cartTotal, cartSubtotal, cartDiscount, qtyDiscountPct, cartQty, setIsCartOpen, user, clearCart } = useShop();
   const navigate = useNavigate();
   const { notify } = useNotify();
   const API_URL = import.meta.env.PROD ? '/api/payment' : 'http://localhost:5000/api/payment';
@@ -22,6 +22,7 @@ const Checkout = () => {
   const [promoLoading, setPromoLoading] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState(null); // { code, discount_type, discount_value, id }
   const [promoError, setPromoError] = useState('');
+  const [availablePromos, setAvailablePromos] = useState([]);
 
   const [formData, setFormData] = useState({
     firstName: user?.name?.split(' ')[0] || '',
@@ -55,6 +56,12 @@ const Checkout = () => {
     if (cartItems.length === 0 && !success) {
       navigate('/');
     }
+    // Fetch available promos
+    const fetchPromos = async () => {
+      const { data } = await supabase.from('promo_codes').select('*').eq('is_active', true);
+      setAvailablePromos(data || []);
+    };
+    fetchPromos();
   }, [cartItems, setIsCartOpen, navigate, success, user]);
 
   const handleChange = (e) => {
@@ -87,8 +94,8 @@ const Checkout = () => {
     }
   };
 
-  const applyPromoCode = async () => {
-    const code = promoInput.trim().toUpperCase();
+  const applyPromoCode = async (overrideCode) => {
+    const code = (overrideCode || promoInput).trim().toUpperCase();
     if (!code) return;
     setPromoError('');
     setPromoLoading(true);
@@ -127,10 +134,86 @@ const Checkout = () => {
       return;
     }
 
+    if (data.promo_type === 'b2g1') {
+      const minItems = data.min_item_count || 3;
+      const category = data.applicable_category || 'all';
+      const categoryKeywords = {
+        face_wash:   ['face wash', 'cleanser', 'facewash'],
+        body_lotion: ['body lotion', 'lotion', 'moisturiser'],
+        serum:       ['serum'],
+        sunscreen:   ['sunscreen', 'spf'],
+        all:         []
+      };
+      const keywords = categoryKeywords[category] || [];
+      const qualifyingCount = cartItems.reduce((total, item) => {
+        if (keywords.length === 0) return total + item.quantity;
+        const titleLower = (item.title || '').toLowerCase();
+        return total + (keywords.some(k => titleLower.includes(k)) ? item.quantity : 0);
+      }, 0);
+      if (qualifyingCount < minItems) {
+        const catLabel = category === 'all' ? 'items' : category === 'face_wash' ? 'Face Washes' :
+                         category === 'body_lotion' ? 'Body Lotions' : category === 'serum' ? 'Serums' : 'Sunscreens';
+        setPromoError(`Add at least ${minItems} ${catLabel} to your cart to use this code.`);
+        setAppliedPromo(null); setPromoLoading(false); return;
+      }
+    }
+
+    // BOGO: Buy 1 Get 1 — need at least 2 total items
+    if (data.promo_type === 'bogo') {
+      if (cartQty < 2) {
+        setPromoError('Add at least 2 items to use this Buy 1 Get 1 offer.');
+        setAppliedPromo(null); setPromoLoading(false); return;
+      }
+    }
+
+    // NEW USER: check they have no prior orders
+    if (data.promo_type === 'new_user') {
+      if (!user?.id) {
+        setPromoError('Please log in to use this new user offer.');
+        setAppliedPromo(null); setPromoLoading(false); return;
+      }
+      const { count } = await supabase
+        .from('orders')
+        .select('id', { count: 'exact', head: true })
+        .eq('customer_email', user.email);
+      if (count > 0) {
+        setPromoError('This offer is only valid for first-time customers.');
+        setAppliedPromo(null); setPromoLoading(false); return;
+      }
+    }
+
+    // COMBO: check all required products are in cart
+    if (data.applicable_category === 'combo' && data.applicable_products) {
+      try {
+        const requiredIds = JSON.parse(data.applicable_products);
+        if (Array.isArray(requiredIds) && requiredIds.length > 0) {
+          const cartItemIds = cartItems.map(item => String(item.id));
+          const missingIds = requiredIds.filter(requiredId => {
+            const reqIdStr = String(requiredId);
+            // If the required ID specifies a variant (e.g. "1-50ml")
+            if (reqIdStr.includes('-')) {
+              return !cartItemIds.includes(reqIdStr);
+            }
+            // If it's a base ID (e.g. 1 or "1"), check if ANY variant of that ID is in cart
+            const baseId = reqIdStr;
+            return !cartItemIds.some(cartId => cartId === baseId || cartId.startsWith(`${baseId}-`));
+          });
+          
+          if (missingIds.length > 0) {
+            setPromoError(`To use this code, please add all products in the combo to your cart.`);
+            setAppliedPromo(null); setPromoLoading(false); return;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse combo products", e);
+      }
+    }
+
     setAppliedPromo(data);
     notify(`🎉 Promo code "${code}" applied!`, 'success');
     setPromoLoading(false);
   };
+
 
   const removePromo = () => {
     setAppliedPromo(null);
@@ -138,19 +221,20 @@ const Checkout = () => {
     setPromoError('');
   };
 
-  // Compute discount amount
+  // Compute promo code discount amount
   const discountAmount = appliedPromo
     ? appliedPromo.discount_type === 'percentage'
-      ? Math.round(cartTotal * appliedPromo.discount_value / 100)
-      : Math.min(appliedPromo.discount_value, cartTotal)
+      ? Math.round(cartSubtotal * appliedPromo.discount_value / 100)
+      : Math.min(appliedPromo.discount_value, cartSubtotal)
     : 0;
 
+  // finalTotal = (cartTotal) - (promo discount) + shipping
   const finalTotal = Math.max(0, cartTotal - discountAmount + shippingFee);
 
-  // Compute total savings (item-level discounts + promo code)
+  // Total savings
   const totalOriginalPrice = cartItems.reduce((acc, item) => acc + ((item.originalPrice || item.price) * item.quantity), 0);
-  const itemSavings = totalOriginalPrice > cartTotal ? totalOriginalPrice - cartTotal : 0;
-  const totalSavings = itemSavings + discountAmount;
+  const itemSavings = totalOriginalPrice > cartSubtotal ? totalOriginalPrice - cartSubtotal : 0;
+  const totalSavings = itemSavings + cartDiscount + discountAmount;
 
   const formatSize = (sizeStr) => {
     if (!sizeStr) return '';
@@ -577,6 +661,25 @@ const Checkout = () => {
               </div>
             )}
             {promoError && <p className="promo-error">{promoError}</p>}
+            
+            {/* Suggested Promos */}
+            {!appliedPromo && availablePromos.length > 0 && (
+              <div className="suggested-promos-wrap">
+                <p className="suggested-title">SUGGESTED FOR YOU</p>
+                <div className="suggested-tags">
+                  {availablePromos.map(p => (
+                    <button key={p.id} type="button" className="promo-tag-btn" onClick={() => {
+                      setPromoInput(p.code);
+                      // Trigger apply automatically after a small delay
+                      setTimeout(() => applyPromoCode(p.code), 100);
+                    }}>
+                      <div className="tag-code">{p.code}</div>
+                      <div className="tag-save">Save {p.discount_type === 'percentage' ? `${p.discount_value}%` : `₹${p.discount_value}`}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="checkout-section">
@@ -629,9 +732,15 @@ const Checkout = () => {
 
           <div className="summary-totals">
             <div className="tot-row">
-              <span>Subtotal</span>
-              <span>₹{cartTotal.toLocaleString('en-IN')}</span>
+              <span>Subtotal ({cartQty} items)</span>
+              <span>₹{cartSubtotal.toLocaleString('en-IN')}</span>
             </div>
+            {cartDiscount > 0 && (
+              <div className="tot-row" style={{ color: '#16a34a' }}>
+                <span>🎉 Buy {cartQty} Discount ({qtyDiscountPct}% OFF)</span>
+                <span>−₹{cartDiscount.toLocaleString('en-IN')}</span>
+              </div>
+            )}
             <div className="tot-row">
               <span className="ship-label">
                 <Truck size={14} /> Shipping {formData.state && `(to ${formData.state})`}

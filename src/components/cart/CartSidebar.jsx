@@ -14,6 +14,8 @@ const CartSidebar = () => {
     cartTotal,
     cartSubtotal,
     cartDiscount,
+    qtyDiscountPct,
+    cartQty,
     user
   } = useShop();
   const navigate = useNavigate();
@@ -108,11 +110,16 @@ const CartSidebar = () => {
               <span>Subtotal</span>
               <span className="cart-subtotal-val">₹{cartSubtotal.toLocaleString('en-IN')}</span>
             </div>
-            {cartDiscount > 0 && (
+            {/* Qty Tier Discount */}
+            {qtyDiscountPct > 0 && (
               <div className="cart-subtotal-row discount-row">
-                <span>Bundle Offer Applied</span>
-                <span className="cart-subtotal-val" style={{ color: '#6d0e2c', fontWeight: 700 }}>-₹{cartDiscount.toLocaleString('en-IN')}</span>
+                <span>🎉 Buy {cartQty} Discount ({qtyDiscountPct}% OFF)</span>
+                <span className="cart-subtotal-val" style={{ color: '#16a34a', fontWeight: 700 }}>-₹{cartDiscount.toLocaleString('en-IN')}</span>
               </div>
+            )}
+            {/* Nudge to next tier */}
+            {cartQty === 1 && (
+              <p className="cart-tier-nudge">Add 1 more item → get <strong>10% OFF</strong> automatically!</p>
             )}
             <div className="cart-subtotal-row total-row" style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #eee' }}>
               <span style={{ fontWeight: 800 }}>Total</span>

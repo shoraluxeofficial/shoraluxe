@@ -112,6 +112,26 @@
   transition: border-color 0.2s;
 }
 
+.apc-textarea {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.88rem;
+  background: #fff;
+  color: #111;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.55;
+  width: 100%;
+}
+
+.apc-textarea:focus {
+  border-color: #111;
+}
+
+
 .apc-field input:focus,
 .apc-field select:focus {
   border-color: #111;
@@ -295,4 +315,27 @@
   .apc-form-grid { grid-template-columns: 1fr 1fr; }
   .apc-table { font-size: 0.8rem; }
   .apc-table th, .apc-table td { padding: 0.75rem; }
+}
+
+/* ── CONDITION BUILDER BOX ──────────────────────────────────── */
+.apc-condition-box {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #fafaf5, #f0f9ff);
+  border: 1.5px solid #e0f2fe;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.apc-condition-box label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.apc-condition-box .apc-form-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-bottom: 0;
+  gap: 1rem;
 }

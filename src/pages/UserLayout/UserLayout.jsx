@@ -17,7 +17,6 @@ const UserLayout = () => {
 
   return (
     <div className="storefront-app">
-
       <Navbar onCartClick={() => setIsCartOpen(true)} />
       <main>
         <Outlet />

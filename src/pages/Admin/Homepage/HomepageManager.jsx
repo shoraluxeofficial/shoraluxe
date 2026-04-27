@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Upload, Eye, Pencil, Video, Image as ImageIcon, LayoutDashboard, FileText, ShoppingBag, X, Check, AlertCircle } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
-import { uploadFile } from '../../../lib/upload';
+import { uploadToCloudinary } from '../../../lib/upload';
 import { useNotify } from '../../../components/common/Notification/Notification';
 import { useShop } from '../../../context/ShopContext';
 import ConfirmModal from '../../../components/common/ConfirmModal/ConfirmModal';
@@ -121,14 +121,14 @@ const HomepageManager = () => {
           return;
         }
       } else if (file.type.startsWith('video/')) {
-        // Browsers cannot natively compress videos. We enforce a 5MB limit.
-        if (file.size > 5 * 1024 * 1024) {
-          notify('Video exceeds 5MB limit. Please compress it before uploading.', 'error');
+        // Enforce 100MB limit for Cloudinary Free
+        if (file.size > 100 * 1024 * 1024) {
+          notify('Video exceeds 100MB limit.', 'error');
           return;
         }
       }
       
-      const url = await uploadFile(f, 'brand-assets', activeTab);
+      const url = await uploadToCloudinary(f);
       setEditModal(prev => ({ ...prev, draft: { ...prev.draft, [field]: url } }));
       notify('File uploaded!', 'success');
     } catch (err) {

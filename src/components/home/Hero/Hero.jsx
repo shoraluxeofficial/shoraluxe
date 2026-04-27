@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
+import { getOptimizedImageUrl } from '../../../lib/upload';
 import './Hero.css';
 
 const defaultBanners = [
@@ -92,13 +93,13 @@ const Hero = () => {
                 <div className="hero-media-desktop">
                   {(banner.desktopImg || banner.img)?.toLowerCase().endsWith('.mp4') ? (
                     <video 
-                      src={banner.desktopImg || banner.img} 
+                      src={getOptimizedImageUrl(banner.desktopImg || banner.img)} 
                       autoPlay muted loop playsInline 
                       className="hero-slide-img" 
                     />
                   ) : (
                     <img 
-                      src={banner.desktopImg || banner.img} 
+                      src={getOptimizedImageUrl(banner.desktopImg || banner.img, 'w_2560,q_auto,f_auto')} 
                       alt={banner.alt} 
                       className="hero-slide-img" 
                     />
@@ -109,13 +110,13 @@ const Hero = () => {
                 <div className="hero-media-mobile">
                   {(banner.mobileImg || banner.img)?.toLowerCase().endsWith('.mp4') ? (
                     <video 
-                      src={banner.mobileImg || banner.img} 
+                      src={getOptimizedImageUrl(banner.mobileImg || banner.img)} 
                       autoPlay muted loop playsInline 
                       className="hero-slide-img" 
                     />
                   ) : (
                     <img 
-                      src={banner.mobileImg || banner.img} 
+                      src={getOptimizedImageUrl(banner.mobileImg || banner.img, 'w_1080,q_auto,f_auto')} 
                       alt={banner.alt} 
                       className="hero-slide-img" 
                     />

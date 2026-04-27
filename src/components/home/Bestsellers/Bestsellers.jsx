@@ -28,8 +28,8 @@ const Bestsellers = () => {
   ];
 
   const bestsellers = (() => {
-    // 1. Filter out placeholder id 999
-    const real = products.filter(p => p.id !== 999);
+    // 1. Filter out placeholder id 999 and combos
+    const real = products.filter(p => p.id !== 999 && p.category !== 'combo');
     
     // 2. Map real products to their index in the preferred sequence (using partial matching)
     const sorted = [...real].sort((a, b) => {

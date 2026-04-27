@@ -153,6 +153,7 @@
     height: 40px;
   }
   .hero-pagination {
-    bottom: 15px;
+    bottom: 22px;
+    gap: 10px;
   }
 }

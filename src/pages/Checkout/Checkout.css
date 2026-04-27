@@ -533,3 +533,65 @@
     gap: 0;
   }
 }
+/* SUGGESTED PROMOS */
+.suggested-promos-wrap {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #eee;
+}
+
+.suggested-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #888;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.suggested-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.promo-tag-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.promo-tag-btn:hover {
+  border-color: #6d0e2c;
+  background: #fdf2f8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(109, 14, 44, 0.08);
+}
+
+.tag-code {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111;
+  text-transform: uppercase;
+}
+
+.tag-save {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #059669; /* Success Green */
+}
+
+@media (max-width: 600px) {
+  .suggested-tags {
+    gap: 8px;
+  }
+  .promo-tag-btn {
+    padding: 6px 12px;
+  }
+}

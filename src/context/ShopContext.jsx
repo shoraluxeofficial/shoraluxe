@@ -119,50 +119,25 @@ export const ShopProvider = ({ children }) => {
     localStorage.removeItem('shoraluxe_cart');
   };
 
+  // Quantity-tier auto discount (no code needed)
+  // Buy 2 = 10%, Buy 3 = 15%, Buy 4 = 20%, Buy 5+ = 25%
   const calculateCartTotals = () => {
-    let subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    let total = 0;
-    let faceWashCount = 0;
-    let faceWashPrices = [];
-    let lotionCount = 0;
-    let lotionPrices = [];
-    let otherTotal = 0;
+    const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const totalQty = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-    cartItems.forEach(item => {
-      if (item.promoGroup === 'B2G1_FACEWASH') {
-        faceWashCount += item.quantity;
-        for (let i = 0; i < item.quantity; i++) faceWashPrices.push(item.price);
-      } else if (item.promoGroup === 'B2G1_LOTION') {
-        lotionCount += item.quantity;
-        for (let i = 0; i < item.quantity; i++) lotionPrices.push(item.price);
-      } else {
-        otherTotal += item.price * item.quantity;
-      }
-    });
+    const qtyDiscountPct =
+      totalQty >= 5 ? 25 :
+      totalQty >= 4 ? 20 :
+      totalQty >= 3 ? 15 :
+      totalQty >= 2 ? 10 : 0;
 
-    // Face Wash B2G1: 3 for 698
-    const fwBundles = Math.floor(faceWashCount / 3);
-    const fwRemainder = faceWashCount % 3;
-    total += fwBundles * 698;
-    faceWashPrices.sort((a, b) => b - a);
-    for (let i = 0; i < fwRemainder; i++) total += faceWashPrices[i];
+    const qtyDiscountAmt = Math.round(subtotal * qtyDiscountPct / 100);
+    const total = subtotal - qtyDiscountAmt;
 
-    // Lotion B2G1: 3 for 1198
-    const lBundles = Math.floor(lotionCount / 3);
-    const lRemainder = lotionCount % 3;
-    total += lBundles * 1198;
-    lotionPrices.sort((a, b) => b - a);
-    for (let i = 0; i < lRemainder; i++) total += lotionPrices[i];
-
-    const finalTotal = total + otherTotal;
-    return {
-      subtotal,
-      total: finalTotal,
-      discount: subtotal - finalTotal
-    };
+    return { subtotal, total, discount: qtyDiscountAmt, qtyDiscountPct, totalQty };
   };
 
-  const { subtotal: cartSubtotal, total: cartTotal, discount: cartDiscount } = calculateCartTotals();
+  const { subtotal: cartSubtotal, total: cartTotal, discount: cartDiscount, qtyDiscountPct, totalQty: cartQty } = calculateCartTotals();
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
   // Actions: Admin Database (Supabase)
@@ -256,6 +231,8 @@ export const ShopProvider = ({ children }) => {
       cartSubtotal,
       cartDiscount,
       cartCount,
+      qtyDiscountPct,
+      cartQty,
       popupConfig,
       updatePopupConfig
     }}>

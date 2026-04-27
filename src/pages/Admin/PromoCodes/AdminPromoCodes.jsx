@@ -13,6 +13,11 @@ const EMPTY = {
   expires_at: '',
   description: '',
   is_active: true,
+  promo_type: 'standard',
+  min_item_count: 3,
+  applicable_category: 'all',
+  how_to_redeem: '',        // Step-by-step instructions for customer
+  applicable_products: '',  // Which products qualify (text)
 };
 
 const AdminPromoCodes = () => {
@@ -59,6 +64,11 @@ const AdminPromoCodes = () => {
       expires_at: code.expires_at ? code.expires_at.slice(0, 16) : '',
       description: code.description || '',
       is_active: code.is_active,
+      promo_type: code.promo_type || 'standard',
+      min_item_count: code.min_item_count || 3,
+      applicable_category: code.applicable_category || 'all',
+      how_to_redeem: code.how_to_redeem || '',
+      applicable_products: code.applicable_products || '',
     });
     setShowForm(true);
   };
@@ -78,6 +88,11 @@ const AdminPromoCodes = () => {
       expires_at: form.expires_at || null,
       description: form.description,
       is_active: form.is_active,
+      promo_type: form.promo_type || 'standard',
+      min_item_count: form.promo_type === 'b2g1' ? Number(form.min_item_count) : null,
+      applicable_category: form.promo_type === 'b2g1' ? form.applicable_category : 'all',
+      how_to_redeem: form.how_to_redeem || null,
+      applicable_products: form.applicable_products || null,
     };
 
     let error;
@@ -167,9 +182,75 @@ const AdminPromoCodes = () => {
                 <input type="datetime-local" name="expires_at" value={form.expires_at} onChange={handleChange} />
               </div>
               <div className="apc-field apc-field-full">
-                <label>Description</label>
-                <input name="description" value={form.description} onChange={handleChange} placeholder="Internal note about this code..." />
+                <label>Description <span style={{color:'#9ca3af', fontWeight:400}}>(shown on homepage card)</span></label>
+                <input name="description" value={form.description} onChange={handleChange} placeholder="e.g. Buy 3 Face Washes – Get 1 FREE (Save ₹349)" />
               </div>
+
+              <div className="apc-field apc-field-full">
+                <label>📦 Applicable Products <span style={{color:'#9ca3af', fontWeight:400}}>(which products qualify for this offer)</span></label>
+                <textarea
+                  name="applicable_products"
+                  value={form.applicable_products}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder="e.g. Rice Water Face Wash, Vitamin C Ubtan Face Wash, Charcoal Face Wash, Hyaluronic Acid Face Wash, Salicylic Acid Face Wash"
+                  className="apc-textarea"
+                />
+              </div>
+
+              <div className="apc-field apc-field-full">
+                <label>📋 How to Redeem <span style={{color:'#9ca3af', fontWeight:400}}>(step-by-step instructions for the customer)</span></label>
+                <textarea
+                  name="how_to_redeem"
+                  value={form.how_to_redeem}
+                  onChange={handleChange}
+                  rows={4}
+                  placeholder={`e.g.\n1. Add 3 Face Washes to your cart\n2. Go to Checkout\n3. Enter code WASH3FREE in the Promo Code box\n4. ₹349 will be deducted automatically`}
+                  className="apc-textarea"
+                />
+              </div>
+
+              {/* ── CONDITION BUILDER ────────────────────────────── */}
+              <div className="apc-field apc-field-full apc-condition-box">
+                <label style={{fontWeight:700, color:'#1e293b', fontSize:'0.9rem'}}>🎯 Promo Condition</label>
+                <p style={{fontSize:'0.75rem', color:'#64748b', margin:'2px 0 12px'}}>Set rules — when is this code valid?</p>
+                <div className="apc-form-grid" style={{marginTop:0}}>
+                  <div className="apc-field">
+                    <label>Condition Type</label>
+                    <select name="promo_type" value={form.promo_type} onChange={handleChange}>
+                      <option value="standard">Standard (always valid)</option>
+                      <option value="b2g1">Buy 2 Get 1 Free (needs min items)</option>
+                      <option value="bogo">Buy 1 Get 1 Free (needs 2 items in cart)</option>
+                      <option value="new_user">New Customer Only (first order)</option>
+                    </select>
+                  </div>
+                  {form.promo_type === 'b2g1' && (
+                    <>
+                      <div className="apc-field">
+                        <label>Minimum Items in Cart</label>
+                        <input
+                          type="number" name="min_item_count" min="2" max="20"
+                          value={form.min_item_count}
+                          onChange={handleChange}
+                          placeholder="3"
+                        />
+                        <span style={{fontSize:'0.72rem', color:'#64748b', marginTop:'4px', display:'block'}}>Customer must add this many items before code works</span>
+                      </div>
+                      <div className="apc-field">
+                        <label>Applies To (Category)</label>
+                        <select name="applicable_category" value={form.applicable_category} onChange={handleChange}>
+                          <option value="all">All Products</option>
+                          <option value="face_wash">Face Washes Only</option>
+                          <option value="body_lotion">Body Lotions Only</option>
+                          <option value="serum">Serums Only</option>
+                          <option value="sunscreen">Sunscreen Only</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
               <div className="apc-field apc-toggle-field">
                 <label>Active</label>
                 <label className="apc-toggle">

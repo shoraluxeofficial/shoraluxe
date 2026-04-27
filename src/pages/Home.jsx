@@ -1,12 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import Hero from '../components/home/Hero/Hero';
 import Categories from '../components/home/Categories/Categories';
+import PromoCodes from '../components/home/PromoCodes/PromoCodes';
 import QuizRibbon from '../components/home/QuizRibbon/QuizRibbon';
 
 // Lazy load below-the-fold components to improve initial homepage load speed
 const Products = lazy(() => import('../components/home/Products/Products'));
-import PromoCarousel from '../components/home/PromoCarousel/PromoCarousel';
 const Bestsellers = lazy(() => import('../components/home/Bestsellers/Bestsellers'));
+const CombosSection = lazy(() => import('../components/home/CombosSection/CombosSection'));
 const ShopByConcern = lazy(() => import('../components/home/ShopByConcern/ShopByConcern'));
 const WatchAndShop = lazy(() => import('../components/home/WatchAndShop/WatchAndShop'));
 const VideoBanners = lazy(() => import('../components/home/VideoBanners/VideoBanners'));
@@ -48,6 +49,7 @@ const Home = () => {
     <>
       {/* Top of page components load immediately */}
       <Hero />
+      <PromoCodes />
       <Categories />
       <QuizRibbon />
 
@@ -56,10 +58,13 @@ const Home = () => {
         <Products />
       </Suspense>
 
-      <PromoCarousel />
 
       <Suspense fallback={<SectionSkeleton height="700px" />}>
         <Bestsellers />
+      </Suspense>
+
+      <Suspense fallback={<SectionSkeleton height="600px" />}>
+        <CombosSection />
       </Suspense>
 
       <Suspense fallback={<SectionSkeleton height="500px" />}>

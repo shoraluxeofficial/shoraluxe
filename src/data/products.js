@@ -499,5 +499,43 @@ export const productsData = [
     ingredients: 'Purified Water, Polyacrylamide (and) C13-14 Isoparaffin (and) Laureth-7, Glycerin, Caprylic/Capric Triglyceride, Cetostearyl Alcohol, Dimethicone, Tapioca Starch, Phenoxyethanol and Ethylhexylglycerin, Butyrospermum Parkii (Shea) Butter, Tocopherol, Ceramide NP, Squalane, Azelaic Acid, Fragrance, Xanthan Gum, Disodium Ethylenediaminetetraacetate',
     bestFor: 'All skin types',
     promoGroup: 'B2G1_LOTION'
+  },
+  {
+    id: 14,
+    brand: 'SHORALUXE',
+    title: 'Every Day Protection Combo | Sunscreen 100gm + Face Wash 50ml',
+    price: 899,
+    originalPrice: null,
+    discount: null,
+    offer: 'Sun Protection & Daily Cleanse',
+    rating: 4.9,
+    reviewsCount: 0,
+    img: '/products images/Everyday Protection Combo/combo.jpg',
+    gallery: [
+      '/products images/Everyday Protection Combo/combo.jpg',
+      '/products images/Sunscreen cream spf 50+++ 100gm/3377F8A0-B710-43B4-99D8-202232DD2961.png',
+      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0001.jpg'
+    ],
+    badge: 'COMBO DEAL',
+    isNew: true,
+    isBestseller: false,
+    category: 'combo',
+    size: null,
+    netQuantity: 'Sunscreen 100gm + Face Wash 50ml',
+    benefit: 'Sun Protection & Deep Cleanse',
+    skinType: 'All Skin Types',
+    idealFor: ['Daily protection', 'Sun damage prevention', 'Acne-prone skin', 'Oily skin'],
+    description: 'Get the ultimate daily defence with our Everyday Protection Combo! Includes our Sunscreen Cream SPF 50+++ (100gm) for broad-spectrum UV protection with zero white cast, paired with the Salicylic Acid Face Wash (50ml) to deep-cleanse, unclog pores and prevent breakouts. Together they form the perfect morning routine: cleanse, then protect.',
+    benefits: 'Complete morning skincare routine. Sunscreen protects from UVA/UVB rays. Face wash clears pores and controls oil.',
+    howToUse: [
+      'Step 1: Wet face, apply Face Wash, massage gently, rinse off.',
+      'Step 2: Apply Sunscreen evenly on face & neck 15 minutes before sun exposure.'
+    ],
+    cautions: 'For external use only. Patch test recommended. Avoid eye area.',
+    ingredients: 'See individual product pages for full ingredient lists.',
+    bestFor: 'All skin types',
+    promoCode: 'SL-SUMMERGLOW1',
+    promoPrice: 699,
+    promoGroup: 'COMBO_SUMMER'
   }
 ];

@@ -13,18 +13,25 @@ import {
   Check,
   Info,
   Sparkles,
-  Beaker
+  Beaker,
+  Tag
 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
+import { getOptimizedImageUrl } from '../../lib/upload';
 import SEO from '../../components/SEO/SEO';
+import { useNotify } from '../../components/common/Notification/Notification';
+import { supabase } from '../../lib/supabase';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const { products, addToCart } = useShop();
+  const { products, addToCart, isCartOpen, setIsCartOpen } = useShop();
+  const { notify } = useNotify();
   const [product, setProduct] = useState(null);
   const [activeImg, setActiveImg] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const [promoCodes, setPromoCodes] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [activeTab, setActiveTab] = useState('description');
   const [showSticky, setShowSticky] = useState(false);
   const addToCartRef = useRef(null);
@@ -32,10 +39,25 @@ const ProductDetail = () => {
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [selectedSize, setSelectedSize] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [bundledProducts, setBundledProducts] = useState([]);
 
   useEffect(() => {
     const foundProduct = products.find(p => p.id === parseInt(id));
     if (foundProduct) {
+      // Expiry Check for Combos
+      if (foundProduct.category === 'combo' && foundProduct.benefits) {
+        try {
+          const benefits = JSON.parse(foundProduct.benefits);
+          if (benefits.expiry_date) {
+            const expiry = new Date(benefits.expiry_date);
+            if (expiry < new Date()) {
+              setProduct(null); // Treat as not found if expired
+              return;
+            }
+          }
+        } catch (e) { }
+      }
+
       setProduct(foundProduct);
       const galleryArray = Array.isArray(foundProduct.gallery) ? foundProduct.gallery : (foundProduct.gallery ? foundProduct.gallery.split('\n').filter(Boolean) : []);
       setActiveImg(galleryArray[0] || foundProduct.img);
@@ -45,6 +67,39 @@ const ProductDetail = () => {
       window.scrollTo(0, 0);
     }
   }, [id, products]);
+
+  useEffect(() => {
+    if (product && product.benefits) {
+      try {
+        let benefitsData = null;
+        if (typeof product.benefits === 'string') {
+          if (product.benefits.includes('product_ids')) {
+            benefitsData = JSON.parse(product.benefits);
+          }
+        } else if (product.benefits.product_ids) {
+          benefitsData = product.benefits;
+        }
+
+        if (benefitsData && benefitsData.product_ids && Array.isArray(benefitsData.product_ids)) {
+          const bundle = benefitsData.product_ids.map(key => {
+            const [baseId, label] = typeof key === 'string' && key.includes('-') ? key.split('-') : [key, null];
+            const p = products.find(prod => prod.id === Number(baseId));
+            if (p) {
+              return { ...p, variantLabel: label };
+            }
+            return null;
+          }).filter(Boolean);
+          setBundledProducts(bundle);
+        } else {
+          setBundledProducts([]);
+        }
+      } catch (e) { 
+        setBundledProducts([]);
+      }
+    } else {
+      setBundledProducts([]);
+    }
+  }, [product, products]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,6 +127,71 @@ const ProductDetail = () => {
   // Auto-scroll product gallery
   useEffect(() => {
     if (!product) return;
+    
+    const fetchData = async () => {
+      // Fetch promo codes
+      const { data: pCodes } = await supabase.from('promo_codes').select('*').eq('is_active', true);
+      setPromoCodes(pCodes || []);
+
+      // Routine-Based Related Products Logic
+      let related = [];
+      const title = product.title.toLowerCase();
+      const benefit = (product.benefit || '').toLowerCase();
+      
+      // 1. Find by Benefit (e.g., Acne, Hydration, Brightening)
+      if (benefit) {
+        const { data: benefitData } = await supabase
+          .from('products')
+          .select('*')
+          .ilike('benefit', `%${benefit.split(' ')[0]}%`)
+          .neq('id', product.id)
+          .limit(4);
+        if (benefitData?.length) related = [...benefitData];
+      }
+
+      // 2. Find Next Steps in Routine
+      if (related.length < 4) {
+        let nextStepKeywords = [];
+        if (title.includes('face wash')) nextStepKeywords = ['serum', 'moisturizer', 'sunscreen'];
+        else if (title.includes('serum')) nextStepKeywords = ['moisturizer', 'face wash', 'sunscreen'];
+        else if (title.includes('moisturizer')) nextStepKeywords = ['serum', 'face wash', 'sunscreen'];
+
+        for (const kw of nextStepKeywords) {
+          if (related.length >= 4) break;
+          const { data: stepData } = await supabase
+            .from('products')
+            .select('*')
+            .ilike('title', `%${kw}%`)
+            .neq('id', product.id)
+            .limit(2);
+          
+          if (stepData?.length) {
+            const newIds = new Set(related.map(r => r.id));
+            stepData.forEach(p => { 
+              if (!newIds.has(p.id) && related.length < 4) related.push(p); 
+            });
+          }
+        }
+      }
+
+      // 3. Filter out Combos if viewing single product (and vice versa)
+      const isCombo = title.includes('combo') || title.includes('kit');
+      related = related.filter(r => {
+        const rTitle = r.title.toLowerCase();
+        const rIsCombo = rTitle.includes('combo') || rTitle.includes('kit');
+        return rIsCombo === isCombo;
+      });
+
+      // 4. Final Fallback if empty
+      if (related.length === 0) {
+        const { data: fallback } = await supabase.from('products').select('*').neq('id', product.id).limit(4);
+        related = fallback || [];
+      }
+      
+      setRelatedProducts(related.slice(0, 4));
+    };
+    fetchData();
+
     const images = Array.isArray(product.gallery) ? product.gallery : (product.gallery ? product.gallery.split('\n').filter(Boolean) : []);
     if (!images || images.length <= 1) return;
 
@@ -132,13 +252,13 @@ const ProductDetail = () => {
       <SEO 
         title={product.title} 
         description={truncatedDesc} 
-        image={activeImg} 
+        image={getOptimizedImageUrl(activeImg, 'w_1200,q_auto,f_auto')} 
         type="product"
         jsonLd={{
           "@context": "https://schema.org/",
           "@type": "Product",
           "name": product.title,
-          "image": activeImg,
+          "image": getOptimizedImageUrl(activeImg, 'w_1200,q_auto,f_auto'),
           "description": truncatedDesc,
           "sku": product.id,
           "brand": {
@@ -154,7 +274,6 @@ const ProductDetail = () => {
           }
         }}
       />
-      {/* ... (rest of the Nav) ... */}
       <nav className="breadcrumbs">
         <Link to="/">Home</Link>
         <ChevronRight size={12} strokeWidth={3} />
@@ -164,8 +283,31 @@ const ProductDetail = () => {
       </nav>
 
       <div className="pd-grid">
-        {/* LEFT: VERTICAL GALLERY (Neudeskin Style) */}
         <div className="pd-gallery-container">
+          {/* Promo Cards Section - MOVED TO TOP OF HTML FOR COLUMN-REVERSE BOTTOM PLACEMENT */}
+          {promoCodes.length > 0 && (
+            <div className="pd-promo-section gallery-promo">
+              <span className="pd-promo-title"><Tag size={14} /> EXCLUSIVE OFFERS FOR YOU</span>
+              <div className="pd-promo-cards">
+                {promoCodes.slice(0, 3).map(code => (
+                  <div className="pd-promo-card" key={code.id} onClick={() => {
+                    navigator.clipboard.writeText(code.code);
+                    notify(`Code ${code.code} copied!`, 'success');
+                  }}>
+                    <div className="pd-promo-badge">
+                      {code.discount_type === 'percentage' ? `${code.discount_value}% OFF` : `₹${code.discount_value} OFF`}
+                    </div>
+                    <div className="pd-promo-info">
+                      <span className="pd-promo-name">{code.code}</span>
+                      <span className="pd-promo-text">{code.description || 'Applicable on this order'}</span>
+                    </div>
+                    <div className="pd-promo-copy">TAP TO COPY</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="pd-thumbs-vertical">
             {galleryArray.map((img, i) => (
               <div
@@ -173,17 +315,23 @@ const ProductDetail = () => {
                 className={`pd-thumb-v ${activeImg === img ? 'active' : ''}`}
                 onClick={() => setActiveImg(img)}
               >
-                <img src={img} alt={`${product.title} thumb ${i}`} />
+                <img src={getOptimizedImageUrl(img, 'w_150,c_thumb,q_auto,f_auto')} alt={`${product.title} thumb ${i}`} />
               </div>
             ))}
           </div>
           <div className="pd-main-img-wrap">
-            <img key={activeImg} src={activeImg} alt={product.title} className="pd-main-img" style={{ animation: 'fadeIn 0.4s ease-out' }} />
+            <img 
+              key={activeImg} 
+              src={getOptimizedImageUrl(activeImg, 'w_1000,q_auto,f_auto')} 
+              alt={product.title} 
+              className="pd-main-img" 
+              style={{ animation: 'fadeIn 0.4s ease-out' }} 
+            />
             {product.badge && <span className="pd-badge">{product.badge}</span>}
           </div>
+
         </div>
 
-        {/* RIGHT: CONTENT */}
         <div className="pd-info-container">
           <div className="pd-header-block">
             <div className="pd-rating-inline">
@@ -201,7 +349,7 @@ const ProductDetail = () => {
 
           <div className="pd-pricing-block">
             <span className="pd-price-luxe">₹{currentPrice.toLocaleString('en-IN')}</span>
-            {(selectedVariantData.mrp || product.originalPrice) && (
+            {!product.promoCode && (selectedVariantData.mrp || product.originalPrice) && (
               <>
                 <span className="pd-original-luxe">₹{Number(selectedVariantData.mrp || product.originalPrice).toLocaleString('en-IN')}</span>
                 <span className="pd-discount-badge">{selectedVariantData.discount || product.discount}</span>
@@ -209,6 +357,29 @@ const ProductDetail = () => {
             )}
             <span className="pd-tax-note">Inclusive of all taxes</span>
           </div>
+
+          {/* Promo Code Hint — shown for combo/promo products */}
+          {product.promoCode && product.promoPrice && (
+            <div className="pd-promo-hint-banner" onClick={() => {
+              navigator.clipboard.writeText(product.promoCode);
+              notify(`Code ${product.promoCode} copied! Apply at checkout.`, 'success');
+            }}>
+              <div className="pd-promo-hint-left">
+                <Tag size={18} className="pd-promo-hint-icon" />
+                <div>
+                  <span className="pd-promo-hint-label">EXCLUSIVE DEAL PRICE</span>
+                  <span className="pd-promo-hint-text">
+                    Use code <strong>{product.promoCode}</strong> at checkout
+                  </span>
+                  <span className="pd-promo-hint-text">and get this for only</span>
+                </div>
+              </div>
+              <div className="pd-promo-hint-right">
+                <span className="pd-promo-hint-price">₹{product.promoPrice.toLocaleString('en-IN')}</span>
+                <span className="pd-promo-hint-copy">TAP TO COPY CODE</span>
+              </div>
+            </div>
+          )}
 
           <div className="pd-desc-luxe-wrap">
             <p className="pd-short-desc-luxe">
@@ -264,11 +435,6 @@ const ProductDetail = () => {
             </div>
           )}
 
-          <div className="pd-luxe-offers">
-            <Check size={18} color="#611C28" />
-            <span>{product.offer}</span>
-          </div>
-
           {/* MAIN ACTIONS */}
           <div className="pd-action-panel">
             <div className="pd-qty-box">
@@ -312,8 +478,26 @@ const ProductDetail = () => {
             <div className="icon-tab-content">
               {activeTab === 'description' && (
                 <div className="tab-fade-in">
-                  <p>{product.description}</p>
-                  {product.benefits && (
+                  {bundledProducts.length > 0 && (
+                    <div className="pd-bundle-section">
+                      <h4 className="pd-bundle-title">🎁 What's Included in this Combo:</h4>
+                      <div className="pd-bundle-list">
+                        {bundledProducts.map((p, idx) => (
+                          <div key={idx} className="pd-bundle-item">
+                            <div className="pd-bundle-img-box">
+                              <img src={getOptimizedImageUrl(p.img, 'w_100,c_thumb,q_auto,f_auto')} alt={p.title} />
+                            </div>
+                            <div className="pd-bundle-info">
+                              <span className="pd-bundle-name">{p.title.split('|')[0]} {p.variantLabel && <small>({p.variantLabel})</small>}</span>
+                              <p className="pd-bundle-desc">{p.description?.slice(0, 100)}...</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {product.benefits && bundledProducts.length === 0 && (
                     <div className="best-for-luxe" style={{marginTop: '12px'}}>
                       <strong>Key Benefits:</strong> {product.benefits}
                     </div>
@@ -393,7 +577,7 @@ const ProductDetail = () => {
       <div className={`pd-sticky-cart ${showSticky ? 'visible' : ''}`}>
         <div className="sticky-cart-inner">
           <div className="sticky-prod-info">
-            <img src={activeImg} alt="" className="sticky-img" />
+            <img src={getOptimizedImageUrl(activeImg, 'w_100,c_thumb,q_auto,f_auto')} alt="" className="sticky-img" />
             <div>
               <span className="sticky-title">{product.title.split('|')[0]} {parsedVariants.length > 1 && `(${currentSizeLabel})`}</span>
               <span className="sticky-price">₹{currentPrice.toLocaleString('en-IN')}</span>
@@ -415,6 +599,26 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+      {/* RELATED PRODUCTS SECTION */}
+      {relatedProducts.length > 0 && (
+        <div className="pd-related-section">
+          <h3 className="related-title">Complete Your <em>Routine</em></h3>
+          <div className="related-grid">
+            {relatedProducts.map(rp => (
+              <div key={rp.id} className="related-card" onClick={() => navigate(`/product/${rp.id}`)}>
+                <div className="related-img-wrap">
+                  <img src={getOptimizedImageUrl(rp.img, 'w_400,q_auto,f_auto')} alt={rp.title} />
+                </div>
+                <div className="related-info">
+                  <h4>{rp.title.split('|')[0]}</h4>
+                  <p className="related-price">₹{rp.price.toLocaleString('en-IN')}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div ref={footerRef} className="footer-sensor"></div>
     </div>
   );

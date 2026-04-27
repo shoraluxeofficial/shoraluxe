@@ -869,3 +869,425 @@
   letter-spacing: 0.3px;
   white-space: nowrap;
 }
+
+/* PROMO HINT BANNER — for combo/promo products */
+.pd-promo-hint-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #6d0e2c 0%, #a01840 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 24px rgba(109, 14, 44, 0.25);
+  gap: 1rem;
+}
+
+.pd-promo-hint-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(109, 14, 44, 0.35);
+}
+
+.pd-promo-hint-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pd-promo-hint-icon {
+  color: #C5A028;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.pd-promo-hint-left > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-promo-hint-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #C5A028;
+  text-transform: uppercase;
+}
+
+.pd-promo-hint-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.4;
+}
+
+.pd-promo-hint-text strong {
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+}
+
+.pd-promo-hint-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.pd-promo-hint-price {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #C5A028;
+  line-height: 1;
+  font-family: var(--font-serif);
+}
+
+.pd-promo-hint-copy {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .pd-promo-hint-banner {
+    padding: 1rem;
+  }
+  .pd-promo-hint-price {
+    font-size: 1.5rem;
+  }
+  .pd-promo-hint-text {
+    font-size: 0.78rem;
+  }
+}
+
+/* PROMO CARDS SECTION */
+.pd-promo-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+
+.pd-promo-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #6d0e2c;
+  letter-spacing: 1.5px;
+  margin-bottom: 1.25rem;
+  opacity: 0.8;
+}
+
+.pd-promo-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pd-promo-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  background: #fdfdfd;
+}
+
+.pd-promo-card:hover {
+  border-color: #6d0e2c;
+  background: #fffafa;
+  transform: translateX(4px);
+}
+
+.pd-promo-badge {
+  background: #6d0e2c;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  min-width: 80px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(109, 14, 44, 0.2);
+}
+
+.pd-promo-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-promo-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pd-promo-text {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.pd-promo-copy {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #c9943a;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .pd-promo-section {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pd-promo-card {
+    padding: 10px;
+  }
+  .pd-promo-badge {
+    font-size: 0.75rem;
+    min-width: 70px;
+  }
+}
+
+/* RELATED PRODUCTS SECTION */
+.pd-related-section {
+  max-width: 1440px;
+  margin: 4rem auto;
+  padding: 0 4rem;
+}
+
+.related-title {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: #111;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.related-title em {
+  color: #6d0e2c;
+  font-style: italic;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.related-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #eee;
+}
+
+.related-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  border-color: #6d0e2c;
+}
+
+.related-img-wrap {
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  background: #fdfdfd;
+}
+
+.related-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.related-info {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.related-info h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.related-price {
+  font-size: 0.95rem;
+  color: #6d0e2c;
+  font-weight: 800;
+}
+
+@media (max-width: 1024px) {
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .pd-related-section {
+    padding: 0 1.5rem;
+    margin: 2rem auto;
+  }
+  .related-title {
+    font-size: 1.6rem;
+  }
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .related-info {
+    padding: 1rem;
+  }
+  .related-info h4 {
+    font-size: 0.85rem;
+  }
+}
+
+/* GALLERY PLACED PROMOS */
+.gallery-promo {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+@media (min-width: 1025px) {
+  .gallery-promo {
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 1024px) {
+  .gallery-promo {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* BUNDLE SECTION FOR COMBOS */
+.pd-bundle-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1.5px solid #f1f5f9;
+}
+
+.pd-bundle-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pd-bundle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pd-bundle-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fdfdfd;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.pd-bundle-img-box {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #f1f5f9;
+}
+
+.pd-bundle-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pd-bundle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-bundle-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #6d0e2c;
+}
+
+.pd-bundle-name small {
+  color: #64748b;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.pd-bundle-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .pd-bundle-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+  .pd-bundle-title {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .pd-bundle-item {
+    padding: 0.6rem;
+    gap: 0.75rem;
+    border-radius: 10px;
+  }
+  .pd-bundle-img-box {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+  }
+  .pd-bundle-name {
+    font-size: 0.8rem;
+  }
+  .pd-bundle-desc {
+    font-size: 0.72rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

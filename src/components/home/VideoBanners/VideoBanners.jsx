@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase } from '../../../lib/supabase';
+import { getOptimizedImageUrl } from '../../../lib/upload';
 import './VideoBanners.css';
 
 const defaultVideos = [
@@ -84,7 +85,7 @@ const VideoBanners = () => {
               playsInline 
               className="banner-video"
             >
-              <source src={v.url} type="video/mp4" />
+              <source src={getOptimizedImageUrl(v.url)} type="video/mp4" />
             </video>
             <div className="video-overlay">
               <div className="video-info">

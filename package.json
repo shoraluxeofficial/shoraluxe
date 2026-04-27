@@ -16,6 +16,8 @@
     "browser-image-compression": "^2.0.2",
     "canvas-confetti": "^1.9.4",
     "classnames": "^2.5.1",
+    "cloudinary": "^2.10.0",
+    "dotenv": "^17.4.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^1.8.0",
     "pg": "^8.20.0",

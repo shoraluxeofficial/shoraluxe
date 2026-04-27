@@ -2,14 +2,15 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Star, ArrowRight } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
+import { getOptimizedImageUrl } from '../../../lib/upload';
 import './Products.css';
 
 const Products = () => {
   const scrollRef = useRef(null);
   const { products, addToCart, loading } = useShop();
 
-  // Exclude test product (id 999) and cap to 16 real products
-  const displayProducts = products.filter(p => p.id !== 999).slice(0, 16);
+  // Exclude test product (id 999) and combos from New Arrivals, cap to 16 products
+  const displayProducts = products.filter(p => p.id !== 999 && p.category !== 'combo').slice(0, 16);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -63,9 +64,19 @@ const Products = () => {
                     {/* Image */}
                     <Link to={`/product/${product.id}`} className="product-img-wrap" style={{ display: 'block' }}>
                       <div className={`product-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
-                        <img src={product.img} alt={product.title} className="product-img main" loading="lazy" />
+                        <img 
+                          src={getOptimizedImageUrl(product.img, 'w_500,q_auto,f_auto')} 
+                          alt={product.title} 
+                          className="product-img main" 
+                          loading="lazy" 
+                        />
                         {product.gallery && product.gallery.length > 1 && (
-                          <img src={product.gallery[1]} alt={product.title} className="product-img hover" loading="lazy" />
+                          <img 
+                            src={getOptimizedImageUrl(product.gallery[1], 'w_500,q_auto,f_auto')} 
+                            alt={product.title} 
+                            className="product-img hover" 
+                            loading="lazy" 
+                          />
                         )}
                       </div>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
+import { getOptimizedImageUrl } from '../../lib/upload';
 import './Shop.css';
 
 const CONCERNS = [
@@ -108,12 +109,24 @@ const Shop = () => {
   }, [showFilters]);
 
   const filteredProducts = useMemo(() => {
-    // Exclude test product (id 999) and cap the base pool to 16 real products
-    const baseProducts = products
-      .filter(p => p.id !== 999)
-      .slice(0, 16);
-
-    let result = [...baseProducts];
+    let result = products.filter(p => {
+      if (p.id === 999) return false;
+      
+      // Expiry Check for Combos
+      if (p.category === 'combo' && p.benefits) {
+        try {
+          const benefits = JSON.parse(p.benefits);
+          if (benefits.expiry_date) {
+            const expiry = new Date(benefits.expiry_date);
+            if (expiry < new Date()) return false; // Hide if expired
+          }
+        } catch (e) {
+          // If JSON parse fails, it might be the old array format, which is fine
+        }
+      }
+      
+      return true;
+    });
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -148,18 +161,19 @@ const Shop = () => {
         const title = p.title.toLowerCase();
         const desc = (p.description || '').toLowerCase();
         const type = (p.skinType || '').toLowerCase();
+        const category = (p.category || '').toLowerCase();
 
-        if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser');
-        if (cat === 'serum') return title.includes('serum');
-        if (cat === 'moisturizer') return title.includes('moisturizer') || title.includes('gel');
-        if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf');
-        if (cat === 'body-wash') return title.includes('body wash');
-        if (cat === 'day-cream') return title.includes('day cream');
-        if (cat === 'night-cream') return title.includes('night cream');
-        if (cat === 'body-lotion') return title.includes('body lotion');
-        if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio');
+        if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser') || category.includes('wash');
+        if (cat === 'serum') return title.includes('serum') || category.includes('serum');
+        if (cat === 'moisturizer') return title.includes('moisturizer') || title.includes('gel') || category.includes('moisturizer');
+        if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf') || category.includes('sunscreen');
+        if (cat === 'body-wash') return title.includes('body wash') || category.includes('body-wash');
+        if (cat === 'day-cream') return title.includes('day cream') || category.includes('day-cream');
+        if (cat === 'night-cream') return title.includes('night cream') || category.includes('night-cream');
+        if (cat === 'body-lotion') return title.includes('body lotion') || category.includes('body-lotion');
+        if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio') || category.includes('combo');
 
-        return title.includes(cat) || desc.includes(cat) || type.includes(cat);
+        return title.includes(cat) || desc.includes(cat) || type.includes(cat) || category.includes(cat);
       });
     }
 
@@ -173,7 +187,7 @@ const Shop = () => {
     });
 
     return result;
-  }, [products, activeConcern, activeType, sortBy, searchQuery]);
+  }, [products, activeConcern, activeType, activePromo, activeCategory, sortBy, searchQuery]);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -429,9 +443,19 @@ const Shop = () => {
                         <Link to={`/product/${product.id}`} className="product-card-img-link">
                           <div className="product-card-img-wrap">
                             <div className={`shop-product-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
-                              <img src={product.img} alt={product.title} className="shop-product-img main" loading="lazy" />
+                              <img 
+                                src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
+                                alt={product.title} 
+                                className="shop-product-img main" 
+                                loading="lazy" 
+                              />
                               {product.gallery && product.gallery.length > 1 && (
-                                <img src={product.gallery[1]} alt={product.title} className="shop-product-img hover" loading="lazy" />
+                                <img 
+                                  src={getOptimizedImageUrl(product.gallery[1], 'w_600,q_auto,f_auto')} 
+                                  alt={product.title} 
+                                  className="shop-product-img hover" 
+                                  loading="lazy" 
+                                />
                               )}
                             </div>
 
@@ -453,7 +477,9 @@ const Shop = () => {
                               <div className="stock-overlay-badge out">Out of Stock</div>
                             )}
                             {product.stock > 0 && product.stock <= 5 && (
-                              <div className="stock-overlay-badge hurry">Hurry Up! Only {product.stock} Left</div>
+                              <div className="stock-overlay-badge hurry">
+                                {product.category === 'combo' ? 'Only few left! Order it first' : `Hurry Up! Only ${product.stock} Left`}
+                              </div>
                             )}
                           </div>
                         </Link>

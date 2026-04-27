@@ -5,7 +5,7 @@ import imageCompression from 'browser-image-compression';
 import { useShop } from '../../../context/ShopContext';
 import { useNotify } from '../../../components/common/Notification/Notification';
 import ConfirmModal from '../../../components/common/ConfirmModal/ConfirmModal';
-import { uploadFile } from '../../../lib/upload';
+import { uploadToCloudinary, getOptimizedImageUrl } from '../../../lib/upload';
 import './AdminProducts.css';
 
 const EMPTY_FORM = {
@@ -86,14 +86,15 @@ const AdminProducts = () => {
 
     try {
       setUploading(true);
+      // We still compress locally first to save user bandwidth, but Cloudinary will do final optimization
       const compressedFile = await compressImage(file);
-      const url = await uploadFile(compressedFile, 'brand-assets', 'products');
+      const url = await uploadToCloudinary(compressedFile);
       setForm(prev => ({ ...prev, img: url }));
-      notify('Product image uploaded and compressed successfully!', 'success');
+      notify('Product image uploaded to Cloudinary successfully!', 'success');
     } catch (err) {
       console.error('Upload error:', err);
       if (err.message === 'File too large') return;
-      notify('Upload failed. Ensure "brand-assets" bucket exists.', 'error');
+      notify('Upload failed. Check Cloudinary settings.', 'error');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -114,7 +115,7 @@ const AdminProducts = () => {
       const uploadedUrls = [];
       for (let i = 0; i < files.length; i++) {
         const compressedFile = await compressImage(files[i]);
-        const url = await uploadFile(compressedFile, 'brand-assets', 'products');
+        const url = await uploadToCloudinary(compressedFile);
         uploadedUrls.push(url);
       }
 
@@ -123,7 +124,7 @@ const AdminProducts = () => {
         const combined = [...existing, ...uploadedUrls];
         return { ...prev, gallery: combined.join('\n') };
       });
-      notify(`${files.length} gallery images uploaded & compressed!`, 'success');
+      notify(`${files.length} gallery images uploaded to Cloudinary!`, 'success');
     } catch (err) {
       console.error('Gallery upload error:', err);
       if (err.message === 'File too large') return;
@@ -215,9 +216,10 @@ const AdminProducts = () => {
 
   // ── FILTERING ──────────────────────────────────────────────────────────────
   const filtered = products.filter(p => {
-    const matchSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchCat = !categoryFilter || p.skinType === categoryFilter;
-    return matchSearch && matchCat;
+    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !categoryFilter || p.skinType === categoryFilter;
+    const isNotCombo = p.category !== 'combo';
+    return matchesSearch && matchesCategory && isNotCombo;
   });
 
   // ── OPEN MODAL ────────────────────────────────────────────────────────────
@@ -543,7 +545,7 @@ const AdminProducts = () => {
                     </td>
                     <td>
                       <div className="table-product-cell">
-                        <img src={product.img} alt={product.title} />
+                        <img src={getOptimizedImageUrl(product.img, 'w_100,c_thumb')} alt={product.title} />
                         <div className="t-prod-info">
                           <strong>{product.title.split('|')[0].trim()}</strong>
                           <span>ID: {product.id}</span>
@@ -740,39 +742,10 @@ const AdminProducts = () => {
                         <div className="pf-field full" style={{background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'}}>
                           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem'}}>
                             <div>
-                                <label style={{margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#1e293b'}}>Available Sizes & Combos 🌟</label>
-                                <p style={{fontSize: '0.75rem', color: '#64748b', marginTop: '2px'}}>Create saver packs or multiple size options (e.g. 50ml, 100ml, Pack of 2)</p>
+                                <label style={{margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#1e293b'}}>Product Sizes & Variants 📏</label>
+                                <p style={{fontSize: '0.75rem', color: '#64748b', marginTop: '2px'}}>Create different volume options or multipacks for this specific product (e.g. 50ml, 100ml, Pack of 2)</p>
                             </div>
                             <div style={{display: 'flex', gap: '0.6rem'}}>
-                              <button 
-                                type="button" 
-                                onClick={() => {
-                                  const baseLabel = form.size.includes('ml') ? '50ml' : 'Standard';
-                                  const basePrice = Number(form.price) || 0;
-                                  const baseMrp = Number(form.originalPrice) || 0;
-                                  
-                                  const comboPrice = Math.round(basePrice * 1.75);
-                                  const comboMrp = baseMrp * 2;
-                                  const comboDiscount = `${Math.round((1 - comboPrice / comboMrp) * 100)}% off`;
-
-                                  const newVariant = { 
-                                    label: 'Pack of 2', 
-                                    price: comboPrice, 
-                                    mrp: comboMrp, 
-                                    discount: comboDiscount, 
-                                    usp: 'Saver Pack', 
-                                    badge: 'BEST DEAL' 
-                                  };
-                                  
-                                  const currentVariants = Array.isArray(form.variants) ? form.variants : [];
-                                  const updated = [...currentVariants, newVariant];
-                                  setForm({...form, variants: updated, size: JSON.stringify(updated) });
-                                  notify('Smart Pack of 2 added!', 'success');
-                                }}
-                                style={{padding: '0.5rem 1rem', background: '#f5f3ff', color: '#7c3aed', borderRadius: '8px', border: '1px solid #ddd6fe', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'}}
-                              >
-                                🎁 Add Pack of 2
-                              </button>
                               <button 
                                 type="button" 
                                 onClick={() => {

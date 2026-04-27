@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Send, Eye, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
+import { getOptimizedImageUrl } from '../../../lib/upload';
 import './WatchAndShop.css';
 
 const fallbackStories = [
@@ -171,15 +172,15 @@ const WatchAndShop = () => {
                 {story.video ? (
                   <video
                     className="story-video"
-                    src={encodeURI(story.video)}
-                    poster={story.img}
+                    src={getOptimizedImageUrl(story.video)}
+                    poster={getOptimizedImageUrl(story.img, 'w_400,q_auto,f_auto')}
                     muted
                     loop
                     autoPlay
                     playsInline
                   />
                 ) : (
-                  <img src={story.img} alt={story.title} className="story-img" />
+                  <img src={getOptimizedImageUrl(story.img, 'w_400,q_auto,f_auto')} alt={story.title} className="story-img" />
                 )}
 
                 {/* Top Badge: Discount */}
