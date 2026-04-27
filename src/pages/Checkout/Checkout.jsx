@@ -4,6 +4,7 @@ import { useShop } from '../../context/ShopContext';
 import { supabase } from '../../lib/supabase';
 import { CheckCircle, Truck, ShieldCheck, MapPin, CreditCard, User, Navigation, Tag, X } from 'lucide-react';
 import { useNotify } from '../../components/common/Notification/Notification';
+import SEO from '../../components/SEO/SEO';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -576,6 +577,10 @@ const Checkout = () => {
 
   return (
     <div className="checkout-page-container">
+      <SEO 
+        title="Secure Checkout" 
+        description="Finalize your purchase securely at Shoraluxe. Fast Pan India delivery and secure payment options."
+      />
       <div className="checkout-left">
         <h2>Checkout securely</h2>
         

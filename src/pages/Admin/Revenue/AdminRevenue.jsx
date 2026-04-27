@@ -32,14 +32,14 @@ const AdminRevenue = () => {
 
   // Calculations
   const paidOrders = orders.filter(o => o.payment_status === 'paid');
-  const totalRevenue = paidOrders.reduce((acc, curr) => acc + curr.total_amount, 0);
+  const totalRevenue = paidOrders.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
 
   const razorpayOrders = paidOrders.filter(o => o.payment_method === 'razorpay');
   const codOrders = orders.filter(o => o.payment_method === 'cod');
   
-  const razorpayRevenue = razorpayOrders.reduce((acc, curr) => acc + curr.total_amount, 0);
-  const codRevenue = codOrders.filter(o => o.payment_status === 'paid').reduce((acc, curr) => acc + curr.total_amount, 0);
-  const pendingCodRevenue = codOrders.filter(o => o.payment_status === 'pending').reduce((acc, curr) => acc + curr.total_amount, 0);
+  const razorpayRevenue = razorpayOrders.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
+  const codRevenue = codOrders.filter(o => o.payment_status === 'paid').reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
+  const pendingCodRevenue = codOrders.filter(o => o.payment_status === 'pending').reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
 
   const downloadRevenueCSV = () => {
     if (orders.length === 0) return notify('No revenue data to download.', 'error');

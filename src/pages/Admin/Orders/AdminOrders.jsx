@@ -127,7 +127,7 @@ const AdminOrders = () => {
             </div>
             <div className="mini-stat">
               <span className="label">Revenue</span>
-              <span className="value">₹{orders.filter(o => o.payment_status === 'paid').reduce((acc, curr) => acc + curr.total_amount, 0).toLocaleString('en-IN')}</span>
+              <span className="value">₹{orders.filter(o => o.payment_status === 'paid').reduce((acc, curr) => acc + (curr.total_amount || 0), 0).toLocaleString('en-IN')}</span>
             </div>
           </div>
         </div>

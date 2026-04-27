@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, Package, Truck, CheckCircle, Clock, MapPin, AlertCircle } from 'lucide-react';
+import { Search, Package, Truck, CheckCircle, Clock, MapPin, AlertCircle, CreditCard } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import SEO from '../../components/SEO/SEO';
 import './OrderTracking.css';
 
 const statusSteps = [
@@ -50,6 +51,10 @@ const OrderTracking = () => {
 
   return (
     <div className="tracking-page">
+      <SEO 
+        title="Track Your Order" 
+        description="Check the real-time status of your Shoraluxe order. Enter your Order ID or phone number to track delivery."
+      />
       {/* HERO */}
       <div className="tracking-hero">
         <span className="tracking-tag">SHORALUXE</span>

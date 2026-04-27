@@ -184,6 +184,21 @@ body:has(.admin-container) {
   color: #111827;
 }
 
+.admin-page-subtitle {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+.admin-page-wrap {
+  animation: fadeInAdmin 0.4s ease-out;
+}
+
+@keyframes fadeInAdmin {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .admin-btn-primary {
   background: var(--brand-burgundy);
   color: #fff;

@@ -3,6 +3,7 @@ import Hero from '../components/home/Hero/Hero';
 import Categories from '../components/home/Categories/Categories';
 import PromoCodes from '../components/home/PromoCodes/PromoCodes';
 import QuizRibbon from '../components/home/QuizRibbon/QuizRibbon';
+import SEO from '../components/SEO/SEO';
 
 // Lazy load below-the-fold components to improve initial homepage load speed
 const Products = lazy(() => import('../components/home/Products/Products'));
@@ -47,6 +48,11 @@ const SectionSkeleton = ({ height = '400px' }) => (
 const Home = () => {
   return (
     <>
+      <SEO 
+        title="Shoraluxe | Premium Skincare & Luxury Beauty | Pan India Delivery"
+        description="Shop Shoraluxe for premium skincare and luxury beauty. Discover anti-aging serums, glowing face washes, and sunscreens. Enjoy fast Pan India Delivery."
+        keywords="Shoraluxe, luxury skincare, premium beauty products, buy skincare online India, face wash, vitamin C serum, anti-aging cream, sunscreen SPF 50"
+      />
       {/* Top of page components load immediately */}
       <Hero />
       <PromoCodes />

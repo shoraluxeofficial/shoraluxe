@@ -41,7 +41,7 @@ const AdminDashboard = () => {
           const dailyRevenue = last7Days.map(date => {
             const daySales = ordersData
               .filter(o => o.payment_status === 'paid' && o.placed_at.startsWith(date))
-              .reduce((sum, o) => sum + o.total_amount, 0);
+              .reduce((sum, o) => sum + (o.total_amount || 0), 0);
             return { date: new Date(date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }), revenue: daySales };
           });
           setChartData(dailyRevenue);

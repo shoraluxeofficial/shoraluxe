@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { getOptimizedImageUrl } from '../../lib/upload';
+import SEO from '../../components/SEO/SEO';
 import './Shop.css';
 
 const CONCERNS = [
@@ -240,6 +241,11 @@ const Shop = () => {
 
   return (
     <main className="shop-page">
+      <SEO 
+        title="Shop Luxury Skincare" 
+        description="Browse our exclusive collection of Shoraluxe skincare. Face washes, serums, and moisturizers for all skin types."
+        keywords="buy skincare online, face wash india, best face serum, skincare for acne, pigmentation cream, shoraluxe products"
+      />
       {/* HERO */}
       <header className="shop-hero">
         {/* Slider Backgrounds */}
