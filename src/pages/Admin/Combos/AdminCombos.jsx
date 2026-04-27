@@ -106,18 +106,20 @@ const AdminCombos = () => {
         benefitsData = { ...benefitsData, ...parsed };
       }
     } catch(e) { }
+    
+    const comboStock = combo.stock !== undefined ? combo.stock : (benefitsData.stock || 0);
 
     setForm({
       name: combo.title,
       description: combo.description || '',
       img: combo.img || '',
-      listed_price: combo.price,
-      combo_price: combo.price - 200, 
+      listed_price: combo.original_price || combo.price,
+      combo_price: combo.price, 
       promo_code: combo.promo_group || '', 
       product_ids: benefitsData.product_ids || [],
       badge: combo.badge || 'COMBO DEAL',
       is_active: combo.status === 'active',
-      stock: benefitsData.stock || 0,
+      stock: comboStock,
       expiry_date: benefitsData.expiry_date || '',
     });
     setProductSearch('');
@@ -571,6 +573,7 @@ const AdminCombos = () => {
               }
             } catch(e) { }
 
+            const comboStock = combo.stock !== undefined ? combo.stock : (benefitsData.stock || 0);
             const comboProducts = products.filter(p => benefitsData.product_ids.includes(p.id));
             const isExpired = benefitsData.expiry_date && new Date(benefitsData.expiry_date) < new Date();
             
@@ -592,8 +595,8 @@ const AdminCombos = () => {
 
                 <div className="ac-card-body">
                   <div className="ac-card-stock-status">
-                    <span className={`ac-stock-dot ${benefitsData.stock > 10 ? 'high' : benefitsData.stock > 0 ? 'low' : 'out'}`}></span>
-                    {benefitsData.stock > 0 ? `${benefitsData.stock} in stock` : 'Out of stock'}
+                    <span className={`ac-stock-dot ${comboStock > 10 ? 'high' : comboStock > 0 ? 'low' : 'out'}`}></span>
+                    {comboStock > 0 ? `${comboStock} in stock` : 'Out of stock'}
                   </div>
                   <h3 className="ac-card-name">{combo.title}</h3>
                   {combo.description && <p className="ac-card-desc">{combo.description}</p>}

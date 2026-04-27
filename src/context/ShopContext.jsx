@@ -35,7 +35,9 @@ export const ShopProvider = ({ children }) => {
     isSale: p.is_sale,
     netQuantity: p.net_quantity,
     idealFor: p.ideal_for,
-    cautions: p.cautions
+    cautions: p.cautions,
+    promoCode: p.promo_group,
+    promoPrice: p.price
   });
 
   // Fetch products from Supabase
