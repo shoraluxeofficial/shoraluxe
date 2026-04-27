@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import shippingRoutes from './routes/shippingRoutes.js';
 import { oauthStart, oauthCallback } from './controllers/authController.js';
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/shipping', shippingRoutes);
 
 // Fallback direct routes (ensure OAuth endpoints are available)
 app.get('/api/auth/oauth/google', oauthStart);

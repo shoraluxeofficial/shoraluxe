@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Phone, User, ShoppingBag, CheckCircle, Mail, RotateCcw, Lock, ArrowRight, X } from 'lucide-react';
+import { Phone, User, ShoppingBag, CheckCircle, Mail, RotateCcw, Lock, ArrowRight, X, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useShop } from '../../context/ShopContext';
 import { GoogleLogin } from '@react-oauth/google';
@@ -102,10 +102,10 @@ const UserLogin = () => {
           })
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Google Login failed');
+        if (!res.ok) throw new Error(data.error || 'Google Login failed on server');
         handleFinalSuccess(data.user, 'success_login');
       } catch (err) {
-        setError(err.message || 'Google Login failed');
+        setError(err.message || 'Backend connection failed. Is the server running?');
       } finally {
         setLoading(false);
       }
@@ -274,7 +274,7 @@ const UserLogin = () => {
                     <input type="password" name="passcode" placeholder="••••••" value={form.passcode} onChange={(e) => setForm({ ...form, passcode: e.target.value })} maxLength={6} required />
                   </div>
                 </div>
-                {error && <div className="ul-error">{error}</div>}
+                {error && <div className="ul-error"><AlertCircle size={16} /> {error}</div>}
                 <button type="submit" className="ul-submit" disabled={loading || form.passcode.length !== 6}>
                   {loading ? 'Signing in...' : 'Sign in with Email'}
                 </button>
@@ -290,7 +290,7 @@ const UserLogin = () => {
                   onSuccess={handleGoogleSuccess}
                   onError={() => {
                     console.log('Login Failed');
-                    setError('Google Login failed. Please try again.');
+                    setError('Google Login popup closed or failed. (Check console for origin errors)');
                   }}
                   useOneTap
                   theme="outline"

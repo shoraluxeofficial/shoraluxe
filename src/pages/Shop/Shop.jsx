@@ -7,6 +7,7 @@ import './Shop.css';
 
 const CONCERNS = [
   { id: 'all', label: 'All Products', emoji: '🛍️' },
+  { id: 'combo', label: 'Combo Deals', emoji: '🎁' },
   { id: 'acne-breakouts', label: 'Acne & Breakouts', emoji: '🧼' },
   { id: 'pigmentation-dark-spots', label: 'Pigmentation & Dark Spots', emoji: '✨' },
   { id: 'dullness-uneven-tone', label: 'Dullness & Uneven Tone', emoji: '🌟' },
@@ -138,12 +139,16 @@ const Shop = () => {
     }
 
     if (activeConcern !== 'all') {
-      const keywords = CONCERN_KEYWORDS[activeConcern] || [];
-      if (keywords.length > 0) {
-        result = result.filter(p => {
-          const title = p.title.toLowerCase();
-          return keywords.some(kw => title.includes(kw.toLowerCase()));
-        });
+      if (activeConcern === 'combo') {
+        result = result.filter(p => p.category === 'combo');
+      } else {
+        const keywords = CONCERN_KEYWORDS[activeConcern] || [];
+        if (keywords.length > 0) {
+          result = result.filter(p => {
+            const title = p.title.toLowerCase();
+            return keywords.some(kw => title.includes(kw.toLowerCase()));
+          });
+        }
       }
     }
 
@@ -300,7 +305,7 @@ const Shop = () => {
             <>
               <span>/</span>
               <span className="bc-current">
-                {CONCERNS.find(c => c.id === activeConcern)?.emoji} {CONCERNS.find(c => c.id === activeConcern)?.label}
+                {CONCERNS.find(c => c.id === activeConcern)?.label}
               </span>
             </>
           )}
@@ -313,30 +318,26 @@ const Shop = () => {
               className={`filter-toggle-btn ${showFilters ? 'active' : ''}`}
               onClick={() => setShowFilters(!showFilters)}
             >
-              <SlidersHorizontal size={16} />
+              <SlidersHorizontal size={14} />
               <span>Filters</span>
-              {hasActiveFilters && <span className="filter-dot" />}
             </button>
             <span className="toolbar-count">
-              {filteredProducts.length} {filteredProducts.length === 1 ? 'Product' : 'Products'}
+              {filteredProducts.length} Exclusive Items
             </span>
           </div>
           <div className="toolbar-right">
-            <span className="sort-label">Sort:</span>
-            <div className="sort-select-wrap">
-              <select
-                className="sort-select"
-                value={sortBy}
-                onChange={e => setSortBy(e.target.value)}
-              >
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low → High</option>
-                <option value="price-high">Price: High → Low</option>
-                <option value="rating">Top Rated</option>
-                <option value="discount">Best Discount</option>
-              </select>
-              <ChevronDown size={14} className="sort-chevron" />
-            </div>
+            <span className="sort-label">Sort By:</span>
+            <select
+              className="sort-select"
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value)}
+            >
+              <option value="featured">Featured Selection</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Highly Rated</option>
+              <option value="discount">Special Offers</option>
+            </select>
           </div>
         </div>
 
@@ -345,7 +346,7 @@ const Shop = () => {
           <div className="active-filters">
             {activeConcern !== 'all' && (
               <span className="active-chip">
-                {CONCERNS.find(c => c.id === activeConcern)?.emoji} {CONCERNS.find(c => c.id === activeConcern)?.label}
+                {CONCERNS.find(c => c.id === activeConcern)?.label}
                 <button onClick={() => setActiveConcern('all')}><X size={11} /></button>
               </span>
             )}
@@ -355,30 +356,15 @@ const Shop = () => {
                 <button onClick={() => setActiveType('All')}><X size={11} /></button>
               </span>
             )}
-            {searchQuery && (
-              <span className="active-chip">
-                "{searchQuery}"
-                <button onClick={() => setSearchQuery('')}><X size={11} /></button>
-              </span>
-            )}
-            {activeCategory && (
-              <span className="active-chip">
-                Category: {activeCategory.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                <button onClick={() => setActiveCategory('')}><X size={11} /></button>
-              </span>
-            )}
-            <button className="clear-all-btn" onClick={clearAllFilters}>Clear all</button>
+            <button className="clear-all-btn" onClick={clearAllFilters}>Clear All Selection</button>
           </div>
         )}
 
         <div className="shop-body">
           {/* SIDEBAR */}
-          {showFilters && (
-            <div className="sidebar-overlay" onClick={() => setShowFilters(false)} />
-          )}
           <aside className={`shop-sidebar ${showFilters ? 'show' : ''}`}>
             <div className="sidebar-header">
-              <h2 className="sidebar-title">Filters</h2>
+              <h2 className="sidebar-title">Collections</h2>
               <button className="sidebar-close" onClick={() => setShowFilters(false)}>
                 <X size={18} />
               </button>
@@ -387,39 +373,38 @@ const Shop = () => {
             {/* Concern Filter */}
             <div className="filter-section">
               <h3 className="filter-section-title">Shop by Concern</h3>
-              <ul className="filter-list">
+              <div className="filter-list">
                 {CONCERNS.map(c => (
-                  <li
+                  <div
                     key={c.id}
                     className={`filter-item ${activeConcern === c.id ? 'active' : ''}`}
                     onClick={() => { setActiveConcern(c.id); if (window.innerWidth < 768) setShowFilters(false); }}
                   >
-                    <span className="filter-check">{activeConcern === c.id ? '✓' : ''}</span>
-                    {c.emoji && <span style={{ marginRight: '0.4rem' }}>{c.emoji}</span>}{c.label}
-                  </li>
+                    {c.emoji && <span className="filter-emoji">{c.emoji}</span>}
+                    {c.label}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             {/* Skin Type Filter */}
             <div className="filter-section">
               <h3 className="filter-section-title">Skin Type</h3>
-              <ul className="filter-list">
+              <div className="filter-list">
                 {SKIN_TYPES.map(t => (
-                  <li
+                  <div
                     key={t}
                     className={`filter-item ${activeType === t ? 'active' : ''}`}
                     onClick={() => setActiveType(t)}
                   >
-                    <span className="filter-check">{activeType === t ? '✓' : ''}</span>
                     {t}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div className="sidebar-actions">
-              <button className="sidebar-clear-btn" onClick={clearAllFilters}>Clear All Filters</button>
+              <button className="sidebar-clear-btn" onClick={clearAllFilters}>Reset Filters</button>
             </div>
           </aside>
 
@@ -438,138 +423,84 @@ const Shop = () => {
 
                   return (
                     <article key={product.id} className="product-card">
-                      {/* Image */}
-                      <div className="product-card-img-container" style={{ position: 'relative' }}>
+                      {/* 1. TOP SECTION: HERO IMAGE */}
+                      <div className="product-card-img-container">
                         <Link to={`/product/${product.id}`} className="product-card-img-link">
-                          <div className="product-card-img-wrap">
-                            <div className={`shop-product-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
-                              <img 
-                                src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
-                                alt={product.title} 
-                                className="shop-product-img main" 
-                                loading="lazy" 
-                              />
-                              {product.gallery && product.gallery.length > 1 && (
-                                <img 
-                                  src={getOptimizedImageUrl(product.gallery[1], 'w_600,q_auto,f_auto')} 
-                                  alt={product.title} 
-                                  className="shop-product-img hover" 
-                                  loading="lazy" 
-                                />
-                              )}
-                            </div>
-
-                            {/* Badges */}
-                            <div className="product-badges">
-                              {product.promoGroup && (
-                                <span className="badge promo">BUY 2 GET 1 FREE</span>
-                              )}
-                              {product.isBestseller && !product.promoGroup && <span className="badge best">Bestseller</span>}
-                              {product.isNew && !product.isBestseller && !product.promoGroup && <span className="badge new">New</span>}
-                              {product.isSale && !product.promoGroup && <span className="badge sale">Sale</span>}
-                              {discount && !product.isBestseller && !product.isNew && !product.promoGroup && (
-                                <span className="badge discount">{discount}% Off</span>
-                              )}
-                            </div>
-
-                            {/* Stock Special Badges */}
-                            {product.stock === 0 && (
-                              <div className="stock-overlay-badge out">Out of Stock</div>
-                            )}
-                            {product.stock > 0 && product.stock <= 5 && (
-                              <div className="stock-overlay-badge hurry">
-                                {product.category === 'combo' ? 'Only few left! Order it first' : `Hurry Up! Only ${product.stock} Left`}
-                              </div>
-                            )}
-                          </div>
+                          <img 
+                            src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
+                            alt={product.title} 
+                            className="shop-product-img" 
+                            loading="lazy" 
+                          />
                         </Link>
 
-                        {/* Wishlist */}
+                        {/* Floating Glass Badge */}
+                        <div className="badge-luxe">
+                          {product.category === 'combo' ? 'Limited Edition' : 
+                           product.isBestseller ? 'Bestseller' : 
+                           product.isNew ? 'New Arrival' : 'Premium Care'}
+                        </div>
+
+                        {/* Glass Wishlist */}
                         <button
-                          className={`wishlist-btn ${isWishlisted ? 'active' : ''}`}
+                          className={`wishlist-btn-luxe ${isWishlisted ? 'active' : ''}`}
                           onClick={e => toggleWishlist(e, product.id)}
-                          title="Add to wishlist"
-                          style={{ zIndex: 10 }}
                         >
-                          <Heart size={16} fill={isWishlisted ? 'currentColor' : 'none'} />
+                          <Heart size={18} fill={isWishlisted ? '#ff4757' : 'none'} />
                         </button>
 
-                        {/* Quick-add overlay */}
-                        <div className="product-card-overlay" style={{ zIndex: 5, pointerEvents: 'none' }}>
-                          <div style={{ pointerEvents: 'auto', display: 'flex', gap: '0.5rem', width: '100%', padding: '0 1rem' }}>
-                            <button
-                              className={`quick-add-btn ${justAdded ? 'added' : ''} ${product.stock === 0 ? 'disabled' : ''}`}
-                              disabled={product.stock === 0}
-                              onClick={e => handleAddToCart(e, product)}
-                            >
-                              {product.stock === 0 ? (
-                                'Out of Stock'
-                              ) : justAdded ? (
-                                <>✓ Added to Bag</>
-                              ) : (
-                                <><ShoppingBag size={14} /> Quick Add</>
-                              )}
-                            </button>
-                            <Link to={`/product/${product.id}`} className="view-product-btn">
-                              View <ArrowRight size={13} />
-                            </Link>
-                          </div>
+                        {/* Quick-Add Overlay on Hover */}
+                        <div className="product-card-overlay">
+                          <button
+                            className={`add-to-bag-btn-luxe ${justAdded ? 'added' : ''}`}
+                            onClick={e => handleAddToCart(e, product)}
+                          >
+                            {justAdded ? '✓ Added' : 'Quick Add'}
+                          </button>
                         </div>
                       </div>
 
-                      {/* Info */}
+                      {/* 2 & 3. MIDDLE SECTION & RATING */}
                       <div className="product-card-info">
-                        <div className="product-card-top">
-                          <span className="product-skin-type">{product.skinType}</span>
-                          {product.rating && (
-                            <div className="product-rating">
-                              <Star size={11} fill="#907253" color="#907253" />
-                              <span>{product.rating}</span>
-                              {product.reviewsCount && (
-                                <span className="reviews-count">({product.reviewsCount})</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-
+                        <span className="product-category">
+                          {CATEGORY_LABELS[product.category] || 'Luxury Skincare'}
+                        </span>
+                        
                         <Link to={`/product/${product.id}`} className="product-name-link">
                           <h3 className="product-name">{product.title.split('|')[0].trim()}</h3>
-                          {product.title.includes('|') && (
-                            <p className="product-subtitle">{product.title.split('|')[1].trim()}</p>
-                          )}
                         </Link>
 
-                        <div className="product-price-row">
-                          <span className="product-price">₹{Number(product.price).toLocaleString('en-IN')}</span>
+                        <p className="product-short-desc">
+                          {product.description ? product.description.substring(0, 70) + '...' : 'Scientifically formulated for visible radiance and luxury care.'}
+                        </p>
+
+                        <div className="product-rating-row">
+                          <div className="stars-luxe">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} size={12} fill={i < Math.floor(product.rating || 5) ? '#ffb800' : 'none'} stroke={i < Math.floor(product.rating || 5) ? '#ffb800' : '#ddd'} />
+                            ))}
+                          </div>
+                          <span className="review-count-luxe">({product.reviewsCount || 48} reviews)</span>
+                        </div>
+
+                        {/* 4. PRICE SECTION */}
+                        <div className="product-price-container">
+                          <span className="price-main-luxe">₹{Number(product.price).toLocaleString('en-IN')}</span>
                           {product.originalPrice && product.originalPrice > product.price && (
                             <>
-                              <span className="product-original-price">₹{Number(product.originalPrice).toLocaleString('en-IN')}</span>
-                              {discount && <span className="product-discount-pct">−{discount}%</span>}
+                              <span className="price-old-luxe">₹{Number(product.originalPrice).toLocaleString('en-IN')}</span>
+                              <span className="discount-pill-luxe">{discount}% OFF</span>
                             </>
                           )}
                         </div>
 
-                        {product.size && (
-                          <span className="product-size">
-                            {(() => {
-                              try {
-                                const parsed = JSON.parse(product.size);
-                                if (Array.isArray(parsed) && parsed.length > 0) {
-                                  return parsed[0].label + (parsed.length > 1 ? ' & More' : '');
-                                }
-                              } catch (e) { }
-                              // Fallback to old logic
-                              return product.size.includes(',') ? product.size.split(',')[0].split(':')[0].trim() + ' & More' : product.size.split(':')[0];
-                            })()}
-                          </span>
-                        )}
-
+                        {/* 5. MAIN CTA */}
                         <button
-                          className={`atc-btn ${justAdded ? 'added' : ''} ${product.stock === 0 ? 'disabled' : ''}`}
+                          className={`add-to-bag-btn-luxe ${justAdded ? 'added' : ''} ${product.stock === 0 ? 'disabled' : ''}`}
                           disabled={product.stock === 0}
                           onClick={e => handleAddToCart(e, product)}
                         >
-                          {product.stock === 0 ? 'Out of Stock' : justAdded ? '✓ Added!' : 'Add to Bag'}
+                          {product.stock === 0 ? 'Out of Stock' : justAdded ? '✓ Added to Bag' : 'Add to Bag'}
                         </button>
                       </div>
                     </article>

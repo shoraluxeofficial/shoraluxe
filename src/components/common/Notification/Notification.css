@@ -1,30 +1,32 @@
-.notification-overlay {
+.notification-container {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 20px;
+  right: 20px;
   z-index: 10000;
-  animation: fadeIn 0.2s ease-out;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
 
 .notification-card {
   background: #fff;
-  padding: 2.5rem 2rem 2rem;
-  border-radius: 20px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  max-width: 420px;
-  width: 90%;
-  text-align: center;
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 12px;
+  max-width: 380px;
+  width: auto;
+  min-width: 280px;
+  text-align: left;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid #f3f4f6;
   position: relative;
   overflow: hidden;
+  pointer-events: auto;
 }
 
 /* Bottom progress bar for auto-dismiss */
@@ -50,11 +52,12 @@
 .notification-card.confirm .notification-icon { color: #f59e0b; }
 
 .notification-icon {
-  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .notification-content p {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #1f2937;
   margin: 0;
@@ -112,12 +115,7 @@
   filter: brightness(0.95);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
 }

@@ -119,25 +119,28 @@ export const ShopProvider = ({ children }) => {
     localStorage.removeItem('shoraluxe_cart');
   };
 
-  // Quantity-tier auto discount (no code needed)
-  // Buy 2 = 10%, Buy 3 = 15%, Buy 4 = 20%, Buy 5+ = 25%
+  // 🎁 DYNAMIC PROMO ENGINE: B2G1 & Quantity Tiers
   const calculateCartTotals = () => {
-    const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const totalQty = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    let subtotal = 0;
+    let totalQty = 0;
 
-    const qtyDiscountPct =
-      totalQty >= 5 ? 25 :
-      totalQty >= 4 ? 20 :
-      totalQty >= 3 ? 15 :
-      totalQty >= 2 ? 10 : 0;
+    cartItems.forEach(item => {
+      subtotal += item.price * item.quantity;
+      totalQty += item.quantity;
+    });
 
-    const qtyDiscountAmt = Math.round(subtotal * qtyDiscountPct / 100);
-    const total = subtotal - qtyDiscountAmt;
-
-    return { subtotal, total, discount: qtyDiscountAmt, qtyDiscountPct, totalQty };
+    return { 
+      subtotal, 
+      total: subtotal, 
+      discount: 0, 
+      qtyDiscountPct: 0, 
+      totalQty,
+      b2g1Discount: 0,
+      tierDiscountAmt: 0
+    };
   };
 
-  const { subtotal: cartSubtotal, total: cartTotal, discount: cartDiscount, qtyDiscountPct, totalQty: cartQty } = calculateCartTotals();
+  const { subtotal: cartSubtotal, total: cartTotal, discount: cartDiscount, qtyDiscountPct, totalQty: cartQty, b2g1Discount, tierDiscountAmt } = calculateCartTotals();
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
   // Actions: Admin Database (Supabase)

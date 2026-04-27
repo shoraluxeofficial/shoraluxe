@@ -20,13 +20,13 @@ export const NotificationProvider = ({ children }) => {
     <NotificationContext.Provider value={{ notify }}>
       {children}
       {notification && (
-        <div className="notification-overlay">
+        <div className="notification-container">
           <div className={`notification-card ${notification.type}`}>
             <div className="notification-icon">
-              {notification.type === 'success' && <CheckCircle size={24} />}
-              {notification.type === 'error' && <AlertCircle size={24} />}
-              {notification.type === 'info' && <Info size={24} />}
-              {notification.type === 'confirm' && <AlertCircle size={24} color="#f59e0b" />}
+              {notification.type === 'success' && <CheckCircle size={20} />}
+              {notification.type === 'error' && <AlertCircle size={20} />}
+              {notification.type === 'info' && <Info size={20} />}
+              {notification.type === 'confirm' && <AlertCircle size={20} color="#f59e0b" />}
             </div>
             <div className="notification-content">
               <p>{notification.message}</p>
@@ -38,7 +38,7 @@ export const NotificationProvider = ({ children }) => {
               </div>
             ) : (
               <button className="notification-close" onClick={close}>
-                <X size={18} />
+                <X size={16} />
               </button>
             )}
           </div>

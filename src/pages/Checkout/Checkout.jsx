@@ -7,7 +7,7 @@ import { useNotify } from '../../components/common/Notification/Notification';
 import './Checkout.css';
 
 const Checkout = () => {
-  const { cartItems, cartTotal, cartSubtotal, cartDiscount, qtyDiscountPct, cartQty, setIsCartOpen, user, clearCart } = useShop();
+  const { cartItems, cartTotal, cartSubtotal, cartDiscount, qtyDiscountPct, cartQty, b2g1Discount, tierDiscountAmt, setIsCartOpen, user, clearCart } = useShop();
   const navigate = useNavigate();
   const { notify } = useNotify();
   const API_URL = import.meta.env.PROD ? '/api/payment' : 'http://localhost:5000/api/payment';
@@ -15,7 +15,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
-  const [shippingFee, setShippingFee] = useState(0);
+  const [shippingFee, setShippingFee] = useState(cartTotal >= 999 ? 0 : 60);
 
   // Promo code state
   const [promoInput, setPromoInput] = useState('');
@@ -41,6 +41,54 @@ const Checkout = () => {
   });
 
   const [errors, setErrors] = useState({});
+
+  // Compute promo code discount amount
+  const calculatePromoDiscount = () => {
+    if (!appliedPromo) return 0;
+
+    if (appliedPromo.promo_type === 'b2g1') {
+      const category = appliedPromo.applicable_category || 'all';
+      
+      // Filter items that belong to this category
+      let eligiblePrices = [];
+      cartItems.forEach(item => {
+        if (category === 'all' || item.title.toLowerCase().includes(category.toLowerCase())) {
+          for (let i = 0; i < item.quantity; i++) eligiblePrices.push(item.price);
+        }
+      });
+      
+      eligiblePrices.sort((a, b) => b - a);
+
+      let b2g1Discount = 0;
+      
+      // Special Logic for Lotions: Bundle price ₹1,198 for 3
+      if (appliedPromo.code === 'SL-B2G1-LOTION') {
+        const bundleCount = Math.floor(eligiblePrices.length / 3);
+        // Current price for 3 lotions is usually 3 * ~799 = 2,397.
+        // We want to make it 1,198.
+        // So for each bundle of 3, we subtract the difference.
+        for (let i = 0; i < bundleCount; i++) {
+           const currentBundleTotal = eligiblePrices[i*3] + eligiblePrices[i*3+1] + eligiblePrices[i*3+2];
+           b2g1Discount += (currentBundleTotal - 1198);
+        }
+        return b2g1Discount;
+      }
+
+      // Standard B2G1: 3rd item free
+      for (let i = 2; i < eligiblePrices.length; i += 3) {
+        b2g1Discount += eligiblePrices[i];
+      }
+      return b2g1Discount;
+    }
+
+    if (appliedPromo.discount_type === 'percentage') {
+      return Math.round(cartSubtotal * appliedPromo.discount_value / 100);
+    } else {
+      return Math.min(appliedPromo.discount_value, cartSubtotal);
+    }
+  };
+
+  const discountAmount = calculatePromoDiscount();
 
   useEffect(() => {
     // Make sure cart sidebar is closed when entering checkout
@@ -69,7 +117,7 @@ const Checkout = () => {
     setFormData({ ...formData, [name]: value });
     
     // Dynamic Shipping Logic
-    if (name === 'state' || name === 'city') {
+    if (name === 'state' || name === 'city' || name === 'pincode') {
       calculateShipping(value, name);
     }
 
@@ -78,21 +126,47 @@ const Checkout = () => {
     }
   };
 
-  const calculateShipping = (value, name) => {
-    if (cartTotal >= 999) {
+  const calculateShipping = async (value, name) => {
+    // Check if total after promo discount is still >= 999
+    if ((cartTotal - discountAmount) >= 999) {
       setShippingFee(0);
       return;
     }
 
-    const state = name === 'state' ? value : formData.state;
-    const city = name === 'city' ? value : formData.city;
+    const state = name === 'state' ? (value || formData.state) : formData.state;
+    const city = name === 'city' ? (value || formData.city) : formData.city;
+    const pincode = name === 'pincode' ? (value || formData.pincode) : formData.pincode;
 
-    if (state.toLowerCase().includes('telangana') || city.toLowerCase().includes('hyderabad')) {
+    // Check live rate if pincode is available and exactly 6 digits
+    if (pincode && pincode.length === 6) {
+      try {
+        const shippingApiUrl = API_URL.replace('/payment', '/shipping');
+        const res = await fetch(`${shippingApiUrl}/calculate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pincode })
+        });
+        const data = await res.json();
+        if (data.success && data.rate) {
+          setShippingFee(data.rate);
+          return;
+        }
+      } catch (err) {
+        console.error("Live shipping calculation failed:", err);
+      }
+    }
+
+    // Fallback static shipping
+    if (state && (state.toLowerCase().includes('telangana') || city.toLowerCase().includes('hyderabad'))) {
       setShippingFee(45);
-    } else if (state) {
+    } else {
       setShippingFee(60);
     }
   };
+
+  useEffect(() => {
+    calculateShipping(null, null);
+  }, [cartTotal, discountAmount]);
 
   const applyPromoCode = async (overrideCode) => {
     const code = (overrideCode || promoInput).trim().toUpperCase();
@@ -134,27 +208,19 @@ const Checkout = () => {
       return;
     }
 
+    // B2G1: Buy 2 Get 1 — need at least 3 total items of the applicable category
     if (data.promo_type === 'b2g1') {
-      const minItems = data.min_item_count || 3;
       const category = data.applicable_category || 'all';
-      const categoryKeywords = {
-        face_wash:   ['face wash', 'cleanser', 'facewash'],
-        body_lotion: ['body lotion', 'lotion', 'moisturiser'],
-        serum:       ['serum'],
-        sunscreen:   ['sunscreen', 'spf'],
-        all:         []
-      };
-      const keywords = categoryKeywords[category] || [];
-      const qualifyingCount = cartItems.reduce((total, item) => {
-        if (keywords.length === 0) return total + item.quantity;
-        const titleLower = (item.title || '').toLowerCase();
-        return total + (keywords.some(k => titleLower.includes(k)) ? item.quantity : 0);
-      }, 0);
-      if (qualifyingCount < minItems) {
-        const catLabel = category === 'all' ? 'items' : category === 'face_wash' ? 'Face Washes' :
-                         category === 'body_lotion' ? 'Body Lotions' : category === 'serum' ? 'Serums' : 'Sunscreens';
-        setPromoError(`Add at least ${minItems} ${catLabel} to your cart to use this code.`);
-        setAppliedPromo(null); setPromoLoading(false); return;
+      const eligibleItems = category === 'all' 
+        ? cartItems 
+        : cartItems.filter(item => item.title.toLowerCase().includes(category.toLowerCase()));
+      
+      const eligibleQty = eligibleItems.reduce((sum, item) => sum + item.quantity, 0);
+
+      if (eligibleQty < 3) {
+        setPromoError(`Add at least 3 ${category} items to use this offer.`);
+        setPromoLoading(false);
+        return;
       }
     }
 
@@ -182,33 +248,6 @@ const Checkout = () => {
       }
     }
 
-    // COMBO: check all required products are in cart
-    if (data.applicable_category === 'combo' && data.applicable_products) {
-      try {
-        const requiredIds = JSON.parse(data.applicable_products);
-        if (Array.isArray(requiredIds) && requiredIds.length > 0) {
-          const cartItemIds = cartItems.map(item => String(item.id));
-          const missingIds = requiredIds.filter(requiredId => {
-            const reqIdStr = String(requiredId);
-            // If the required ID specifies a variant (e.g. "1-50ml")
-            if (reqIdStr.includes('-')) {
-              return !cartItemIds.includes(reqIdStr);
-            }
-            // If it's a base ID (e.g. 1 or "1"), check if ANY variant of that ID is in cart
-            const baseId = reqIdStr;
-            return !cartItemIds.some(cartId => cartId === baseId || cartId.startsWith(`${baseId}-`));
-          });
-          
-          if (missingIds.length > 0) {
-            setPromoError(`To use this code, please add all products in the combo to your cart.`);
-            setAppliedPromo(null); setPromoLoading(false); return;
-          }
-        }
-      } catch (e) {
-        console.error("Failed to parse combo products", e);
-      }
-    }
-
     setAppliedPromo(data);
     notify(`🎉 Promo code "${code}" applied!`, 'success');
     setPromoLoading(false);
@@ -220,13 +259,6 @@ const Checkout = () => {
     setPromoInput('');
     setPromoError('');
   };
-
-  // Compute promo code discount amount
-  const discountAmount = appliedPromo
-    ? appliedPromo.discount_type === 'percentage'
-      ? Math.round(cartSubtotal * appliedPromo.discount_value / 100)
-      : Math.min(appliedPromo.discount_value, cartSubtotal)
-    : 0;
 
   // finalTotal = (cartTotal) - (promo discount) + shipping
   const finalTotal = Math.max(0, cartTotal - discountAmount + shippingFee);
@@ -263,7 +295,7 @@ const Checkout = () => {
           state: postOffice.State,
           pincode: pin
         }));
-        calculateShipping(postOffice.State, 'state');
+        calculateShipping(pin, 'pincode');
         notify(`Location detected: ${postOffice.District}, ${postOffice.State}`, 'success');
       }
     } catch (err) {
@@ -492,6 +524,19 @@ const Checkout = () => {
         }
       }
       
+      // 4. Sync Order to Shiprocket
+      console.log("Syncing Order to Shiprocket...");
+      try {
+        const shippingApiUrl = API_URL.replace('/payment', '/shipping');
+        await fetch(`${shippingApiUrl}/sync-order`, {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ ...orderPayload, orderId: data[0].id })
+        });
+      } catch (err) {
+        console.error("Shiprocket sync failed (but order was placed successfully):", err);
+      }
+
       setSuccess(true);
       clearCart();
 
@@ -735,10 +780,16 @@ const Checkout = () => {
               <span>Subtotal ({cartQty} items)</span>
               <span>₹{cartSubtotal.toLocaleString('en-IN')}</span>
             </div>
-            {cartDiscount > 0 && (
+            {b2g1Discount > 0 && (
               <div className="tot-row" style={{ color: '#16a34a' }}>
-                <span>🎉 Buy {cartQty} Discount ({qtyDiscountPct}% OFF)</span>
-                <span>−₹{cartDiscount.toLocaleString('en-IN')}</span>
+                <span>✨ B2G1 Free Offer Applied!</span>
+                <span>−₹{b2g1Discount.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+            {tierDiscountAmt > 0 && (
+              <div className="tot-row" style={{ color: '#16a34a' }}>
+                <span>🎉 {qtyDiscountPct}% Tier Discount</span>
+                <span>−₹{tierDiscountAmt.toLocaleString('en-IN')}</span>
               </div>
             )}
             <div className="tot-row">

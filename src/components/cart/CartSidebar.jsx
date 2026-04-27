@@ -16,6 +16,8 @@ const CartSidebar = () => {
     cartDiscount,
     qtyDiscountPct,
     cartQty,
+    b2g1Discount,
+    tierDiscountAmt,
     user
   } = useShop();
   const navigate = useNavigate();
@@ -110,15 +112,24 @@ const CartSidebar = () => {
               <span>Subtotal</span>
               <span className="cart-subtotal-val">₹{cartSubtotal.toLocaleString('en-IN')}</span>
             </div>
-            {/* Qty Tier Discount */}
-            {qtyDiscountPct > 0 && (
-              <div className="cart-subtotal-row discount-row">
-                <span>🎉 Buy {cartQty} Discount ({qtyDiscountPct}% OFF)</span>
-                <span className="cart-subtotal-val" style={{ color: '#16a34a', fontWeight: 700 }}>-₹{cartDiscount.toLocaleString('en-IN')}</span>
+            
+            {/* Promo Discounts Breakdown */}
+            {b2g1Discount > 0 && (
+              <div className="cart-subtotal-row discount-row" style={{ color: '#16a34a' }}>
+                <span>✨ B2G1 Free Offer Applied!</span>
+                <span className="cart-subtotal-val" style={{ fontWeight: 700 }}>-₹{b2g1Discount.toLocaleString('en-IN')}</span>
               </div>
             )}
-            {/* Nudge to next tier */}
-            {cartQty === 1 && (
+            
+            {tierDiscountAmt > 0 && (
+              <div className="cart-subtotal-row discount-row">
+                <span>🎉 {qtyDiscountPct}% Tier Discount</span>
+                <span className="cart-subtotal-val" style={{ color: '#16a34a', fontWeight: 700 }}>-₹{tierDiscountAmt.toLocaleString('en-IN')}</span>
+              </div>
+            )}
+
+            {/* Nudge to next tier if no b2g1 yet */}
+            {cartQty === 1 && !b2g1Discount && (
               <p className="cart-tier-nudge">Add 1 more item → get <strong>10% OFF</strong> automatically!</p>
             )}
             <div className="cart-subtotal-row total-row" style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #eee' }}>
