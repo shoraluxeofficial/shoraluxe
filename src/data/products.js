@@ -9,15 +9,15 @@ export const productsData = [
     offer: 'Acne Control Formula',
     rating: 4.8,
     reviewsCount: 124,
-    img: '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0001.jpg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291865/ozy4pn5a42m3iuixbvvq.jpg',
     gallery: [
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0001.jpg',
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0012.jpg',
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0019.jpg',
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0020.jpg',
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0022.jpg',
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0023.jpg',
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0024.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291865/ozy4pn5a42m3iuixbvvq.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291869/def86p6jnxvoauf5qj85.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291872/pvyel2ezzno4ofzkm71a.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291874/mmqtwgxp1jk1jgeqph34.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291876/blsy9zbyzzdzindeyvfk.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291877/gxsdvgiqa1btlwvfaogd.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291883/ul833umb3zbmmdtjulhw.jpg',
       '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0026.jpg'
     ],
     badge: 'BESTSELLER',
@@ -52,13 +52,13 @@ export const productsData = [
     offer: 'Pollution Clear & Detox',
     rating: 4.5,
     reviewsCount: 145,
-    img: '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.34.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291884/dmfsfzcf1ohz3jbz6oo6.jpg',
     gallery: [
-      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.34.jpeg',
-      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.34-2.jpeg',
-      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.35.jpeg',
-      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.35-4.jpeg',
-      '/products images/Charcoal face wash/WhatsApp Image 2026-04-14 at 19.24.37-8.jpeg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291884/dmfsfzcf1ohz3jbz6oo6.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291886/e82xfioxda3pdhtfa1z5.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291888/e0sralfsdyalfcedtund.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291889/hekm25tosjqyrvvlvaol.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291890/hww5gorgejwxodcjqwdd.jpg'
     ],
     badge: 'NEW',
     isNew: true,
@@ -94,7 +94,7 @@ export const productsData = [
     img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=1000',
     gallery: [
       'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=1000',
-      '/products images/Rice Water face wash/hover.png'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291893/peh6ewngoo2nkl6rv2au.jpg'
     ],
     badge: 'NEW',
     isNew: true,
@@ -127,12 +127,12 @@ export const productsData = [
     offer: 'Illuminating & Brightening',
     rating: 4.6,
     reviewsCount: 92,
-    img: '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.35-2.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291894/ymnkwiizm3yy8c1bkmdx.jpg',
     gallery: [
-      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.35-2.jpeg',
-      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.35-3.jpeg',
-      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.36-2.jpeg',
-      '/products images/Vit C ubtan face wash/WhatsApp Image 2026-04-14 at 19.24.37.jpeg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291894/ymnkwiizm3yy8c1bkmdx.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291896/qgduyr8qijaydmuz3zyu.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291897/oxrownuih6xi5me2yfdx.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291898/uionaqwzcrmhti1beody.jpg'
     ],
     badge: 'NEW',
     isNew: true,
@@ -165,11 +165,11 @@ export const productsData = [
     offer: 'Smooth & Hydrated Skin',
     rating: 4.7,
     reviewsCount: 88,
-    img: '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291899/bcwssh2xvdfr8twcotor.jpg',
     gallery: [
-      '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02.jpeg',
-      '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02-2.jpeg',
-      '/products images/Hyaluronic acud face wash/WhatsApp Image 2026-04-14 at 19.40.02-3.jpeg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291899/bcwssh2xvdfr8twcotor.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291901/qslrcgyhgp78e5nf2es9.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291902/ps2v9trdk9mdth6x6lbc.jpg'
     ],
     badge: 'HYDRATING',
     isNew: false,
@@ -202,16 +202,16 @@ export const productsData = [
     offer: 'Radiant & Youthful Glow',
     rating: 4.3,
     reviewsCount: 128,
-    img: '/products images/Vitamun C & Niacinamide serum 30ml/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291907/shtcmpj4cucedvppiale.jpg',
     gallery: [
-      '/products images/Vitamun C & Niacinamide serum 30ml/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg',
-      '/products images/Vitamun C & Niacinamide serum 30ml/0B854F8D-9D8D-4F9F-A7C3-586B00A2921C.png',
-      '/products images/Vitamun C & Niacinamide serum 30ml/22D1B635-B0B4-4642-801F-3D1F8EFAEE80.png',
-      '/products images/Vitamun C & Niacinamide serum 30ml/3C3E2161-147D-4A76-ADFF-64471E27912C.png',
-      '/products images/Vitamun C & Niacinamide serum 30ml/491AA1B9-AB96-4170-A651-0C43BBACF160.png',
-      '/products images/Vitamun C & Niacinamide serum 30ml/50AC8D9A-E0BF-4D26-9867-1F811B25C718.png',
-      '/products images/Vitamun C & Niacinamide serum 30ml/67AE1B19-61C1-4F5C-A2D1-EAFC96DA6616.png',
-      '/products images/Vitamun C & Niacinamide serum 30ml/95D473CC-8AB3-4E45-B0E9-BF0A08A9B4E2.png'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291907/shtcmpj4cucedvppiale.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291914/crisgxlz7gcxbe7po5en.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291917/clopc8dxjpvez05oe305.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291921/g4uul3okw4yo5lcjuoow.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291925/mbqjfhid9hgxuqkops10.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291929/achac03ruou6xnsmuttq.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291932/qlkgtlvzqadgbzni2jdu.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291936/n2zwh4yr0mybzfjzrm0d.png'
     ],
     badge: 'GLOW',
     isNew: false,
@@ -241,13 +241,13 @@ export const productsData = [
     offer: 'Skin Brightening & UV Protection',
     rating: 4.6,
     reviewsCount: 156,
-    img: '/products images/Brightening Day cream with spf/33FCBBA3-F820-4F42-A95F-DC7AB5415A73.png',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291938/mjhqto4tbzvlgy3u9puu.png',
     gallery: [
-      '/products images/Brightening Day cream with spf/33FCBBA3-F820-4F42-A95F-DC7AB5415A73.png',
-      '/products images/Brightening Day cream with spf/46DC317D-CE93-416B-963C-1BD947FC7693.png',
-      '/products images/Brightening Day cream with spf/C194294A-BF8B-47B2-9A46-4973B0252D85.png',
-      '/products images/Brightening Day cream with spf/D218EF0D-F87D-4789-919C-7F0045451756.jpeg',
-      '/products images/Brightening Day cream with spf/WhatsApp Image 2026-04-14 at 19.24.36-6.jpeg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291938/mjhqto4tbzvlgy3u9puu.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291940/gsmcxg2lty79qkq9jttp.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291942/zfkn7zcj0pzteheqkfkf.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291943/pm2ewvaowsugs07frdpj.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291945/i6kk6u2px6fg5otw3u0m.jpg'
     ],
     badge: 'SPF',
     isNew: false,
@@ -279,10 +279,10 @@ export const productsData = [
     offer: 'Age Spots & Wrinkles Reduction',
     rating: 4.9,
     reviewsCount: 62,
-    img: '/products images/Retinol night cream/WhatsApp Image 2026-04-14 at 19.24.38-3.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291946/aqjhfpko6sqpwbighl0s.jpg',
     gallery: [
-      '/products images/Retinol night cream/WhatsApp Image 2026-04-14 at 19.24.38-3.jpeg',
-      '/products images/Retinol night cream/hover.png'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291946/aqjhfpko6sqpwbighl0s.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291948/jmjrjirw3qccfvk6gi8y.jpg'
     ],
     badge: 'BESTSELLER',
     isNew: false,
@@ -314,18 +314,18 @@ export const productsData = [
     offer: 'Waitless Hydration',
     rating: 4.7,
     reviewsCount: 89,
-    img: '/products images/NON STICKY MOISTURIZER 50GM/001 (2).png',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png',
     gallery: [
-      '/products images/NON STICKY MOISTURIZER 50GM/001 (2).png',
-      '/products images/NON STICKY MOISTURIZER 50GM/001 (3).png',
-      '/products images/NON STICKY MOISTURIZER 50GM/15D71A3D-E428-4A2B-BDB9-A20AC0B44BC7.png',
-      '/products images/NON STICKY MOISTURIZER 50GM/60498BD6-85C7-412F-A100-BE25DEEDF747.png',
-      '/products images/NON STICKY MOISTURIZER 50GM/65E69D5D-A742-4DB4-A9D2-4B08FA7195B2.png',
-      '/products images/NON STICKY MOISTURIZER 100gm/001.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291953/civdpvoalqrktfwit3bv.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291954/ey0sm3eez29hgrhwx3ym.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291956/yc147q4xqv8gei7thkzy.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291957/oryyip2hh9zlnrieuig8.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291958/rqay4ypjm3yvjg80q9rj.jpg',
       '/products images/NON STICKY MOISTURIZER 100gm/poster-01.png',
-      '/products images/NON STICKY MOISTURIZER 100gm/poster-03.png',
-      '/products images/NON STICKY MOISTURIZER 100gm/poster-04-1.png',
-      '/products images/NON STICKY MOISTURIZER 100gm/poster-05.png'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291964/z9f2vg8wlj7y5v3xnfyn.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291969/hq6gub8wvaog8qnq47vh.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291973/dk7dvdxbacb4x8yj4i1a.png'
     ],
     badge: 'BESTSELLER',
     isNew: false,
@@ -358,16 +358,16 @@ export const productsData = [
     offer: 'Broad Spectrum Protection',
     rating: 4.8,
     reviewsCount: 124,
-    img: '/products images/Sunscreen cream spf 50+++ 50gm/poster_3-04-1.png',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291977/fzfjpmt0lstbg4ruvny4.png',
     gallery: [
-      '/products images/Sunscreen cream spf 50+++ 50gm/poster_3-04-1.png',
-      '/products images/Sunscreen cream spf 50+++ 50gm/253C20A7-0CFB-486D-9F7F-C5C5FA19785F.png',
-      '/products images/Sunscreen cream spf 50+++ 50gm/68C83D98-A465-4311-AA62-BB22239BCC91.png',
-      '/products images/Sunscreen cream spf 50+++ 50gm/791713D2-8EE6-440E-94A3-F0FC3DDDE647.png',
-      '/products images/Sunscreen cream spf 50+++ 100gm/3377F8A0-B710-43B4-99D8-202232DD2961.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291977/fzfjpmt0lstbg4ruvny4.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291984/y9bq4omnaethws0cjyhy.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291989/zpydqrjuxpycj4irgl2j.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291992/lnx4nxtcdplwvgidiv8f.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291994/b0nwg2fjqk7gzssy0hmm.png',
       '/products images/Sunscreen cream spf 50+++ 100gm/7797CF4D-47FF-4FDE-9DCD-A20FECE5A4AB.png',
-      '/products images/Sunscreen cream spf 50+++ 100gm/791713D2-8EE6-440E-94A3-F0FC3DDDE647.png',
-      '/products images/Sunscreen cream spf 50+++ 100gm/8758E36F-E32B-4905-8460-79313A554ECE.png'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292000/cjkwqxba5qfxacz8mcph.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292003/k6mapdkqs8fla6jqtkpc.png'
     ],
     badge: 'BESTSELLER',
     isNew: false,
@@ -400,12 +400,12 @@ export const productsData = [
     offer: 'Cleanse & Relax',
     rating: 4.5,
     reviewsCount: 212,
-    img: '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-6.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292004/euvgyuciha81uc0vfphk.jpg',
     gallery: [
-      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-6.jpeg',
-      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-7.jpeg',
-      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-9.jpeg',
-      '/products images/Lavender body wash/WhatsApp Image 2026-04-14 at 19.24.37-10.jpeg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292004/euvgyuciha81uc0vfphk.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292007/sqjiogfbjaiqf6m4qwvo.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292008/jxcwe2rgo7usls2eooyj.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292009/xrn7q2rg6oeonvghshya.jpg'
     ],
     badge: 'RELAX',
     isNew: false,
@@ -436,12 +436,12 @@ export const productsData = [
     offer: 'Long Lasting Hydration',
     rating: 4.2,
     reviewsCount: 94,
-    img: '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292010/e6nailc3g5iegngqbpuw.jpg',
     gallery: [
-      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36.jpeg',
-      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36-3.jpeg',
-      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36-4.jpeg',
-      '/products images/Daily hydrating body lotion/WhatsApp Image 2026-04-14 at 19.24.36-5.jpeg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292010/e6nailc3g5iegngqbpuw.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292013/pi35io3dsou6ykhbdkdr.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292015/zw2d3xr1w9uof21yhsb1.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292017/yboanvi83vjilxpuqlk7.jpg'
     ],
     badge: 'HYDRATING',
     isNew: false,
@@ -473,12 +473,12 @@ export const productsData = [
     offer: 'Rejuvenating & Smooth',
     rating: 4.5,
     reviewsCount: 76,
-    img: '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-2.jpeg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292018/lfusckv6o5dg477fehuu.jpg',
     gallery: [
-      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-2.jpeg',
-      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-3.jpeg',
-      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-4.jpeg',
-      '/products images/Shea butter body lotion/WhatsApp Image 2026-04-14 at 19.24.37-5.jpeg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292018/lfusckv6o5dg477fehuu.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292021/zuc2nbaujai3dqazy97m.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292022/mlliwuvs6jckyp0gscba.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292024/q4m3ahyndzx0mhk6s0ln.jpg'
     ],
     badge: 'NOURISH',
     isNew: false,
@@ -510,11 +510,11 @@ export const productsData = [
     offer: 'Sun Protection & Daily Cleanse',
     rating: 4.9,
     reviewsCount: 0,
-    img: '/products images/Everyday Protection Combo/combo.jpg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292025/h3mv6myclxvwnemtzbl2.png',
     gallery: [
-      '/products images/Everyday Protection Combo/combo.jpg',
-      '/products images/Sunscreen cream spf 50+++ 100gm/3377F8A0-B710-43B4-99D8-202232DD2961.png',
-      '/products images/Salicylic acid face wash 50gm/IMG-20260112-WA0001.jpg'
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292025/h3mv6myclxvwnemtzbl2.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291994/b0nwg2fjqk7gzssy0hmm.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291865/ozy4pn5a42m3iuixbvvq.jpg'
     ],
     badge: 'COMBO DEAL',
     isNew: true,

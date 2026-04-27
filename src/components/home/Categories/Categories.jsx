@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import './Categories.css';
 
 const categoryData = [
-  { name: 'Face Washes',   slug: 'face-wash',   img: '/Prodcuts/WhatsApp Image 2026-04-13 at 6.26.32 PM (1).jpeg' },
-  { name: 'Face Serums',   slug: 'serum',       img: '/Prodcuts/Face serums.jpg' },
-  { name: 'Moisturizers',  slug: 'moisturizer', img: '/Prodcuts/WhatsApp Image 2026-04-13 at 6.26.31 PM (1).jpeg' },
-  { name: 'Sunscreens',    slug: 'sunscreen',   img: '/Prodcuts/Sunscreens.jpg' },
-  { name: 'Body Washes',   slug: 'body-wash',   img: '/Prodcuts/Body Washs.jpg' },
-  { name: 'Day Creams',    slug: 'day-cream',   img: '/Prodcuts/Day Creams.jpg' },
-  { name: 'Night Creams',  slug: 'night-cream', img: '/Prodcuts/Night Creams.jpg' },
-  { name: 'Body Lotions',  slug: 'body-lotion', img: '/Prodcuts/Body Lotions.jpg' },
-  { name: 'Combos',        slug: 'combo',       img: '/Prodcuts/Combo.jpeg' },
+  { name: 'Face Washes',   slug: 'face-wash',   img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291808/xy5kaacehvnqb239cr5f.jpg' },
+  { name: 'Face Serums',   slug: 'serum',       img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291809/uneg1od3vx5vg0yefgx7.png' },
+  { name: 'Moisturizers',  slug: 'moisturizer', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291810/qs6s904ntxkmvvpdaife.jpg' },
+  { name: 'Sunscreens',    slug: 'sunscreen',   img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291811/tsa4j57bhrcmhvypztnw.png' },
+  { name: 'Body Washes',   slug: 'body-wash',   img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291813/wo65bumhqty40zffhcpb.png' },
+  { name: 'Day Creams',    slug: 'day-cream',   img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291813/e8xvygltdxw2dlhzybel.png' },
+  { name: 'Night Creams',  slug: 'night-cream', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291814/f3ktzl7tlgowlua2ghkw.png' },
+  { name: 'Body Lotions',  slug: 'body-lotion', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291815/mybmliwa7ysfwsjci2ov.png' },
+  { name: 'Combos',        slug: 'combo',       img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291816/hjbdu4qn8fzts6kn7qmg.jpg' },
 ];
 
 const Categories = () => {

@@ -23,7 +23,7 @@ const concernData = [
     icon: Sparkles,
     desc: 'Brightens skin, fades marks, and evens out skin tone.',
     products: [
-      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
       { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
       { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
       { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
@@ -36,7 +36,7 @@ const concernData = [
     icon: Sun,
     desc: 'Glow-boosting, brightening & radiance-enhancing products.',
     products: [
-      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
       { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
       { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
       { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
@@ -52,7 +52,7 @@ const concernData = [
     desc: 'Supports collagen, smooths texture & reduces early aging.',
     products: [
       { name: 'Retinol Night Cream', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=600' },
-      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: '/Vitamin C & Niacinamide Face Serum/070FCDFF-3614-4A4B-86CA-AF1D83AF3D4D.jpeg' },
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
       { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
       { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
       { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
