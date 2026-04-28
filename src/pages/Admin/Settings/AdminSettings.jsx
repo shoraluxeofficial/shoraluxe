@@ -86,7 +86,11 @@ const AdminSettings = () => {
                 <input 
                   type="checkbox" 
                   checked={settings.chargeDelivery} 
-                  onChange={(e) => setSettings(p => ({...p, chargeDelivery: e.target.checked}))} 
+                  onChange={(e) => {
+                    const newVal = e.target.checked;
+                    setSettings(p => ({...p, chargeDelivery: newVal}));
+                    localStorage.setItem('shoraluxe_settings', JSON.stringify({...settings, chargeDelivery: newVal}));
+                  }} 
                   style={{ opacity: 0, width: 0, height: 0 }} 
                 />
                 <span style={{
