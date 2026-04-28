@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Phone, User, ShoppingBag, CheckCircle, Mail, RotateCcw, Lock, ArrowRight, X, AlertCircle } from 'lucide-react';
+import { Phone, User, ShoppingBag, CheckCircle, Mail, RotateCcw, Lock, ArrowRight, X, AlertCircle, Truck } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useShop } from '../../context/ShopContext';
 import { GoogleLogin } from '@react-oauth/google';
