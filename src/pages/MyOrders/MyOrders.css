@@ -206,6 +206,109 @@
   background: #4a091d;
 }
 
+/* ===== NEW DETAILS SECTION (Flipkart Style) ===== */
+.mo-details-section {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  margin-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 20px;
+}
+
+.mo-payment-info, .mo-items-list {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+}
+
+.mo-payment-info h4, .mo-items-list h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mo-payment-info p {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mo-payment-info p strong {
+  color: #0f172a;
+}
+
+.pay-status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.pay-status.paid { background: #dcfce3; color: #166534; }
+.pay-status.pending { background: #fef3c7; color: #b45309; }
+.pay-status.failed { background: #fee2e2; color: #991b1b; }
+
+.mo-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mo-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.mo-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #f1f5f9;
+}
+
+.mo-item-details {
+  flex: 1;
+}
+
+.mo-item-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.mo-item-meta {
+  font-size: 0.85rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mo-item-meta span {
+  color: #cbd5e1;
+}
+
+.mo-no-items {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
 @media (max-width: 600px) {
   .mo-stepper {
     flex-direction: column;
@@ -229,5 +332,9 @@
   
   .mo-step-label {
     text-align: left;
+  }
+
+  .mo-details-section {
+    grid-template-columns: 1fr;
   }
 }

@@ -25,7 +25,7 @@ const MyOrders = () => {
 
     const fetchOrders = async () => {
       try {
-        let query = supabase.from('orders').select('*');
+        let query = supabase.from('orders').select('*, order_items(*)');
         
         // If user has email, use it. If not, fallback to mobile.
         if (user.email) {
@@ -82,7 +82,7 @@ const MyOrders = () => {
                   </div>
                   <div className="mo-header-right">
                     <span className="mo-total">₹{order.total_amount?.toLocaleString('en-IN')}</span>
-                    <span className="mo-items">{order.cart_items?.length || 0} Items</span>
+                    <span className="mo-items">{order.order_items?.length || 0} Items</span>
                   </div>
                 </div>
 
@@ -113,6 +113,33 @@ const MyOrders = () => {
                       <a href={order.tracking_url || `https://shiprocket.co/tracking/${order.shiprocket_awb}`} target="_blank" rel="noreferrer" style={{color: '#6d0e2c', fontWeight: 600, textDecoration: 'none'}}>Track Package &rarr;</a>
                     </div>
                   )}
+
+                  {/* NEW: PAYMENT & ITEMS SECTION */}
+                  <div className="mo-details-section">
+                     <div className="mo-payment-info">
+                        <h4>Payment Details</h4>
+                        <p>Total Amount: <strong>₹{order.total_amount?.toLocaleString('en-IN')}</strong></p>
+                        <p>Payment Mode: <span style={{textTransform: 'uppercase'}}>{order.payment_method}</span></p>
+                        <p>Status: <span className={`pay-status ${order.payment_status}`}>{order.payment_status}</span></p>
+                     </div>
+                     
+                     <div className="mo-items-list">
+                        <h4>Ordered Products</h4>
+                        {order.order_items && order.order_items.length > 0 ? (
+                           order.order_items.map((item, idx) => (
+                              <div key={idx} className="mo-item">
+                                 <img src={item.product_img} alt={item.product_title} />
+                                 <div className="mo-item-details">
+                                    <p className="mo-item-title">{item.product_title}</p>
+                                    <p className="mo-item-meta">Qty: {item.quantity} <span>|</span> ₹{item.price?.toLocaleString('en-IN')}</p>
+                                 </div>
+                              </div>
+                           ))
+                        ) : (
+                           <p className="mo-no-items">Product details unavailable for this order.</p>
+                        )}
+                     </div>
+                  </div>
                 </div>
               </div>
             );
