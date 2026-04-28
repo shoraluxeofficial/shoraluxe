@@ -135,7 +135,22 @@ export const pushOrderToShiprocket = async (orderPayload) => {
         
         if (res.ok && data.status_code === 1) {
             console.log('Shiprocket order created successfully:', data.order_id);
-            return { success: true, shiprocket_order_id: data.order_id, shipment_id: data.shipment_id };
+            
+            // Attempt to generate AWB immediately
+            let awbData = null;
+            try {
+                awbData = await generateAWB(data.shipment_id);
+            } catch (e) {
+                console.error('Failed to generate AWB immediately:', e);
+            }
+
+            return { 
+                success: true, 
+                shiprocket_order_id: data.order_id, 
+                shipment_id: data.shipment_id,
+                awb_code: awbData?.awb_code,
+                courier_name: awbData?.courier_name
+            };
         } else {
             console.error('Shiprocket Create Order failed:', data);
             return { success: false, error: data.message || 'Shiprocket order creation failed' };
@@ -143,5 +158,30 @@ export const pushOrderToShiprocket = async (orderPayload) => {
     } catch (err) {
         console.error('Push Order to Shiprocket Error:', err);
         return { success: false, error: err.message };
+    }
+};
+
+export const generateAWB = async (shipmentId) => {
+    try {
+        const token = await getShiprocketToken();
+        const res = await fetch('https://apiv2.shiprocket.in/v1/external/courier/assign/awb', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ shipment_id: shipmentId })
+        });
+        const data = await res.json();
+        if (data.awb_assign_status === 1) {
+            return {
+                awb_code: data.response.data.awb_code,
+                courier_name: data.response.data.courier_name
+            };
+        }
+        return null;
+    } catch (err) {
+        console.error('Generate AWB Error:', err);
+        return null;
     }
 };

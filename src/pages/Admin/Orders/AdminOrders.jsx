@@ -59,6 +59,21 @@ const AdminOrders = () => {
 
       if (error) throw error;
       
+      // Find the order details for email
+      const order = orders.find(o => o.id === orderId);
+      if (order && order.customer_email && ['shipped', 'delivered'].includes(newStatus)) {
+          const SHIPPING_API_URL = import.meta.env.PROD ? '/api/shipping' : 'http://localhost:5000/api/shipping';
+          fetch(`${SHIPPING_API_URL}/notify-status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  email: order.customer_email,
+                  orderDetails: order,
+                  status: newStatus
+              })
+          }).catch(e => console.error("Failed to send status email", e));
+      }
+
       notify(`Order marked as ${newStatus}`, 'success');
       fetchOrders(); // Refresh list
     } catch (err) {

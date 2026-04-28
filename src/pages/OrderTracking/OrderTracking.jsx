@@ -146,11 +146,11 @@ const OrderTracking = () => {
             </div>
 
             {/* AWB Number */}
-            {order.tracking_awb && (
+            {order.shiprocket_awb && (
               <div className="awb-banner">
                 <Truck size={18} />
-                <span>Shiprocket AWB: <strong>{order.tracking_awb}</strong></span>
-                <a href={`https://shiprocket.co/tracking/${order.tracking_awb}`} target="_blank" rel="noreferrer">
+                <span>Shiprocket AWB: <strong>{order.shiprocket_awb}</strong></span>
+                <a href={order.tracking_url || `https://shiprocket.co/tracking/${order.shiprocket_awb}`} target="_blank" rel="noreferrer">
                   Track on Shiprocket →
                 </a>
               </div>

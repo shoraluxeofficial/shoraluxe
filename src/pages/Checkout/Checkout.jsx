@@ -682,11 +682,38 @@ const Checkout = () => {
       console.log("Syncing Order to Shiprocket...");
       try {
         const shippingApiUrl = API_URL.replace('/payment', '/shipping');
-        await fetch(`${shippingApiUrl}/sync-order`, {
+        const syncResponse = await fetch(`${shippingApiUrl}/sync-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...orderPayload, orderId: data[0].id })
+          body: JSON.stringify({ 
+              ...orderPayload, 
+              orderId: dbOrderId, 
+              items: cartItems,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              email: formData.email,
+              phone: formData.phone,
+              address1: formData.address1,
+              flatNo: formData.flatNo,
+              city: formData.city,
+              state: formData.state,
+              pincode: formData.pincode,
+              amount: finalTotal,
+              paymentMethod: formData.paymentMethod
+          })
         });
+        
+        const syncData = await syncResponse.json();
+        
+        if (syncData.success) {
+            console.log("Updating Supabase with Shiprocket tracking...");
+            const updates = { shiprocket_order_id: String(syncData.shiprocket_order_id) };
+            if (syncData.awb_code) {
+                updates.shiprocket_awb = syncData.awb_code;
+                updates.tracking_url = `https://shiprocket.co/tracking/${syncData.awb_code}`;
+            }
+            await supabase.from('orders').update(updates).eq('id', dbOrderId);
+        }
       } catch (err) {
         console.error("Shiprocket sync failed (but order was placed successfully):", err);
       }
