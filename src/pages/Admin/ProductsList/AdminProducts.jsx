@@ -559,7 +559,22 @@ const AdminProducts = () => {
                       </div>
                     </td>
                     <td>{product.skinType}</td>
-                    <td>{product.size || '—'}</td>
+                    <td>
+                      {(() => {
+                        if (!product.size) return '—';
+                        try {
+                          if (product.size.trim().startsWith('[')) {
+                            const parsed = JSON.parse(product.size);
+                            if (Array.isArray(parsed)) {
+                              return parsed.map(v => v.label).join(', ');
+                            }
+                          }
+                        } catch (e) {
+                          // Fallback to raw text if not JSON
+                        }
+                        return product.size;
+                      })()}
+                    </td>
                     <td>{stockBadge(product)}</td>
                     <td>
                       <div className="table-actions">

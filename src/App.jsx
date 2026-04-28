@@ -31,7 +31,7 @@ const AdminCombos = lazy(() => import('./pages/Admin/Combos/AdminCombos'));
 
 // Guard component preventing unauthorized access to the admin panel
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('shoraluxe_admin_auth') === 'true';
+  const isAuthenticated = sessionStorage.getItem('shoraluxe_admin_auth') === 'true';
   if (!isAuthenticated) {
     return <Navigate to="/admin-login" replace />;
   }
@@ -51,49 +51,50 @@ import SEO from './components/SEO/SEO';
 function App() {
   return (
     <Router>
-        <SEO />
-        <div className="app-container">
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* USER STOREFRONT ROUTES */}
-              <Route path="/" element={<UserLayout />}>
-                <Route index element={<Home />} />
-                <Route path="shop" element={<Shop />} />
-                <Route path="product/:id" element={<ProductDetail />} />
-                <Route path="checkout" element={<Checkout />} />
-                <Route path="account" element={<UserLogin />} />
-                <Route path="my-orders" element={<MyOrders />} />
-                <Route path="track-order" element={<OrderTracking />} />
-                <Route path="quiz" element={<QuizSection />} />
-              </Route>
+      <SEO />
+      <div className="app-container">
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* USER STOREFRONT ROUTES */}
+            <Route path="/" element={<UserLayout />}>
+              <Route index element={<Home />} />
+              <Route path="shop" element={<Shop />} />
+              <Route path="campaign" element={<Shop />} />
+              <Route path="product/:id" element={<ProductDetail />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="account" element={<UserLogin />} />
+              <Route path="my-orders" element={<MyOrders />} />
+              <Route path="track-order" element={<OrderTracking />} />
+              <Route path="quiz" element={<QuizSection />} />
+            </Route>
 
-              {/* SECURE ADMIN LOGIN */}
-              <Route path="/admin-login" element={<AdminLogin />} />
+            {/* SECURE ADMIN LOGIN */}
+            <Route path="/admin-login" element={<AdminLogin />} />
 
-              {/* PROTECTED ADMIN MANAGEMENT ROUTES */}
-              <Route path="/admin" element={
-                <ProtectedRoute>
-                  <AdminLayout />
-                </ProtectedRoute>
-              }>
-                <Route index element={<AdminDashboard />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="orders" element={<AdminOrders />} />
-                <Route path="banners" element={<AdminBanners />} />
-                <Route path="reviews" element={<AdminReviews />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="revenue" element={<AdminRevenue />} />
-                <Route path="security" element={<AdminSecurity />} />
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="homepage" element={<AdminHomepage />} />
-                <Route path="promo-codes" element={<AdminPromoCodes />} />
-                <Route path="combos" element={<AdminCombos />} />
+            {/* PROTECTED ADMIN MANAGEMENT ROUTES */}
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="banners" element={<AdminBanners />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="revenue" element={<AdminRevenue />} />
+              <Route path="security" element={<AdminSecurity />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="homepage" element={<AdminHomepage />} />
+              <Route path="promo-codes" element={<AdminPromoCodes />} />
+              <Route path="combos" element={<AdminCombos />} />
 
-              </Route>
-            </Routes>
-          </Suspense>
-        </div>
-      </Router>
+            </Route>
+          </Routes>
+        </Suspense>
+      </div>
+    </Router>
   );
 }
 

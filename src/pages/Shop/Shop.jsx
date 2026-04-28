@@ -61,6 +61,10 @@ const Shop = () => {
   const initialCategory = queryParams.get('category') || '';
   const initialPromo = queryParams.get('promo') || '';
 
+  const isCampaign = location.pathname === '/campaign';
+  const campaignIds = useMemo(() => isCampaign ? (queryParams.get('ids') || '').split(',').filter(Boolean) : [], [isCampaign, queryParams]);
+  const campaignText = useMemo(() => isCampaign ? queryParams.get('text') || '' : '', [isCampaign, queryParams]);
+
   const [activeConcern, setActiveConcern] = useState(initialConcern);
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [activePromo, setActivePromo] = useState(initialPromo);
@@ -246,7 +250,7 @@ const Shop = () => {
     setSearchQuery('');
   };
 
-  const SkinSkeleton = () => (
+    const SkinSkeleton = () => (
     <div className="product-card">
       <div className="product-card-img-container shimmer skeleton-img" style={{ height: '320px' }}></div>
       <div className="product-card-info" style={{ padding: '1.25rem' }}>
@@ -262,6 +266,97 @@ const Shop = () => {
     </div>
   );
 
+  const renderProductCard = (product) => {
+    const discount = getDiscount(product.price, product.originalPrice);
+    const isWishlisted = wishlist.includes(product.id);
+    const justAdded = addedToCart === product.id;
+
+    return (
+      <article key={product.id} className="product-card">
+        {/* 1. TOP SECTION: HERO IMAGE */}
+        <div className="product-card-img-container">
+          <Link to={`/product/${product.id}`} className="product-card-img-link">
+            <img 
+              src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
+              alt={product.title} 
+              className="shop-product-img" 
+              loading="lazy" 
+            />
+          </Link>
+
+          {/* Floating Glass Badge */}
+          <div className="badge-luxe">
+            {product.category === 'combo' ? 'Limited Edition' : 
+             product.isBestseller ? 'Bestseller' : 
+             product.isNew ? 'New Arrival' : 'Premium Care'}
+          </div>
+
+          {/* Glass Wishlist */}
+          <button
+            className={`wishlist-btn-luxe ${isWishlisted ? 'active' : ''}`}
+            onClick={e => toggleWishlist(e, product.id)}
+          >
+            <Heart size={18} fill={isWishlisted ? '#ff4757' : 'none'} />
+          </button>
+
+          {/* Quick-Add Overlay on Hover */}
+          <div className="product-card-overlay">
+            <button
+              className={`add-to-bag-btn-luxe ${justAdded ? 'added' : ''}`}
+              onClick={e => handleAddToCart(e, product)}
+            >
+              {justAdded ? '✓ Added' : 'Quick Add'}
+            </button>
+          </div>
+        </div>
+
+        {/* 2 & 3. MIDDLE SECTION & RATING */}
+        <div className="product-card-info">
+          <span className="product-category">
+            {CATEGORY_LABELS[product.category] || 'Luxury Skincare'}
+          </span>
+          
+          <Link to={`/product/${product.id}`} className="product-name-link">
+            <h3 className="product-name">{product.title.split('|')[0].trim()}</h3>
+          </Link>
+
+          <p className="product-short-desc">
+            {product.description ? product.description.substring(0, 70) + '...' : 'Scientifically formulated for visible radiance and luxury care.'}
+          </p>
+
+          <div className="product-rating-row">
+            <div className="stars-luxe">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={12} fill={i < Math.floor(product.rating || 5) ? '#ffb800' : 'none'} stroke={i < Math.floor(product.rating || 5) ? '#ffb800' : '#ddd'} />
+              ))}
+            </div>
+            <span className="review-count-luxe">({product.reviewsCount || 48} reviews)</span>
+          </div>
+
+          {/* 4. PRICE SECTION */}
+          <div className="product-price-container">
+            <span className="price-main-luxe">₹{Number(product.price).toLocaleString('en-IN')}</span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <>
+                <span className="price-old-luxe">₹{Number(product.originalPrice).toLocaleString('en-IN')}</span>
+                <span className="discount-pill-luxe">{discount}% OFF</span>
+              </>
+            )}
+          </div>
+
+          {/* 5. MAIN CTA */}
+          <button
+            className={`add-to-bag-btn-luxe ${justAdded ? 'added' : ''} ${product.stock === 0 ? 'disabled' : ''}`}
+            disabled={product.stock === 0}
+            onClick={e => handleAddToCart(e, product)}
+          >
+            {product.stock === 0 ? 'Out of Stock' : justAdded ? '✓ Added to Bag' : 'Add to Bag'}
+          </button>
+        </div>
+      </article>
+    );
+  };
+
   return (
     <main className="shop-page">
       <SEO 
@@ -270,40 +365,50 @@ const Shop = () => {
         keywords="buy skincare online, face wash india, best face serum, skincare for acne, pigmentation cream, shoraluxe products"
       />
       {/* HERO */}
-      <header className="shop-hero">
-        {/* Slider Backgrounds */}
-        {heroBanners.map((banner, index) => (
-          <div 
-            key={index}
-            className={`hero-slide ${index === activeSlide ? 'active' : ''}`}
-            style={{ backgroundImage: `url("${getOptimizedImageUrl(banner, 'w_1920,q_auto,f_auto')}")` }}
-          />
-        ))}
-
-        {/* Slider Controls */}
-        <button className="hero-slide-btn prev" onClick={prevSlide}>
-          <ChevronLeft size={28} />
-        </button>
-        <button className="hero-slide-btn next" onClick={nextSlide}>
-          <ChevronRight size={28} />
-        </button>
-
-        {/* Slider Indicators */}
-        <div className="hero-slide-indicators">
-          {heroBanners.map((_, index) => (
-            <button
+      {!isCampaign && (
+        <header className="shop-hero">
+          {/* Slider Backgrounds */}
+          {heroBanners.map((banner, index) => (
+            <div 
               key={index}
-              className={`indicator-dot ${index === activeSlide ? 'active' : ''}`}
-              onClick={() => setActiveSlide(index)}
+              className={`hero-slide ${index === activeSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url("${getOptimizedImageUrl(banner, 'w_1920,q_auto,f_auto')}")` }}
             />
           ))}
+
+          {/* Slider Controls */}
+          <button className="hero-slide-btn prev" onClick={prevSlide}>
+            <ChevronLeft size={28} />
+          </button>
+          <button className="hero-slide-btn next" onClick={nextSlide}>
+            <ChevronRight size={28} />
+          </button>
+
+          {/* Slider Indicators */}
+          <div className="hero-slide-indicators">
+            {heroBanners.map((_, index) => (
+              <button
+                key={index}
+                className={`indicator-dot ${index === activeSlide ? 'active' : ''}`}
+                onClick={() => setActiveSlide(index)}
+              />
+            ))}
+          </div>
+        </header>
+      )}
+
+      {/* Campaign Custom Header */}
+      {isCampaign && campaignText && (
+        <div style={{ backgroundColor: '#fcfaf8', padding: '3rem 1rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>
+          <h1 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-serif)', color: '#111827', margin: 0 }}>{campaignText}</h1>
+          <p style={{ marginTop: '0.5rem', color: '#4b5563' }}>Exclusive Shoraluxe Campaign Collection</p>
         </div>
+      )}
 
-
-      </header>
       {/* CONCERN PILLS (horizontal scroll on mobile) */}
-      <div className="concern-strip-wrap">
-        <div className="concern-strip">
+      {!isCampaign && (
+        <div className="concern-strip-wrap">
+          <div className="concern-strip">
           {CONCERNS.map(c => (
             <button
               key={c.id}
@@ -321,57 +426,62 @@ const Shop = () => {
               {CATEGORY_LABELS[activeCategory]}
             </button>
           )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="shop-container" ref={shopGridRef}>
         {/* BREADCRUMBS */}
-        <div className="shop-breadcrumbs">
-          <Link to="/">Home</Link>
-          <span>/</span>
-          <span className="bc-current">Shop All</span>
-          {activeConcern !== 'all' && (
-            <>
-              <span>/</span>
-              <span className="bc-current">
-                {CONCERNS.find(c => c.id === activeConcern)?.label}
-              </span>
-            </>
-          )}
-        </div>
+        {!isCampaign && (
+          <div className="shop-breadcrumbs">
+            <Link to="/">Home</Link>
+            <span>/</span>
+            <span className="bc-current">Shop All</span>
+            {activeConcern !== 'all' && (
+              <>
+                <span>/</span>
+                <span className="bc-current">
+                  {CONCERNS.find(c => c.id === activeConcern)?.label}
+                </span>
+              </>
+            )}
+          </div>
+        )}
 
         {/* TOOLBAR */}
-        <div className="shop-toolbar">
-          <div className="toolbar-left">
-            <button
-              className={`filter-toggle-btn ${showFilters ? 'active' : ''}`}
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <SlidersHorizontal size={14} />
-              <span>Filters</span>
-            </button>
-            <span className="toolbar-count">
-              {filteredProducts.length} Exclusive Items
-            </span>
+        {!isCampaign && (
+          <div className="shop-toolbar">
+            <div className="toolbar-left">
+              <button
+                className={`filter-toggle-btn ${showFilters ? 'active' : ''}`}
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <SlidersHorizontal size={14} />
+                <span>Filters</span>
+              </button>
+              <span className="toolbar-count">
+                {filteredProducts.length} Exclusive Items
+              </span>
+            </div>
+            <div className="toolbar-right">
+              <span className="sort-label">Sort By:</span>
+              <select
+                className="sort-select"
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+              >
+                <option value="featured">Featured Selection</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highly Rated</option>
+                <option value="discount">Special Offers</option>
+              </select>
+            </div>
           </div>
-          <div className="toolbar-right">
-            <span className="sort-label">Sort By:</span>
-            <select
-              className="sort-select"
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
-            >
-              <option value="featured">Featured Selection</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Highly Rated</option>
-              <option value="discount">Special Offers</option>
-            </select>
-          </div>
-        </div>
+        )}
 
         {/* ACTIVE FILTER CHIPS */}
-        {hasActiveFilters && (
+        {!isCampaign && hasActiveFilters && (
           <div className="active-filters">
             {activeConcern !== 'all' && (
               <span className="active-chip">
@@ -391,51 +501,53 @@ const Shop = () => {
 
         <div className="shop-body">
           {/* SIDEBAR */}
-          <aside className={`shop-sidebar ${showFilters ? 'show' : ''}`}>
-            <div className="sidebar-header">
-              <h2 className="sidebar-title">Collections</h2>
-              <button className="sidebar-close" onClick={() => setShowFilters(false)}>
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Concern Filter */}
-            <div className="filter-section">
-              <h3 className="filter-section-title">Shop by Concern</h3>
-              <div className="filter-list">
-                {CONCERNS.map(c => (
-                  <div
-                    key={c.id}
-                    className={`filter-item ${activeConcern === c.id ? 'active' : ''}`}
-                    onClick={() => { setActiveConcern(c.id); if (window.innerWidth < 768) setShowFilters(false); }}
-                  >
-                    {c.emoji && <span className="filter-emoji">{c.emoji}</span>}
-                    {c.label}
-                  </div>
-                ))}
+          {!isCampaign && (
+            <aside className={`shop-sidebar ${showFilters ? 'show' : ''}`}>
+              <div className="sidebar-header">
+                <h2 className="sidebar-title">Collections</h2>
+                <button className="sidebar-close" onClick={() => setShowFilters(false)}>
+                  <X size={18} />
+                </button>
               </div>
-            </div>
 
-            {/* Skin Type Filter */}
-            <div className="filter-section">
-              <h3 className="filter-section-title">Skin Type</h3>
-              <div className="filter-list">
-                {SKIN_TYPES.map(t => (
-                  <div
-                    key={t}
-                    className={`filter-item ${activeType === t ? 'active' : ''}`}
-                    onClick={() => setActiveType(t)}
-                  >
-                    {t}
-                  </div>
-                ))}
+              {/* Concern Filter */}
+              <div className="filter-section">
+                <h3 className="filter-section-title">Shop by Concern</h3>
+                <div className="filter-list">
+                  {CONCERNS.map(c => (
+                    <div
+                      key={c.id}
+                      className={`filter-item ${activeConcern === c.id ? 'active' : ''}`}
+                      onClick={() => { setActiveConcern(c.id); if (window.innerWidth < 768) setShowFilters(false); }}
+                    >
+                      {c.emoji && <span className="filter-emoji">{c.emoji}</span>}
+                      {c.label}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div className="sidebar-actions">
-              <button className="sidebar-clear-btn" onClick={clearAllFilters}>Reset Filters</button>
-            </div>
-          </aside>
+              {/* Skin Type Filter */}
+              <div className="filter-section">
+                <h3 className="filter-section-title">Skin Type</h3>
+                <div className="filter-list">
+                  {SKIN_TYPES.map(t => (
+                    <div
+                      key={t}
+                      className={`filter-item ${activeType === t ? 'active' : ''}`}
+                      onClick={() => setActiveType(t)}
+                    >
+                      {t}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sidebar-actions">
+                <button className="sidebar-clear-btn" onClick={clearAllFilters}>Reset Filters</button>
+              </div>
+            </aside>
+          )}
 
           {/* PRODUCT GRID */}
           <div className="shop-content">
@@ -444,100 +556,62 @@ const Shop = () => {
                 {[...Array(6)].map((_, i) => <SkinSkeleton key={i} />)}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="shop-grid">
-                {filteredProducts.map(product => {
-                  const discount = getDiscount(product.price, product.originalPrice);
-                  const isWishlisted = wishlist.includes(product.id);
-                  const justAdded = addedToCart === product.id;
+              (() => {
+                const campaignProducts = filteredProducts.filter(p => campaignIds.includes(String(p.id)));
+                const mainProducts = filteredProducts.filter(p => !isCampaign || !campaignIds.includes(String(p.id)));
+                const singleProducts = mainProducts.filter(p => p.category !== 'combo');
+                const comboProducts = mainProducts.filter(p => p.category === 'combo');
 
-                  return (
-                    <article key={product.id} className="product-card">
-                      {/* 1. TOP SECTION: HERO IMAGE */}
-                      <div className="product-card-img-container">
-                        <Link to={`/product/${product.id}`} className="product-card-img-link">
-                          <img 
-                            src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
-                            alt={product.title} 
-                            className="shop-product-img" 
-                            loading="lazy" 
-                          />
-                        </Link>
-
-                        {/* Floating Glass Badge */}
-                        <div className="badge-luxe">
-                          {product.category === 'combo' ? 'Limited Edition' : 
-                           product.isBestseller ? 'Bestseller' : 
-                           product.isNew ? 'New Arrival' : 'Premium Care'}
+                return (
+                  <>
+                    {/* CAMPAIGN GRID */}
+                    {isCampaign && campaignProducts.length > 0 && (
+                      <>
+                        <div className="shop-grid" style={{ marginBottom: '4rem' }}>
+                          {campaignProducts.map(renderProductCard)}
                         </div>
-
-                        {/* Glass Wishlist */}
-                        <button
-                          className={`wishlist-btn-luxe ${isWishlisted ? 'active' : ''}`}
-                          onClick={e => toggleWishlist(e, product.id)}
-                        >
-                          <Heart size={18} fill={isWishlisted ? '#ff4757' : 'none'} />
-                        </button>
-
-                        {/* Quick-Add Overlay on Hover */}
-                        <div className="product-card-overlay">
-                          <button
-                            className={`add-to-bag-btn-luxe ${justAdded ? 'added' : ''}`}
-                            onClick={e => handleAddToCart(e, product)}
-                          >
-                            {justAdded ? '✓ Added' : 'Quick Add'}
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* 2 & 3. MIDDLE SECTION & RATING */}
-                      <div className="product-card-info">
-                        <span className="product-category">
-                          {CATEGORY_LABELS[product.category] || 'Luxury Skincare'}
-                        </span>
                         
-                        <Link to={`/product/${product.id}`} className="product-name-link">
-                          <h3 className="product-name">{product.title.split('|')[0].trim()}</h3>
-                        </Link>
-
-                        <p className="product-short-desc">
-                          {product.description ? product.description.substring(0, 70) + '...' : 'Scientifically formulated for visible radiance and luxury care.'}
-                        </p>
-
-                        <div className="product-rating-row">
-                          <div className="stars-luxe">
-                            {[...Array(5)].map((_, i) => (
-                              <Star key={i} size={12} fill={i < Math.floor(product.rating || 5) ? '#ffb800' : 'none'} stroke={i < Math.floor(product.rating || 5) ? '#ffb800' : '#ddd'} />
-                            ))}
-                          </div>
-                          <span className="review-count-luxe">({product.reviewsCount || 48} reviews)</span>
+                        {/* EXPLORE MORE DIVIDER */}
+                        <div style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative' }}>
+                          <hr style={{ borderTop: '1px solid #e5e7eb', margin: 0, position: 'absolute', top: '50%', width: '100%', zIndex: 1 }} />
+                          <span style={{ position: 'relative', zIndex: 2, backgroundColor: 'var(--luxe-cream-bg)', padding: '0 20px', fontFamily: 'var(--font-serif)', fontSize: '1.5rem', color: '#111827' }}>
+                            Explore More from Shoraluxe
+                          </span>
                         </div>
+                      </>
+                    )}
 
-                        {/* 4. PRICE SECTION */}
-                        <div className="product-price-container">
-                          <span className="price-main-luxe">₹{Number(product.price).toLocaleString('en-IN')}</span>
-                          {product.originalPrice && product.originalPrice > product.price && (
-                            <>
-                              <span className="price-old-luxe">₹{Number(product.originalPrice).toLocaleString('en-IN')}</span>
-                              <span className="discount-pill-luxe">{discount}% OFF</span>
-                            </>
-                          )}
+                    {/* SINGLE PRODUCTS GRID */}
+                    {singleProducts.length > 0 && (
+                      <>
+                        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.8rem', color: '#111827', marginBottom: '1.5rem', marginTop: isCampaign ? '0' : '1rem' }}>
+                          {isCampaign ? 'Luxury Skincare' : 'Featured Selection'}
+                        </h2>
+                        <div className="shop-grid" style={{ marginBottom: '4rem' }}>
+                          {singleProducts.map(renderProductCard)}
                         </div>
+                      </>
+                    )}
 
-                        {/* 5. MAIN CTA */}
-                        <button
-                          className={`add-to-bag-btn-luxe ${justAdded ? 'added' : ''} ${product.stock === 0 ? 'disabled' : ''}`}
-                          disabled={product.stock === 0}
-                          onClick={e => handleAddToCart(e, product)}
-                        >
-                          {product.stock === 0 ? 'Out of Stock' : justAdded ? '✓ Added to Bag' : 'Add to Bag'}
-                        </button>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="no-results">
+                    {/* COMBO OFFERS GRID */}
+                    {comboProducts.length > 0 && (
+                      <>
+                        <div style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative' }}>
+                          <hr style={{ borderTop: '1px solid #e5e7eb', margin: 0, position: 'absolute', top: '50%', width: '100%', zIndex: 1 }} />
+                          <span style={{ position: 'relative', zIndex: 2, backgroundColor: 'var(--luxe-cream-bg)', padding: '0 20px', fontFamily: 'var(--font-serif)', fontSize: '1.5rem', color: '#111827' }}>
+                            Premium Combos & Kits
+                          </span>
+                        </div>
+                        <div className="shop-grid">
+                          {comboProducts.map(renderProductCard)}
+                        </div>
+                      </>
+                    )}
+                  </>
+                );
+              })()
+              ) : (
+                <div className="no-results">
                 <div className="no-results-icon">🔍</div>
                 <h3>No products found</h3>
                 <p>Try adjusting your filters or search term.</p>

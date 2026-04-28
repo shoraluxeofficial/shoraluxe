@@ -115,6 +115,8 @@ body:has(.admin-container) {
 
 .admin-top-header {
   height: 70px;
+  min-height: 70px;
+  flex-shrink: 0;
   background: #fff;
   display: flex;
   align-items: center;

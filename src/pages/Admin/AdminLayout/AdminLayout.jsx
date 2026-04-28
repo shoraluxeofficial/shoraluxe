@@ -26,7 +26,7 @@ const AdminLayout = () => {
   const handleLogout = () => {
     notify('Are you sure you want to sign out?', 'confirm', {
       onConfirm: () => {
-        localStorage.removeItem('shoraluxe_admin_auth');
+        sessionStorage.removeItem('shoraluxe_admin_auth');
         navigate('/admin-login');
       }
     });

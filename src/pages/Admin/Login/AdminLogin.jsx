@@ -63,7 +63,7 @@ const AdminLogin = () => {
       const storedPass = localStorage.getItem('shoraluxe_master_pass') || 'admin123';
       
       if (email === 'admin@shoraluxe.com' && password === storedPass) {
-        localStorage.setItem('shoraluxe_admin_auth', 'true');
+        sessionStorage.setItem('shoraluxe_admin_auth', 'true');
         navigate('/admin');
       } else {
         setError('Verification failed. Check credentials.');

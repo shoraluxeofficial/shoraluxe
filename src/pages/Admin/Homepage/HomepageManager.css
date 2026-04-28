@@ -24,7 +24,11 @@
   animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* ── LAYOUT ─────────────────────────────────────────────────────── */
 .hm-layout {
@@ -65,7 +69,7 @@
   background: #111827;
   border-color: #111827;
   color: #fff;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
 .hm-tab-text {
@@ -147,7 +151,7 @@
 }
 
 .hm-card:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
   border-color: #d1d5db;
 }
 
@@ -263,11 +267,35 @@
   font-weight: 600;
 }
 
-.hm-chip-blue   { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
-.hm-chip-green  { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
-.hm-chip-orange { background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; }
-.hm-chip-red    { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
-.hm-chip-purple { background:#faf5ff; color:#7e22ce; border:1px solid #e9d5ff; }
+.hm-chip-blue {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.hm-chip-green {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.hm-chip-orange {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.hm-chip-red {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.hm-chip-purple {
+  background: #faf5ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
 
 /* ── ACTION BUTTONS ─────────────────────────────────────────────── */
 .hm-card-actions {
@@ -296,6 +324,7 @@
   background: #eff6ff;
   color: #1d4ed8;
 }
+
 .hm-btn-edit:hover {
   background: #dbeafe;
   transform: scale(1.05);
@@ -305,6 +334,7 @@
   background: #fef2f2;
   color: #b91c1c;
 }
+
 .hm-btn-delete:hover {
   background: #fee2e2;
   transform: scale(1.05);
@@ -345,7 +375,10 @@
   border-bottom: 1px solid #f9fafb;
 }
 
-.hm-detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+.hm-detail-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
 
 .hm-detail-label {
   font-size: 0.72rem;
@@ -417,7 +450,7 @@
 .hm-edit-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
   z-index: 2000;
   display: flex;
@@ -430,17 +463,24 @@
   background: #fff;
   border-radius: 16px;
   width: 100%;
-  max-width: 580px;
+  max-width: 1100px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.25);
-  animation: modalIn 0.22s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  animation: modalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.96) translateY(10px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .hm-edit-modal-header {
@@ -508,7 +548,10 @@
   cursor: pointer;
   transition: all 0.15s;
 }
-.hm-btn-cancel:hover { background: #e5e7eb; }
+
+.hm-btn-cancel:hover {
+  background: #e5e7eb;
+}
 
 .hm-btn-save {
   display: flex;
@@ -524,7 +567,12 @@
   cursor: pointer;
   transition: all 0.15s;
 }
-.hm-btn-save:hover { background: #1f2937; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+.hm-btn-save:hover {
+  background: #1f2937;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 
 /* ── EDIT FIELDS ─────────────────────────────────────────────────── */
 .hm-edit-fields {
@@ -566,7 +614,7 @@
   outline: none;
   border-color: #111827;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(17,24,39,0.07);
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.07);
 }
 
 .hm-url-select {
@@ -602,7 +650,9 @@
   align-items: center;
 }
 
-.hm-field-row input { flex: 1; }
+.hm-field-row input {
+  flex: 1;
+}
 
 .hm-upload-btn {
   display: flex;
@@ -633,8 +683,15 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
 .hm-img-preview {
@@ -697,7 +754,7 @@
 .hm-visual-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -717,7 +774,7 @@
 .hm-visual-loading {
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   display: flex;
   flex-direction: column;
   align-items: center;
