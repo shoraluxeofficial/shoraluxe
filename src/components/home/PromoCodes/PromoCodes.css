@@ -2,7 +2,9 @@
   width: 100vw;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
-  background: linear-gradient(135deg, #6d0e2c 0%, #4a0a1e 100%);
+  background: linear-gradient(135deg, #6d0e2c 0%, #4a0a1e 50%, #871438 100%);
+  background-size: 200% 200%;
+  animation: waveBackground 8s ease infinite;
   height: 52px;
   display: flex;
   align-items: center;
@@ -15,6 +17,12 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   margin-top: 0;
   margin-bottom: 0;
+}
+
+@keyframes waveBackground {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .promo-ribbon-content {
