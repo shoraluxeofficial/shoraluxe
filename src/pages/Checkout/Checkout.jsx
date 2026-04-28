@@ -542,19 +542,12 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      console.log("Starting Checkout Process...");
-      // ONLY razorpay flow remains since we moved UPI ID into Razorpay modal
+      console.log("Starting Audited Checkout Process...");
       if (formData.paymentMethod !== 'razorpay') {
         throw new Error("Invalid payment method selected");
       }
 
-      console.log("Initiating Razorpay...");
-      const paymentId = await processRazorpay();
-      if (!paymentId) throw new Error("Payment incomplete");
-      const paymentStatus = 'paid';
-
-      console.log("Constructing Order Payload...");
-      // 1. Construct order payload
+      // 1. Construct Main Order Payload (Matched to Live DB Columns)
       const shipping_address = {
         flat_no: formData.flatNo,
         address_line1: formData.address1,
@@ -567,36 +560,86 @@ const Checkout = () => {
       };
 
       const orderPayload = {
+        user_id: user?.id || null, 
         customer_name: `${formData.firstName} ${formData.lastName}`,
         customer_phone: formData.phone,
         customer_email: formData.email,
         shipping_address: shipping_address,
-        total_amount: finalTotal,
         subtotal: cartTotal,
-        shipping_charge: shippingFee,
-        discount_amount: discountAmount,
-        payment_status: paymentStatus,
+        shipping_charge: shippingFee, 
+        discount_amount: discountAmount, 
+        total_amount: finalTotal,
+        payment_status: 'pending',
         payment_method: formData.paymentMethod,
-        order_status: 'placed',
-        razorpay_payment_id: paymentId,
+        order_status: 'pending_payment',
+        razorpay_order_id: null,
+        razorpay_payment_id: null,
       };
 
-      console.log("Sending to Supabase:", orderPayload);
-      // 2. Insert into Supabase 'orders' table
-      const { data, error: sbError } = await supabase
+      console.log("Creating Order record in Supabase...");
+      const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert([orderPayload])
         .select();
 
-      if (sbError) {
-        console.error("Supabase Error Details:", sbError);
-        throw new Error(`Database Error: ${sbError.message}`);
+      if (orderError) {
+        console.error("Order Insert Error:", orderError);
+        throw new Error(`Failed to create order: ${orderError.message}`);
       }
 
-      console.log("Order SUCCESS! ID:", data[0]?.id);
-      setOrderId(data[0].id);
+      const dbOrderId = orderData[0].id;
+      setOrderId(dbOrderId);
 
-      // 3. Deduct Stock from Supabase
+      // 2. Insert Items into order_items table (Linked via order_id)
+      console.log("Creating Order Items records...");
+      const orderItemsPayload = cartItems.map(item => ({
+        order_id: dbOrderId,
+        product_id: typeof item.id === 'string' ? parseInt(item.id.split('-')[0]) : item.id,
+        product_title: item.title,
+        product_img: item.img || item.image,
+        price: item.price,
+        quantity: item.quantity,
+        subtotal: item.price * item.quantity
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItemsPayload);
+
+      if (itemsError) {
+        console.error("Order Items Insert Error:", itemsError);
+        // We continue to payment, but log the failure
+        notify("Order created, but item details failed to sync. Admin will verify.", "warning");
+      }
+
+      // 3. Initiate Razorpay
+      console.log("Initiating Razorpay Payment Modal...");
+      let paymentId;
+      try {
+        paymentId = await processRazorpay();
+      } catch (payErr) {
+        console.warn("Payment modal closed or failed:", payErr.message);
+        throw payErr;
+      }
+
+      if (!paymentId) throw new Error("Payment incomplete");
+
+      // 4. Update Status on Success
+      console.log("Payment Success! Updating order status...");
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({
+          payment_status: 'paid',
+          order_status: 'placed',
+          razorpay_payment_id: paymentId
+        })
+        .eq('id', dbOrderId);
+
+      if (updateError) console.error("Status Update Error:", updateError);
+
+      console.log("Order SUCCESS! ID:", dbOrderId);
+
+      // 5. Deduct Stock from Supabase
       console.log("Deducting inventory counts...");
       for (const item of cartItems) {
         // Find the base numeric ID (handle variants like 5-QUJDSE)
