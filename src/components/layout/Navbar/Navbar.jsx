@@ -171,7 +171,7 @@ const Navbar = () => {
                     </div>
                     <ul className="profile-submenu">
                       <li><Link to="/account">My Profile</Link></li>
-                      <li><Link to="/track-order">Track Orders</Link></li>
+                      <li><Link to="/my-orders">My Orders</Link></li>
                       <li className="logout-item" onClick={handleLogout}>
                         <LogOut size={14} /> Logout
                       </li>

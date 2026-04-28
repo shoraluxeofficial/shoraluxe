@@ -11,6 +11,7 @@ const Checkout = lazy(() => import('./pages/Checkout/Checkout'));
 const QuizSection = lazy(() => import('./components/home/QuizSection/QuizSection'));
 const OrderTracking = lazy(() => import('./pages/OrderTracking/OrderTracking'));
 const UserLogin = lazy(() => import('./pages/UserLogin/UserLogin'));
+const MyOrders = lazy(() => import('./pages/MyOrders/MyOrders'));
 
 const AdminLayout = lazy(() => import('./pages/Admin/AdminLayout/AdminLayout'));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard/AdminDashboard'));
@@ -60,9 +61,10 @@ function App() {
                 <Route path="shop" element={<Shop />} />
                 <Route path="product/:id" element={<ProductDetail />} />
                 <Route path="checkout" element={<Checkout />} />
-                <Route path="quiz" element={<QuizSection />} />
-                <Route path="track-order" element={<OrderTracking />} />
                 <Route path="account" element={<UserLogin />} />
+                <Route path="my-orders" element={<MyOrders />} />
+                <Route path="track-order" element={<OrderTracking />} />
+                <Route path="quiz" element={<QuizSection />} />
               </Route>
 
               {/* SECURE ADMIN LOGIN */}

@@ -21,25 +21,28 @@ export const NotificationProvider = ({ children }) => {
       {children}
       {notification && (
         <div className="notification-container">
-          <div className={`notification-card ${notification.type}`}>
-            <div className="notification-icon">
-              {notification.type === 'success' && <CheckCircle size={20} />}
-              {notification.type === 'error' && <AlertCircle size={20} />}
-              {notification.type === 'info' && <Info size={20} />}
-              {notification.type === 'confirm' && <AlertCircle size={20} color="#f59e0b" />}
+          <div className={`notification-card ${notification.type}`} style={notification.type === 'confirm' ? { flexDirection: 'column', alignItems: 'stretch' } : {}}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+              <div className="notification-icon">
+                {notification.type === 'success' && <CheckCircle size={20} />}
+                {notification.type === 'error' && <AlertCircle size={20} />}
+                {notification.type === 'info' && <Info size={20} />}
+                {notification.type === 'confirm' && <AlertCircle size={20} color="#f59e0b" />}
+              </div>
+              <div className="notification-content" style={{ flex: 1 }}>
+                <p>{notification.message}</p>
+              </div>
+              {notification.type !== 'confirm' && (
+                <button className="notification-close" onClick={close} style={{ position: 'static' }}>
+                  <X size={16} />
+                </button>
+              )}
             </div>
-            <div className="notification-content">
-              <p>{notification.message}</p>
-            </div>
-            {notification.type === 'confirm' ? (
-              <div className="notification-actions">
+            {notification.type === 'confirm' && (
+              <div className="notification-actions" style={{ marginTop: '1rem' }}>
                 <button className="notif-btn cancel" onClick={() => { notification.onCancel?.(); close(); }}>Cancel</button>
                 <button className="notif-btn confirm" onClick={() => { notification.onConfirm?.(); close(); }}>Confirm</button>
               </div>
-            ) : (
-              <button className="notification-close" onClick={close}>
-                <X size={16} />
-              </button>
             )}
           </div>
         </div>

@@ -12,7 +12,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { notify } = useNotify();
   const API_URL = import.meta.env.PROD ? '/api/payment' : 'http://localhost:5000/api/payment';
-  
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
@@ -42,6 +42,7 @@ const Checkout = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [savedAddresses, setSavedAddresses] = useState([]);
 
   // Compute promo code discount amount
   const calculatePromoDiscount = () => {
@@ -49,7 +50,7 @@ const Checkout = () => {
 
     if (appliedPromo.promo_type === 'b2g1') {
       const category = appliedPromo.applicable_category || 'all';
-      
+
       // Filter items that belong to this category
       let eligiblePrices = [];
       cartItems.forEach(item => {
@@ -57,11 +58,11 @@ const Checkout = () => {
           for (let i = 0; i < item.quantity; i++) eligiblePrices.push(item.price);
         }
       });
-      
+
       eligiblePrices.sort((a, b) => b - a);
 
       let b2g1Discount = 0;
-      
+
       // Special Logic for Lotions: Bundle price ₹1,198 for 3
       if (appliedPromo.code === 'SL-B2G1-LOTION') {
         const bundleCount = Math.floor(eligiblePrices.length / 3);
@@ -69,8 +70,8 @@ const Checkout = () => {
         // We want to make it 1,198.
         // So for each bundle of 3, we subtract the difference.
         for (let i = 0; i < bundleCount; i++) {
-           const currentBundleTotal = eligiblePrices[i*3] + eligiblePrices[i*3+1] + eligiblePrices[i*3+2];
-           b2g1Discount += (currentBundleTotal - 1198);
+          const currentBundleTotal = eligiblePrices[i * 3] + eligiblePrices[i * 3 + 1] + eligiblePrices[i * 3 + 2];
+          b2g1Discount += (currentBundleTotal - 1198);
         }
         return b2g1Discount;
       }
@@ -94,7 +95,7 @@ const Checkout = () => {
   useEffect(() => {
     // Make sure cart sidebar is closed when entering checkout
     setIsCartOpen(false);
-    
+
     // Redirect if not logged in
     if (!user) {
       navigate('/account?redirect=checkout');
@@ -111,12 +112,37 @@ const Checkout = () => {
       setAvailablePromos(data || []);
     };
     fetchPromos();
+
+    // Fetch saved addresses
+    const fetchSavedAddresses = async () => {
+      let query = supabase.from('orders').select('shipping_address');
+      if (user.email) query = query.eq('customer_email', user.email);
+      else if (user.mobile) query = query.eq('customer_phone', user.mobile.replace('+91', ''));
+      
+      const { data } = await query.order('placed_at', { ascending: false });
+      
+      if (data) {
+        const uniqueAddresses = [];
+        const seen = new Set();
+        data.forEach(order => {
+          if (order.shipping_address) {
+            const key = `${order.shipping_address.flat_no}-${order.shipping_address.pincode}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              uniqueAddresses.push(order.shipping_address);
+            }
+          }
+        });
+        setSavedAddresses(uniqueAddresses.slice(0, 3)); // Keep top 3 recent unique
+      }
+    };
+    if (user) fetchSavedAddresses();
   }, [cartItems, setIsCartOpen, navigate, success, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
+
     // Dynamic Shipping Logic
     if (name === 'state' || name === 'city' || name === 'pincode') {
       calculateShipping(value, name);
@@ -124,6 +150,33 @@ const Checkout = () => {
 
     if (errors[name]) {
       setErrors({ ...errors, [name]: null });
+    }
+  };
+
+  const handleSelectAddress = (addr, isEdit = false) => {
+    setFormData(prev => ({
+      ...prev,
+      flatNo: addr.flat_no || '',
+      address1: addr.address_line1 || '',
+      landmark: addr.landmark || '',
+      city: addr.city || '',
+      state: addr.state || '',
+      pincode: addr.pincode || '',
+      addressType: addr.address_type || 'home'
+    }));
+    calculateShipping(addr.pincode, 'pincode');
+    
+    if (isEdit) {
+      // Scroll smoothly to the flatNo input
+      setTimeout(() => {
+        const flatNoInput = document.querySelector('input[name="flatNo"]');
+        if (flatNoInput) {
+          flatNoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          flatNoInput.focus();
+        }
+      }, 100);
+    } else {
+      notify('Address applied successfully!', 'success');
     }
   };
 
@@ -208,10 +261,10 @@ const Checkout = () => {
     // B2G1: Buy 2 Get 1 — need at least 3 total items of the applicable category
     if (data.promo_type === 'b2g1') {
       const category = data.applicable_category || 'all';
-      const eligibleItems = category === 'all' 
-        ? cartItems 
+      const eligibleItems = category === 'all'
+        ? cartItems
         : cartItems.filter(item => item.title.toLowerCase().includes(category.toLowerCase()));
-      
+
       const eligibleQty = eligibleItems.reduce((sum, item) => sum + item.quantity, 0);
 
       if (eligibleQty < 3) {
@@ -257,13 +310,17 @@ const Checkout = () => {
     setPromoError('');
   };
 
-  // finalTotal = (cartTotal) - (promo discount) + shipping
-  const finalTotal = Math.max(0, cartTotal - discountAmount + shippingFee);
+  // If a promo code is applied, it overrides the automated tier discount
+  const effectiveTierDiscount = appliedPromo ? 0 : tierDiscountAmt;
+  const effectiveCartTotal = cartSubtotal - effectiveTierDiscount;
+
+  // finalTotal = (cartTotal without tier discount if promo is applied) - (promo discount) + shipping
+  const finalTotal = Math.max(0, effectiveCartTotal - discountAmount + shippingFee);
 
   // Total savings
   const totalOriginalPrice = cartItems.reduce((acc, item) => acc + ((item.originalPrice || item.price) * item.quantity), 0);
   const itemSavings = totalOriginalPrice > cartSubtotal ? totalOriginalPrice - cartSubtotal : 0;
-  const totalSavings = itemSavings + cartDiscount + discountAmount;
+  const totalSavings = itemSavings + effectiveTierDiscount + discountAmount;
 
   const formatSize = (sizeStr) => {
     if (!sizeStr) return '';
@@ -309,12 +366,12 @@ const Checkout = () => {
           // Using reverse geocoding via OpenStreetMap (Free)
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&countrycodes=in`);
           const data = await res.json();
-          
+
           if (data.address) {
             const city = data.address.city || data.address.town || data.address.village || '';
             const state = data.address.state || '';
             const pincode = data.address.postcode || '';
-            
+
             setFormData(prev => ({
               ...prev,
               city,
@@ -338,7 +395,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (formData.pincode.length === 6) {
-        fetchAddressByPincode(formData.pincode);
+      fetchAddressByPincode(formData.pincode);
     }
   }, [formData.pincode]);
 
@@ -375,7 +432,7 @@ const Checkout = () => {
 
     return new Promise((resolve, reject) => {
       const options = {
-        key: "rzp_live_SdI77DtoaiASCw", 
+        key: "rzp_live_SdI77DtoaiASCw",
         amount: orderData.amount,
         currency: orderData.currency,
         name: "Shoraluxe",
@@ -406,13 +463,13 @@ const Checkout = () => {
       };
 
       console.log("Razorpay Options generated:", {
-         key: options.key,
-         order_id: options.order_id,
-         amount: options.amount
+        key: options.key,
+        order_id: options.order_id,
+        amount: options.amount
       });
 
       const rzp = new window.Razorpay(options);
-      
+
       rzp.on('payment.failed', function (response) {
         console.error("RAZORPAY INTERNAL ERROR:", response.error);
         alert(`Razorpay Error: ${response.error.reason || response.error.description || 'Unknown'}\nStep: ${response.error.step}`);
@@ -435,7 +492,7 @@ const Checkout = () => {
     if (!formData.city) newErrors.city = 'City is required';
     if (!formData.state) newErrors.state = 'State is required';
     if (!formData.pincode) newErrors.pincode = 'Pincode is required';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -443,7 +500,7 @@ const Checkout = () => {
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    
+
     setLoading(true);
 
     try {
@@ -471,7 +528,7 @@ const Checkout = () => {
         address_type: formData.addressType,
         alternate_phone: formData.alternatePhone
       };
-      
+
       const orderPayload = {
         customer_name: `${formData.firstName} ${formData.lastName}`,
         customer_phone: formData.phone,
@@ -509,26 +566,47 @@ const Checkout = () => {
       for (const item of cartItems) {
         // Find the base numeric ID (handle variants like 5-QUJDSE)
         const baseProductId = typeof item.id === 'string' ? item.id.split('-')[0] : item.id;
-        
+
         // Use RPC or decrement logic. Since we know the item.id/baseProductId, 
         // we fetch the current stock first or use an update with logic.
         // For simplicity with standard JS client:
-        const { data: pData } = await supabase.from('products').select('stock').eq('id', baseProductId).single();
+        const { data: pData } = await supabase.from('products').select('stock, category, benefits').eq('id', baseProductId).single();
         if (pData) {
-            const currentStock = pData.stock || 0;
-            const newStock = Math.max(0, currentStock - item.quantity);
-            await supabase.from('products').update({ stock: newStock }).eq('id', baseProductId);
+          const currentStock = pData.stock || 0;
+          const newStock = Math.max(0, currentStock - item.quantity);
+          await supabase.from('products').update({ stock: newStock }).eq('id', baseProductId);
+
+          // NEW: If this is a combo, decrement the stock of its individual bundled items
+          if (pData.category === 'combo' && pData.benefits) {
+            try {
+              let benefitsObj = typeof pData.benefits === 'string' ? JSON.parse(pData.benefits) : pData.benefits;
+              if (benefitsObj && benefitsObj.product_ids && Array.isArray(benefitsObj.product_ids)) {
+                for (const bundledId of benefitsObj.product_ids) {
+                  const bundledBaseId = typeof bundledId === 'string' ? bundledId.split('-')[0] : bundledId;
+                  const { data: bData } = await supabase.from('products').select('stock').eq('id', bundledBaseId).single();
+                  if (bData) {
+                    const bCurrentStock = bData.stock || 0;
+                    // Subtract the quantity of combos purchased from the single item's stock
+                    const bNewStock = Math.max(0, bCurrentStock - item.quantity);
+                    await supabase.from('products').update({ stock: bNewStock }).eq('id', bundledBaseId);
+                  }
+                }
+              }
+            } catch (e) {
+              console.error("Failed to decrement bundled items for combo", e);
+            }
+          }
         }
       }
-      
+
       // 4. Sync Order to Shiprocket
       console.log("Syncing Order to Shiprocket...");
       try {
         const shippingApiUrl = API_URL.replace('/payment', '/shipping');
         await fetch(`${shippingApiUrl}/sync-order`, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ ...orderPayload, orderId: data[0].id })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...orderPayload, orderId: data[0].id })
         });
       } catch (err) {
         console.error("Shiprocket sync failed (but order was placed successfully):", err);
@@ -547,7 +625,7 @@ const Checkout = () => {
 
       // Auto redirect after 5 seconds
       setTimeout(() => {
-        window.location.href = '/'; 
+        window.location.href = '/';
       }, 5000);
 
     } catch (err) {
@@ -564,7 +642,7 @@ const Checkout = () => {
       <div className="checkout-success-container">
         <CheckCircle size={64} className="success-icon" />
         <h2>Thank You for Your Order!</h2>
-        <p>Your order <strong>#{orderId?.slice(0,8).toUpperCase()}</strong> has been placed successfully.</p>
+        <p>Your order <strong>#{orderId?.slice(0, 8).toUpperCase()}</strong> has been placed successfully.</p>
         <p>You will receive an email confirmation shortly.</p>
         <em>Redirecting to home page...</em>
       </div>
@@ -573,18 +651,18 @@ const Checkout = () => {
 
   return (
     <div className="checkout-page-container">
-      <SEO 
-        title="Secure Checkout" 
+      <SEO
+        title="Secure Checkout"
         description="Finalize your purchase securely at Shoraluxe. Fast Pan India delivery and secure payment options."
       />
       <div className="checkout-left">
         <h2>Checkout securely</h2>
-        
+
         <form onSubmit={handleCheckout} className="checkout-form">
           <div className="checkout-section">
             <div className="section-title-wrap">
-               <User size={20} className="section-icon" />
-               <h3>1. Contact Information</h3>
+              <User size={20} className="section-icon" />
+              <h3>1. Contact Information</h3>
             </div>
             <div className="form-row">
               <div className="form-group">
@@ -596,7 +674,7 @@ const Checkout = () => {
                 {errors.lastName && <span className="error-text">{errors.lastName}</span>}
               </div>
             </div>
-            
+
             <div className="form-row">
               <div className="form-group">
                 <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} className={errors.email ? 'error-input' : ''} />
@@ -614,12 +692,42 @@ const Checkout = () => {
 
           <div className="checkout-section">
             <div className="section-title-wrap">
-               <MapPin size={20} className="section-icon" />
-               <h3>2. Shipping Address</h3>
-               <button type="button" className="detect-loc-btn" onClick={handleGetCurrentLocation}>
-                  <Navigation size={14} /> Detect My Location
-               </button>
+              <MapPin size={20} className="section-icon" />
+              <h3>2. Shipping Address</h3>
+              <button type="button" className="detect-loc-btn" onClick={handleGetCurrentLocation}>
+                <Navigation size={14} /> Detect My Location
+              </button>
             </div>
+
+            {savedAddresses.length > 0 && (
+              <div className="saved-addresses-container">
+                <p className="saved-addr-title">Saved Addresses</p>
+                <div className="saved-addresses-grid">
+                  {savedAddresses.map((addr, idx) => (
+                    <div key={idx} className="saved-addr-card" onClick={() => handleSelectAddress(addr)}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <div className="addr-type-badge" style={{ margin: 0 }}>{addr.address_type || 'Home'}</div>
+                        <button 
+                          className="addr-edit-btn" 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            handleSelectAddress(addr, true); 
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <p className="addr-line"><strong>{addr.flat_no}</strong>, {addr.address_line1}</p>
+                      <p className="addr-line">{addr.city}, {addr.state} - {addr.pincode}</p>
+                      {addr.landmark && <p className="addr-landmark">Near {addr.landmark}</p>}
+                      <button type="button" className="use-addr-btn">Deliver Here</button>
+                    </div>
+                  ))}
+                </div>
+                <div className="addr-separator"><span>OR ADD NEW ADDRESS</span></div>
+              </div>
+            )}
+
             <div className="form-row">
               <div className="form-group">
                 <input type="text" name="flatNo" placeholder="House / Flat / Office No" value={formData.flatNo} onChange={handleChange} className={errors.flatNo ? 'error-input' : ''} />
@@ -657,7 +765,7 @@ const Checkout = () => {
                 {errors.pincode && <span className="error-text">{errors.pincode}</span>}
               </div>
             </div>
-            
+
             <div className="address-type-selector">
               <p>Delivery Schedule:</p>
               <div className="type-options">
@@ -707,7 +815,7 @@ const Checkout = () => {
               </div>
             )}
             {promoError && <p className="promo-error">{promoError}</p>}
-            
+
             {/* Suggested Promos */}
             {!appliedPromo && availablePromos.length > 0 && (
               <div className="suggested-promos-wrap">
@@ -730,8 +838,8 @@ const Checkout = () => {
 
           <div className="checkout-section">
             <div className="section-title-wrap">
-               <CreditCard size={20} className="section-icon" />
-               <h3>4. Payment Method</h3>
+              <CreditCard size={20} className="section-icon" />
+              <h3>4. Payment Method</h3>
             </div>
             <div className="payment-options">
               <label className={`pay-option ${formData.paymentMethod === 'razorpay' ? 'selected' : ''}`}>
@@ -787,7 +895,7 @@ const Checkout = () => {
                 <span>−₹{b2g1Discount.toLocaleString('en-IN')}</span>
               </div>
             )}
-            {tierDiscountAmt > 0 && (
+            {!appliedPromo && tierDiscountAmt > 0 && (
               <div className="tot-row" style={{ color: '#15803d', fontWeight: 600, background: '#f0fdf4', padding: '4px 8px', borderRadius: '4px', margin: '4px 0' }}>
                 <span>🎉 Extra {qtyDiscountPct}% OFF!</span>
                 <span style={{ fontWeight: 800 }}>−₹{tierDiscountAmt.toLocaleString('en-IN')}</span>
@@ -817,7 +925,7 @@ const Checkout = () => {
             </div>
           </div>
           <div className="secure-badge-checkout">
-             <ShieldCheck size={16} /> 256-bit Secure Transaction
+            <ShieldCheck size={16} /> 256-bit Secure Transaction
           </div>
         </div>
       </div>

@@ -30,7 +30,7 @@ const OrderTracking = () => {
       const { data, error: err } = await supabase
         .from('orders')
         .select('*')
-        .or(`id.ilike.%${query.trim()}%,customer_phone.eq.${query.trim()}`)
+        .or(`id.ilike.%${query.trim()}%,customer_phone.eq.${query.trim()},customer_email.ilike.%${query.trim()}%`)
         .order('placed_at', { ascending: false })
         .limit(1)
         .single();
@@ -59,13 +59,13 @@ const OrderTracking = () => {
       <div className="tracking-hero">
         <span className="tracking-tag">SHORALUXE</span>
         <h1>Track Your Order</h1>
-        <p>Enter your Order ID or registered phone number to get live updates.</p>
+        <p>Enter your Order ID, Email, or registered Phone Number to get live updates.</p>
 
         <form className="tracking-search-bar" onSubmit={handleSearch}>
           <Search size={20} className="ts-icon" />
           <input
             type="text"
-            placeholder="Order ID or Phone Number..."
+            placeholder="Order ID, Email, or Phone..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
