@@ -475,6 +475,25 @@ const Checkout = () => {
           contact: formData.phone
         },
         theme: { color: "#6d0e2c" },
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay via UPI",
+                instruments: [
+                  {
+                    method: "upi",
+                    flows: ["collect", "qr", "intent"]
+                  }
+                ]
+              }
+            },
+            sequence: ["block.upi"],
+            preferences: {
+              show_default_blocks: true
+            }
+          }
+        },
         modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
       };
 
