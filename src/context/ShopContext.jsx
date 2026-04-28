@@ -124,21 +124,43 @@ export const ShopProvider = ({ children }) => {
   // 🎁 DYNAMIC PROMO ENGINE: B2G1 & Quantity Tiers
   const calculateCartTotals = () => {
     let subtotal = 0;
-    let totalQty = 0;
+    let eligibleQty = 0;
+    let eligibleSubtotal = 0;
 
     cartItems.forEach(item => {
       subtotal += item.price * item.quantity;
-      totalQty += item.quantity;
+      
+      const baseId = parseInt(String(item.id).split('-')[0], 10);
+      // Only apply tiered discounts to individual products (ID < 100), not combos
+      if (baseId < 100) {
+        eligibleQty += item.quantity;
+        eligibleSubtotal += item.price * item.quantity;
+      }
     });
+
+    // Calculate Extra Discount Percentage based on eligible quantity
+    let extraDiscountPct = 0;
+    if (eligibleQty >= 6) extraDiscountPct = 0.25;      // Extra 25%
+    else if (eligibleQty === 5) extraDiscountPct = 0.20; // Extra 20%
+    else if (eligibleQty === 4) extraDiscountPct = 0.15; // Extra 15%
+    else if (eligibleQty === 3) extraDiscountPct = 0.10; // Extra 10%
+    else if (eligibleQty === 2) extraDiscountPct = 0.05; // Extra 5%
+
+    // The extra discount amount is taken off the eligible subtotal directly
+    const tierDiscountAmt = Math.round(eligibleSubtotal * extraDiscountPct);
+    const finalTotal = subtotal - tierDiscountAmt;
+    
+    // The exact percentage shown in the UI
+    const displayPct = extraDiscountPct * 100;
 
     return { 
       subtotal, 
-      total: subtotal, 
-      discount: 0, 
-      qtyDiscountPct: 0, 
-      totalQty,
+      total: Math.max(0, finalTotal), 
+      discount: tierDiscountAmt,
+      qtyDiscountPct: displayPct, 
+      totalQty: eligibleQty, // Used for the nudge UI
       b2g1Discount: 0,
-      tierDiscountAmt: 0
+      tierDiscountAmt
     };
   };
 
@@ -238,6 +260,8 @@ export const ShopProvider = ({ children }) => {
       cartCount,
       qtyDiscountPct,
       cartQty,
+      b2g1Discount,
+      tierDiscountAmt,
       popupConfig,
       updatePopupConfig
     }}>

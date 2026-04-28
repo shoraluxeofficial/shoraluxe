@@ -16,7 +16,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
-  const [shippingFee, setShippingFee] = useState(cartTotal >= 999 ? 0 : 60);
+  const [shippingFee, setShippingFee] = useState(60);
 
   // Promo code state
   const [promoInput, setPromoInput] = useState('');
@@ -128,11 +128,7 @@ const Checkout = () => {
   };
 
   const calculateShipping = async (value, name) => {
-    // Check if total after promo discount is still >= 999
-    if ((cartTotal - discountAmount) >= 999) {
-      setShippingFee(0);
-      return;
-    }
+
 
     const state = name === 'state' ? (value || formData.state) : formData.state;
     const city = name === 'city' ? (value || formData.city) : formData.city;
@@ -792,9 +788,9 @@ const Checkout = () => {
               </div>
             )}
             {tierDiscountAmt > 0 && (
-              <div className="tot-row" style={{ color: '#16a34a' }}>
-                <span>🎉 {qtyDiscountPct}% Tier Discount</span>
-                <span>−₹{tierDiscountAmt.toLocaleString('en-IN')}</span>
+              <div className="tot-row" style={{ color: '#15803d', fontWeight: 600, background: '#f0fdf4', padding: '4px 8px', borderRadius: '4px', margin: '4px 0' }}>
+                <span>🎉 Extra {qtyDiscountPct}% OFF!</span>
+                <span style={{ fontWeight: 800 }}>−₹{tierDiscountAmt.toLocaleString('en-IN')}</span>
               </div>
             )}
             <div className="tot-row">

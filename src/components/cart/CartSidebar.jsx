@@ -72,23 +72,38 @@ const CartSidebar = () => {
             </div>
           ) : (
             <div className="cart-items-list">
-              <div className="shipping-promo">
-                {cartTotal < 999 
-                  ? <p>You are ₹{999 - cartTotal} away from <strong>Free Standard Shipping!</strong></p>
-                  : <p>🎉 You have unlocked <strong>Free Standard Shipping!</strong></p>
-                }
-                <div className="shipping-bar-wrap">
-                  <div className="shipping-progress" style={{ width: `${Math.min(100, (cartTotal / 999) * 100)}%` }}></div>
-                </div>
-              </div>
+
 
               {cartItems.map(item => (
                 <div className="cart-item" key={item.id}>
                   <img src={item.gallery?.[0] || item.img} alt={item.title} className="cart-item-img" />
                   <div className="cart-item-details">
                     <div className="cart-item-row">
-                      <h4 className="cart-item-title">{item.title.split('|')[0]}</h4>
-                      <span className="cart-item-price">₹{item.price * item.quantity}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <h4 className="cart-item-title">{item.title.split('|')[0]}</h4>
+                        {(() => {
+                           const mrp = item.mrp || item.originalPrice || Math.round(item.price / 0.8);
+                           if (mrp > item.price) {
+                             const pct = Math.round(((mrp - item.price) / mrp) * 100);
+                             return (
+                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                 <span style={{ fontSize: '0.65rem', color: '#b81c54', background: 'rgba(228,66,128,0.1)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>{pct}% OFF</span>
+                               </div>
+                             );
+                           }
+                           return null;
+                        })()}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                        <span className="cart-item-price" style={{ fontWeight: 700 }}>₹{item.price * item.quantity}</span>
+                        {(() => {
+                           const mrp = item.mrp || item.originalPrice || Math.round(item.price / 0.8);
+                           if (mrp > item.price) {
+                              return <span style={{ textDecoration: 'line-through', color: '#94a3b8', fontSize: '0.75rem' }}>₹{mrp * item.quantity}</span>
+                           }
+                           return null;
+                        })()}
+                      </div>
                     </div>
                     <span className="cart-item-size">{formatSize(item.size)}</span>
                     <div className="cart-item-control-row">
@@ -122,15 +137,18 @@ const CartSidebar = () => {
             )}
             
             {tierDiscountAmt > 0 && (
-              <div className="cart-subtotal-row discount-row">
-                <span>🎉 {qtyDiscountPct}% Tier Discount</span>
-                <span className="cart-subtotal-val" style={{ color: '#16a34a', fontWeight: 700 }}>-₹{tierDiscountAmt.toLocaleString('en-IN')}</span>
+              <div className="cart-subtotal-row discount-row" style={{ background: '#f0fdf4', padding: '6px 10px', borderRadius: '4px', margin: '8px 0' }}>
+                <span style={{ color: '#15803d', fontWeight: 600 }}>🎉 Extra {qtyDiscountPct}% OFF!</span>
+                <span className="cart-subtotal-val" style={{ color: '#15803d', fontWeight: 800 }}>-₹{tierDiscountAmt.toLocaleString('en-IN')}</span>
               </div>
             )}
 
-            {/* Nudge to next tier if no b2g1 yet */}
-            {cartQty === 1 && !b2g1Discount && (
-              <p className="cart-tier-nudge">Add 1 more item → get <strong>10% OFF</strong> automatically!</p>
+            {/* Dynamic Nudge to next tier */}
+            {cartQty >= 1 && cartQty < 6 && (
+              <div className="cart-tier-nudge" style={{ background: 'linear-gradient(90deg, rgba(255,126,179,0.1) 0%, rgba(228,66,128,0.1) 100%)', padding: '10px', borderRadius: '8px', margin: '10px 0', fontSize: '0.9rem', color: '#b81c54', textAlign: 'center', fontWeight: 500, border: '1px dashed rgba(228,66,128,0.3)' }}>
+                <span style={{ display: 'block', fontSize: '0.8rem', opacity: 0.9, marginBottom: '4px', fontWeight: 600 }}>✨ 20% Base Discount Already Applied!</span>
+                Add <strong>1 more item</strong> to unlock an <strong>Extra {cartQty === 1 ? '5' : cartQty === 2 ? '10' : cartQty === 3 ? '15' : cartQty === 4 ? '20' : '25'}% OFF!</strong>
+              </div>
             )}
             <div className="cart-subtotal-row total-row" style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #eee' }}>
               <span style={{ fontWeight: 800 }}>Total</span>
