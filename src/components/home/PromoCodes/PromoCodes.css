@@ -2,27 +2,50 @@
   width: 100vw;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
-  background: linear-gradient(135deg, #6d0e2c 0%, #4a0a1e 50%, #871438 100%);
-  background-size: 200% 200%;
-  animation: waveBackground 8s ease infinite;
-  height: 52px;
+  
+  /* Premium Pink Gradient */
+  background: linear-gradient(135deg, #ff7eb3 0%, #ff758c 40%, #e44280 80%, #b81c54 100%);
+  
+  /* Smooth Liquid Wave Mask (Slight Curves) */
+  -webkit-mask-image: 
+    url("data:image/svg+xml,%3Csvg width='40' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 4 C10 4 10 0 20 0 C30 0 30 4 40 4 Z' fill='%23000'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='40' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 C10 0 10 4 20 4 C30 4 30 0 40 0 Z' fill='%23000'/%3E%3C/svg%3E"),
+    linear-gradient(#000, #000);
+  mask-image: 
+    url("data:image/svg+xml,%3Csvg width='40' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 4 C10 4 10 0 20 0 C30 0 30 4 40 4 Z' fill='%23000'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='40' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 C10 0 10 4 20 4 C30 4 30 0 40 0 Z' fill='%23000'/%3E%3C/svg%3E"),
+    linear-gradient(#000, #000);
+    
+  -webkit-mask-size: 40px 4px, 40px 4px, 100% calc(100% - 6px);
+  mask-size: 40px 4px, 40px 4px, 100% calc(100% - 6px);
+  
+  -webkit-mask-position: top center, bottom center, center;
+  mask-position: top center, bottom center, center;
+  
+  -webkit-mask-repeat: repeat-x, repeat-x, no-repeat;
+  mask-repeat: repeat-x, repeat-x, no-repeat;
+
+  /* Soft shadow for depth */
+  filter: drop-shadow(0 6px 12px rgba(228, 66, 128, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  
+  /* Floating Animation */
+  animation: liquidFloat 4s ease-in-out infinite;
+  
+  height: 64px; /* Taller to accommodate smooth waves and text */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
-  border-top: 1px solid rgba(201, 148, 58, 0.3);
-  border-bottom: 1px solid rgba(201, 148, 58, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  margin-top: 0;
-  margin-bottom: 0;
+  overflow: visible; 
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
-@keyframes waveBackground {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes liquidFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
 }
 
 .promo-ribbon-content {
@@ -44,8 +67,8 @@
 }
 
 .promo-ribbon-icon {
-  color: #c9943a;
-  filter: drop-shadow(0 0 8px rgba(201, 148, 58, 0.4));
+  color: #fff;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
   animation: pulseGold 2s infinite;
 }
 
@@ -54,66 +77,85 @@
   align-items: center;
   gap: 15px;
   color: #fff;
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3); /* subtle glow */
 }
 
 .promo-ribbon-label {
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.15rem; /* slightly larger */
+  font-weight: 800; /* bold */
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: #c9943a;
-  background: rgba(201, 148, 58, 0.1);
-  padding: 2px 12px;
-  border: 1px solid rgba(201, 148, 58, 0.3);
-  border-radius: 4px;
+  letter-spacing: 1px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px); /* glass effect on badge */
+  padding: 4px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px; /* pill shape for modern UI */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-shadow: none; /* remove glow from inside badge */
 }
 
 .promo-ribbon-desc {
-  font-size: 1.05rem;
-  font-weight: 500;
-  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: 'Inter', system-ui, sans-serif; /* Modern font instead of Playfair */
   letter-spacing: 0.5px;
 }
 
 .promo-ribbon-code-badge {
   font-size: 0.85rem;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2px 10px;
-  border-radius: 4px;
-  border: 1px dashed rgba(255, 255, 255, 0.3);
-  opacity: 0.9;
+  background: rgba(0, 0, 0, 0.15); /* darker background to contrast white text */
+  backdrop-filter: blur(4px);
+  padding: 3px 12px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  text-shadow: none;
 }
 
 .promo-ribbon-code-badge strong {
-  color: #c9943a;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
 .promo-ribbon-arrow {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  width: 34px;
-  height: 34px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c9943a;
+  color: #fff;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
+  backdrop-filter: blur(4px);
 }
 
 .promo-ribbon-arrow:hover {
-  background: #c9943a;
-  color: #fff;
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(201, 148, 58, 0.5);
+  background: #fff;
+  color: #e44280;
+  transform: scale(1.1) translateX(4px); /* modern subtle float right */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
 }
 
 @keyframes pulseGold {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.8; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
 }
 
 @media (max-width: 768px) {
@@ -121,18 +163,21 @@
     height: auto;
     padding: 10px 1.25rem;
   }
+
   .promo-ribbon-content {
     padding: 0;
     flex-direction: row;
     justify-content: center;
   }
+
   .promo-ribbon-main {
-    flex-direction: column; /* Stack into 2 lines */
+    flex-direction: column;
+    /* Stack into 2 lines */
     gap: 6px;
     align-items: center;
     text-align: center;
   }
-  
+
   /* Line 1: Icon + Label + Code */
   .promo-ribbon-text-container {
     display: flex;
@@ -141,12 +186,12 @@
     gap: 8px;
     justify-content: center;
   }
-  
+
   .promo-ribbon-icon {
     font-size: 1rem;
     margin: 0;
   }
-  
+
   .promo-ribbon-label {
     font-size: 0.7rem;
     padding: 1px 6px;
@@ -172,12 +217,14 @@
   }
 
   .promo-ribbon-arrow {
-    display: none; /* Hide arrow on mobile to save space */
+    display: none;
+    /* Hide arrow on mobile to save space */
   }
 }
 
 @media (max-width: 400px) {
-  .promo-ribbon-label, 
+
+  .promo-ribbon-label,
   .promo-ribbon-code-badge,
   .promo-ribbon-desc {
     font-size: 0.65rem;

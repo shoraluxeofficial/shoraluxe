@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
+import { supabase } from '../../lib/supabase';
 import { getOptimizedImageUrl } from '../../lib/upload';
 import SEO from '../../components/SEO/SEO';
 import './Shop.css';
@@ -45,10 +46,10 @@ const CATEGORY_LABELS = {
 
 const SKIN_TYPES = ['All', 'Dry', 'Oily', 'Normal', 'Acne-Prone', 'Sensitive'];
 
-const HERO_BANNERS = [
-  '/Banners/1000000387.jpg.jpeg',
-  '/Banners/1000000389 (1).jpg.jpeg',
-  '/Banners/WhatsApp_Image_2026-02-07_at_16.20.17_2 (1).webp'
+const HERO_BANNERS_FALLBACK = [
+  'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777266810/zm9bdbhcu1bvqevfs5pb.webp',
+  'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777266873/q2fmnltpi60n9jxbonq1.webp',
+  'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777266920/pwwuztofe8wnpp7zv41j.webp'
 ];
 
 const Shop = () => {
@@ -70,16 +71,38 @@ const Shop = () => {
   const [addedToCart, setAddedToCart] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSlide, setActiveSlide] = useState(0);
+  const [heroBanners, setHeroBanners] = useState(HERO_BANNERS_FALLBACK);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const { data } = await supabase
+          .from('homepage_sections')
+          .select('content')
+          .eq('section_name', 'hero')
+          .single();
+        
+        if (data && data.content && data.content.length > 0) {
+          // Extract just the image URLs
+          const urls = data.content.map(b => b.desktopImg || b.img);
+          setHeroBanners(urls);
+        }
+      } catch (err) {
+        console.error("Failed to fetch shop banners:", err);
+      }
+    };
+    fetchBanners();
+  }, []);
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % HERO_BANNERS.length);
+      setActiveSlide((prev) => (prev + 1) % heroBanners.length);
     }, 5000);
     return () => clearInterval(slideInterval);
-  }, []);
+  }, [heroBanners.length]);
 
-  const nextSlide = () => setActiveSlide((prev) => (prev + 1) % HERO_BANNERS.length);
-  const prevSlide = () => setActiveSlide((prev) => (prev - 1 + HERO_BANNERS.length) % HERO_BANNERS.length);
+  const nextSlide = () => setActiveSlide((prev) => (prev + 1) % heroBanners.length);
+  const prevSlide = () => setActiveSlide((prev) => (prev - 1 + heroBanners.length) % heroBanners.length);
 
   useEffect(() => {
     setActiveConcern(queryParams.get('concern') || 'all');
@@ -249,11 +272,11 @@ const Shop = () => {
       {/* HERO */}
       <header className="shop-hero">
         {/* Slider Backgrounds */}
-        {HERO_BANNERS.map((banner, index) => (
+        {heroBanners.map((banner, index) => (
           <div 
             key={index}
             className={`hero-slide ${index === activeSlide ? 'active' : ''}`}
-            style={{ backgroundImage: `url("${banner}")` }}
+            style={{ backgroundImage: `url("${getOptimizedImageUrl(banner, 'w_1920,q_auto,f_auto')}")` }}
           />
         ))}
 
@@ -267,7 +290,7 @@ const Shop = () => {
 
         {/* Slider Indicators */}
         <div className="hero-slide-indicators">
-          {HERO_BANNERS.map((_, index) => (
+          {heroBanners.map((_, index) => (
             <button
               key={index}
               className={`indicator-dot ${index === activeSlide ? 'active' : ''}`}
