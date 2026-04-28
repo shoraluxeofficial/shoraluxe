@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
 import { supabase } from '../../lib/supabase';
 import { CheckCircle, Truck, ShieldCheck, MapPin, CreditCard, User, Navigation, Tag, X } from 'lucide-react';
@@ -729,10 +729,8 @@ const Checkout = () => {
           .eq('id', appliedPromo.id);
       }
 
-      // Auto redirect after 5 seconds
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 5000);
+      // Optional: don't auto-redirect immediately so they can click tracking.
+      // Removed the 5 second redirect.
 
     } catch (err) {
       console.error("CRITICAL Checkout Error:", err);
@@ -745,11 +743,15 @@ const Checkout = () => {
   if (success) {
     return (
       <div className="checkout-success-container">
-        <CheckCircle size={64} className="success-icon" />
-        <h2>Thank You for Your Order!</h2>
-        <p>Your order <strong>#{orderId?.slice(0, 8).toUpperCase()}</strong> has been placed successfully.</p>
-        <p>You will receive an email confirmation shortly.</p>
-        <em>Redirecting to home page...</em>
+        <CheckCircle size={80} className="success-icon" />
+        <h2>Thank You!</h2>
+        <p>Your order <strong>#{orderId?.slice(0, 8).toUpperCase()}</strong> is confirmed.</p>
+        <p>We've sent a receipt and order details to your email.</p>
+        
+        <div className="success-actions">
+          <Link to="/track-order" className="btn-track">Track Package</Link>
+          <Link to="/shop" className="btn-home">Continue Shopping</Link>
+        </div>
       </div>
     );
   }
