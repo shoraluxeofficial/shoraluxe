@@ -935,40 +935,45 @@ const Checkout = () => {
                 </div>
               </label>
 
-              <label className={`pay-option ${formData.paymentMethod === 'upi_id' ? 'selected' : ''}`}>
-                <input type="radio" name="paymentMethod" value="upi_id" checked={formData.paymentMethod === 'upi_id'} onChange={handleChange} />
-                <div className="pay-details">
-                  <strong>Pay via UPI ID</strong>
-                  <span>Enter your UPI ID — approve on your phone</span>
+              <div className={`pay-option pay-option-upi ${formData.paymentMethod === 'upi_id' ? 'selected' : ''}`}
+                onClick={() => setFormData(p => ({ ...p, paymentMethod: 'upi_id' }))}
+                style={{ flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                  <input type="radio" name="paymentMethod" value="upi_id" checked={formData.paymentMethod === 'upi_id'} onChange={handleChange} style={{ marginRight: '1rem', accentColor: 'var(--button-bg)', transform: 'scale(1.2)' }} />
+                  <div className="pay-details">
+                    <strong>Pay via UPI ID</strong>
+                    <span>Enter your UPI ID — approve on your phone</span>
+                  </div>
                 </div>
-              </label>
 
-              {formData.paymentMethod === 'upi_id' && (
-                <div className="upi-id-input-wrap">
-                  {upiPolling ? (
-                    <div className="upi-polling-box">
-                      <div className="upi-polling-spinner" />
-                      <div>
-                        <p className="upi-polling-title">Waiting for payment approval…</p>
-                        <p className="upi-polling-sub">Check <strong>{upiId}</strong> on your phone and approve the request</p>
-                        <p className="upi-polling-timer">⏱ {Math.floor(upiPolling.secondsLeft / 60)}:{String(upiPolling.secondsLeft % 60).padStart(2, '0')} remaining</p>
+                {formData.paymentMethod === 'upi_id' && (
+                  <div className="upi-id-input-wrap" onClick={e => e.stopPropagation()}>
+                    {upiPolling ? (
+                      <div className="upi-polling-box">
+                        <div className="upi-polling-spinner" />
+                        <div>
+                          <p className="upi-polling-title">Waiting for payment approval…</p>
+                          <p className="upi-polling-sub">Check <strong>{upiId}</strong> on your phone and approve the request</p>
+                          <p className="upi-polling-timer">⏱ {Math.floor(upiPolling.secondsLeft / 60)}:{String(upiPolling.secondsLeft % 60).padStart(2, '0')} remaining</p>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <>
-                      <input
-                        type="text"
-                        className={`upi-id-input ${upiError ? 'error-input' : ''}`}
-                        placeholder="Enter UPI ID (e.g. name@okhdfcbank)"
-                        value={upiId}
-                        onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
-                      />
-                      {upiError && <span className="error-text">{upiError}</span>}
-                      <p className="upi-id-hint">💡 A collect request will be sent to your UPI app. Open it and approve to complete payment.</p>
-                    </>
-                  )}
-                </div>
-              )}
+                    ) : (
+                      <>
+                        <input
+                          type="text"
+                          className={`upi-id-input ${upiError ? 'error-input' : ''}`}
+                          placeholder="Enter UPI ID (e.g. name@okhdfcbank)"
+                          value={upiId}
+                          onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
+                        />
+                        {upiError && <span className="error-text">{upiError}</span>}
+                        <p className="upi-id-hint">💡 A collect request will be sent to your UPI app. Open it and approve to complete payment.</p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
