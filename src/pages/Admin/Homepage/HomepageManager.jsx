@@ -570,6 +570,37 @@ const HomepageManager = () => {
     );
   };
 
+  // ── HELPER: EXTRACT SLIDE TITLE ───────────────────────────────────────────
+  const getSlideTitle = (item) => {
+    if (item.url && item.url.includes('campaign?ids=')) {
+      // 1. Check for explicit text
+      const textMatch = item.url.match(/[?&]text=([^&]+)/);
+      if (textMatch && textMatch[1]) {
+        return decodeURIComponent(textMatch[1]);
+      }
+      // 2. Fallback to product names based on IDs
+      const idsMatch = item.url.match(/[?&]ids=([^&]+)/);
+      if (idsMatch && idsMatch[1]) {
+        const ids = idsMatch[1].split(',');
+        const campaignProducts = products.filter(p => ids.includes(String(p.id)));
+        if (campaignProducts.length > 0) {
+          if (campaignProducts.length === 1) return campaignProducts[0].title.split('|')[0].trim();
+          if (campaignProducts.length === 2) return `${campaignProducts[0].title.split('|')[0].trim()} & ${campaignProducts[1].title.split('|')[0].trim()}`;
+          return `Campaign: ${campaignProducts[0].title.split('|')[0].trim()} & ${campaignProducts.length - 1} more`;
+        }
+      }
+      return 'Custom Campaign Banner';
+    }
+
+    if (item.url && item.url.includes('/product/')) {
+      const prodId = item.url.split('/product/')[1]?.split('?')[0];
+      const prod = products.find(p => String(p.id) === String(prodId));
+      if (prod) return prod.title.split('|')[0].trim();
+    }
+    if (item.alt) return item.alt;
+    return 'Untitled Slide';
+  };
+
   // ── RENDER ITEM CARD ──────────────────────────────────────────────────────
   const renderCard = (item, index) => {
     if (activeTab === 'hero') return (
@@ -601,7 +632,7 @@ const HomepageManager = () => {
             })}
           </div>
           <div className="hm-card-info">
-            <p className="hm-card-title">{item.alt || 'Untitled Slide'}</p>
+            <p className="hm-card-title">{getSlideTitle(item)}</p>
             <span className="hm-chip hm-chip-blue">{item.url || '/shop'}</span>
           </div>
         </div>
