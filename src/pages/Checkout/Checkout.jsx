@@ -181,7 +181,23 @@ const Checkout = () => {
   };
 
   const calculateShipping = async (value, name) => {
+    // Check Admin Settings
+    let chargeDelivery = true;
+    let freeShippingThreshold = 999;
+    try {
+      const saved = localStorage.getItem('shoraluxe_settings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.chargeDelivery === false) chargeDelivery = false;
+        if (parsed.freeShippingThreshold) freeShippingThreshold = Number(parsed.freeShippingThreshold);
+      }
+    } catch (e) {}
 
+    // If global delivery is off or cart total exceeds free shipping threshold
+    if (!chargeDelivery || cartTotal >= freeShippingThreshold) {
+      setShippingFee(0);
+      return;
+    }
 
     const state = name === 'state' ? (value || formData.state) : formData.state;
     const city = name === 'city' ? (value || formData.city) : formData.city;
