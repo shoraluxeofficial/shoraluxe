@@ -28,6 +28,73 @@ const UserLogin = () => {
   const [promoCodes, setPromoCodes] = useState([]);
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
 
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch(API_URL + '/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, passcode: form.passcode }),
+      });
+      
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Login failed');
+      
+      localStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
+      localStorage.setItem('auth_token', data.token);
+      setUser(data.user);
+      showToast('Welcome back to Shoraluxe!');
+      
+      const redirect = new URLSearchParams(location.search).get('redirect');
+      setTimeout(() => navigate(redirect ? `/${redirect}` : '/'), 1500);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      const response = await fetch(API_URL + '/google-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          token: credentialResponse.credential,
+          email: decoded.email,
+          name: decoded.name,
+          image: decoded.picture
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Google verification failed');
+
+      localStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
+      localStorage.setItem('auth_token', data.token);
+      setUser(data.user);
+      showToast(`Welcome, ${data.user.name}!`);
+      
+      const redirect = new URLSearchParams(location.search).get('redirect');
+      setTimeout(() => navigate(redirect ? `/${redirect}` : '/'), 1500);
+    } catch (err) {
+      console.error('Google Auth Error:', err);
+      setError('Google Authentication failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Logout logic
   const handleLogout = () => {
     localStorage.removeItem('shoraluxe_user');
