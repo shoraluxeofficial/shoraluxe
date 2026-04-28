@@ -478,6 +478,25 @@ const Checkout = () => {
           contact: formData.phone
         },
         theme: { color: "#6d0e2c" },
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay via UPI",
+                instruments: [
+                  {
+                    method: "upi",
+                    flows: ["collect", "intent", "qr"]
+                  }
+                ]
+              }
+            },
+            sequence: ["block.upi"],
+            preferences: {
+              show_default_blocks: true
+            }
+          }
+        },
         modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
       };
 
@@ -516,65 +535,6 @@ const Checkout = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const processUpiId = async () => {
-    if (!upiId || !upiId.includes('@')) {
-      setUpiError('Please enter a valid UPI ID (e.g. name@okhdfcbank)');
-      throw new Error('Invalid UPI ID');
-    }
-    setUpiError('');
-
-    const apiUrl = API_URL.replace('/payment', '/payment');
-    const res = await fetch(`${apiUrl}/upi-pay`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: finalTotal,
-        vpa: upiId.trim(),
-        contact: formData.phone,
-        email: formData.email,
-        name: `${formData.firstName} ${formData.lastName}`
-      })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'UPI payment initiation failed');
-
-    const { payment_id } = data;
-    notify(`UPI collect request sent to ${upiId}. Please approve on your phone!`, 'success');
-
-    // Poll for payment status for up to 5 minutes
-    return new Promise((resolve, reject) => {
-      let secondsLeft = 300;
-      setUpiPolling({ secondsLeft, paymentId: payment_id });
-
-      const interval = setInterval(async () => {
-        secondsLeft -= 3;
-        setUpiPolling({ secondsLeft: Math.max(0, secondsLeft), paymentId: payment_id });
-
-        try {
-          const statusRes = await fetch(`${apiUrl}/status/${payment_id}`);
-          const statusData = await statusRes.json();
-
-          if (statusData.status === 'captured' || statusData.status === 'authorized') {
-            clearInterval(interval);
-            setUpiPolling(null);
-            resolve(payment_id);
-          } else if (statusData.status === 'failed') {
-            clearInterval(interval);
-            setUpiPolling(null);
-            reject(new Error('UPI payment was declined by the bank.'));
-          }
-        } catch (err) { /* keep polling */ }
-
-        if (secondsLeft <= 0) {
-          clearInterval(interval);
-          setUpiPolling(null);
-          reject(new Error('UPI payment timed out. Please try again.'));
-        }
-      }, 3000);
-    });
-  };
-
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -583,24 +543,15 @@ const Checkout = () => {
 
     try {
       console.log("Starting Checkout Process...");
-      let paymentId = 'cod_pending';
-      let paymentStatus = 'pending';
-
-      // Live Razorpay Flow
-      if (formData.paymentMethod === 'razorpay') {
-        console.log("Initializing Razorpay Flow...");
-        paymentId = await processRazorpay();
-        if (!paymentId) throw new Error("Payment initialization failed");
-        paymentStatus = 'paid';
+      // ONLY razorpay flow remains since we moved UPI ID into Razorpay modal
+      if (formData.paymentMethod !== 'razorpay') {
+        throw new Error("Invalid payment method selected");
       }
 
-      // UPI ID Direct Flow
-      if (formData.paymentMethod === 'upi_id') {
-        console.log("Initializing UPI ID Flow...");
-        paymentId = await processUpiId();
-        if (!paymentId) throw new Error("UPI payment failed");
-        paymentStatus = 'paid';
-      }
+      console.log("Initiating Razorpay...");
+      const paymentId = await processRazorpay();
+      if (!paymentId) throw new Error("Payment incomplete");
+      const paymentStatus = 'paid';
 
       console.log("Constructing Order Payload...");
       // 1. Construct order payload
@@ -925,75 +876,13 @@ const Checkout = () => {
               <h3>4. Payment Method</h3>
             </div>
             <div className="payment-options">
-              <div className={`pay-option ${formData.paymentMethod === 'razorpay' || formData.paymentMethod === 'upi_id' ? 'selected' : ''}`}
-                style={{ flexDirection: 'column', alignItems: 'flex-start' }}
-              >
-                {/* Header row */}
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}
-                  onClick={() => setFormData(p => ({ ...p, paymentMethod: 'razorpay' }))}
-                  style={{ display: 'flex', alignItems: 'center', width: '100%', cursor: 'pointer' }}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="razorpay"
-                    checked={formData.paymentMethod === 'razorpay' || formData.paymentMethod === 'upi_id'}
-                    onChange={() => setFormData(p => ({ ...p, paymentMethod: 'razorpay' }))}
-                    style={{ marginRight: '1rem', accentColor: 'var(--button-bg)', transform: 'scale(1.2)' }}
-                  />
-                  <div className="pay-details">
-                    <strong>Online Payment</strong>
-                    <span>Cards, Wallets, NetBanking, UPI QR, UPI ID</span>
-                  </div>
+              <label className="pay-option selected">
+                <input type="radio" name="paymentMethod" value="razorpay" checked={true} readOnly />
+                <div className="pay-details">
+                  <strong>Online Payment (Razorpay)</strong>
+                  <span>Cards, Wallets, NetBanking, UPI QR, UPI ID</span>
                 </div>
-
-                {/* Sub-options: shown when razorpay card is selected */}
-                <div className="upi-id-input-wrap">
-                  <div className="upi-suboptions">
-                    <label className={`upi-subopt ${formData.paymentMethod === 'razorpay' ? 'active' : ''}`}>
-                      <input type="radio" name="upi_subopt" value="razorpay"
-                        checked={formData.paymentMethod === 'razorpay'}
-                        onChange={() => setFormData(p => ({ ...p, paymentMethod: 'razorpay' }))}
-                      />
-                      <span>🏦 Cards / Wallets / NetBanking / UPI QR</span>
-                    </label>
-                    <label className={`upi-subopt ${formData.paymentMethod === 'upi_id' ? 'active' : ''}`}>
-                      <input type="radio" name="upi_subopt" value="upi_id"
-                        checked={formData.paymentMethod === 'upi_id'}
-                        onChange={() => setFormData(p => ({ ...p, paymentMethod: 'upi_id' }))}
-                      />
-                      <span>📱 Pay via UPI ID (enter & approve on phone)</span>
-                    </label>
-                  </div>
-
-                  {formData.paymentMethod === 'upi_id' && (
-                    <div style={{ marginTop: '0.75rem' }}>
-                      {upiPolling ? (
-                        <div className="upi-polling-box">
-                          <div className="upi-polling-spinner" />
-                          <div>
-                            <p className="upi-polling-title">Waiting for payment approval…</p>
-                            <p className="upi-polling-sub">Check <strong>{upiId}</strong> on your phone and approve</p>
-                            <p className="upi-polling-timer">⏱ {Math.floor(upiPolling.secondsLeft / 60)}:{String(upiPolling.secondsLeft % 60).padStart(2, '0')} remaining</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <input
-                            type="text"
-                            className={`upi-id-input ${upiError ? 'error-input' : ''}`}
-                            placeholder="Enter UPI ID (e.g. name@okhdfcbank)"
-                            value={upiId}
-                            onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
-                          />
-                          {upiError && <span className="error-text">{upiError}</span>}
-                          <p className="upi-id-hint">💡 A collect request will be sent to your UPI app. Approve it to complete payment.</p>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
+              </label>
             </div>
 
           </div>
