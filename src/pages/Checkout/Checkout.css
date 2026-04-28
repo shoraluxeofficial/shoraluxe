@@ -156,10 +156,41 @@
 
 /* UPI ID Direct Payment */
 .upi-id-input-wrap {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
   border-top: 1px dashed #ddd;
   width: 100%;
+}
+
+.upi-suboptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.upi-subopt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: #555;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.upi-subopt input {
+  accent-color: var(--button-bg);
+}
+
+.upi-subopt.active {
+  background: #fdf4f7;
+  border-color: var(--button-bg);
+  color: var(--button-bg);
+  font-weight: 600;
 }
 
 .upi-id-input {

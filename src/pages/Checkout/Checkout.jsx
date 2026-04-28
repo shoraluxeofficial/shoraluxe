@@ -622,13 +622,11 @@ const Checkout = () => {
         shipping_address: shipping_address,
         total_amount: finalTotal,
         subtotal: cartTotal,
-        shipping_fee: shippingFee,
+        shipping_charge: shippingFee,
         discount_amount: discountAmount,
-        promo_code: appliedPromo?.code || null,
         payment_status: paymentStatus,
         payment_method: formData.paymentMethod,
         order_status: 'placed',
-        cart_items: cartItems,
         razorpay_payment_id: paymentId,
       };
 
@@ -927,54 +925,77 @@ const Checkout = () => {
               <h3>4. Payment Method</h3>
             </div>
             <div className="payment-options">
-              <label className={`pay-option ${formData.paymentMethod === 'razorpay' ? 'selected' : ''}`}>
-                <input type="radio" name="paymentMethod" value="razorpay" checked={formData.paymentMethod === 'razorpay'} onChange={handleChange} />
-                <div className="pay-details">
-                  <strong>Online Payment (Razorpay)</strong>
-                  <span>Cards, Wallets, NetBanking, UPI QR</span>
-                </div>
-              </label>
-
-              <div className={`pay-option pay-option-upi ${formData.paymentMethod === 'upi_id' ? 'selected' : ''}`}
-                onClick={() => setFormData(p => ({ ...p, paymentMethod: 'upi_id' }))}
-                style={{ flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer' }}
+              <div className={`pay-option ${formData.paymentMethod === 'razorpay' || formData.paymentMethod === 'upi_id' ? 'selected' : ''}`}
+                style={{ flexDirection: 'column', alignItems: 'flex-start' }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <input type="radio" name="paymentMethod" value="upi_id" checked={formData.paymentMethod === 'upi_id'} onChange={handleChange} style={{ marginRight: '1rem', accentColor: 'var(--button-bg)', transform: 'scale(1.2)' }} />
+                {/* Header row */}
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                  onClick={() => setFormData(p => ({ ...p, paymentMethod: 'razorpay' }))}
+                  style={{ display: 'flex', alignItems: 'center', width: '100%', cursor: 'pointer' }}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="razorpay"
+                    checked={formData.paymentMethod === 'razorpay' || formData.paymentMethod === 'upi_id'}
+                    onChange={() => setFormData(p => ({ ...p, paymentMethod: 'razorpay' }))}
+                    style={{ marginRight: '1rem', accentColor: 'var(--button-bg)', transform: 'scale(1.2)' }}
+                  />
                   <div className="pay-details">
-                    <strong>Pay via UPI ID</strong>
-                    <span>Enter your UPI ID — approve on your phone</span>
+                    <strong>Online Payment</strong>
+                    <span>Cards, Wallets, NetBanking, UPI QR, UPI ID</span>
                   </div>
                 </div>
 
-                {formData.paymentMethod === 'upi_id' && (
-                  <div className="upi-id-input-wrap" onClick={e => e.stopPropagation()}>
-                    {upiPolling ? (
-                      <div className="upi-polling-box">
-                        <div className="upi-polling-spinner" />
-                        <div>
-                          <p className="upi-polling-title">Waiting for payment approval…</p>
-                          <p className="upi-polling-sub">Check <strong>{upiId}</strong> on your phone and approve the request</p>
-                          <p className="upi-polling-timer">⏱ {Math.floor(upiPolling.secondsLeft / 60)}:{String(upiPolling.secondsLeft % 60).padStart(2, '0')} remaining</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <input
-                          type="text"
-                          className={`upi-id-input ${upiError ? 'error-input' : ''}`}
-                          placeholder="Enter UPI ID (e.g. name@okhdfcbank)"
-                          value={upiId}
-                          onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
-                        />
-                        {upiError && <span className="error-text">{upiError}</span>}
-                        <p className="upi-id-hint">💡 A collect request will be sent to your UPI app. Open it and approve to complete payment.</p>
-                      </>
-                    )}
+                {/* Sub-options: shown when razorpay card is selected */}
+                <div className="upi-id-input-wrap">
+                  <div className="upi-suboptions">
+                    <label className={`upi-subopt ${formData.paymentMethod === 'razorpay' ? 'active' : ''}`}>
+                      <input type="radio" name="upi_subopt" value="razorpay"
+                        checked={formData.paymentMethod === 'razorpay'}
+                        onChange={() => setFormData(p => ({ ...p, paymentMethod: 'razorpay' }))}
+                      />
+                      <span>🏦 Cards / Wallets / NetBanking / UPI QR</span>
+                    </label>
+                    <label className={`upi-subopt ${formData.paymentMethod === 'upi_id' ? 'active' : ''}`}>
+                      <input type="radio" name="upi_subopt" value="upi_id"
+                        checked={formData.paymentMethod === 'upi_id'}
+                        onChange={() => setFormData(p => ({ ...p, paymentMethod: 'upi_id' }))}
+                      />
+                      <span>📱 Pay via UPI ID (enter & approve on phone)</span>
+                    </label>
                   </div>
-                )}
+
+                  {formData.paymentMethod === 'upi_id' && (
+                    <div style={{ marginTop: '0.75rem' }}>
+                      {upiPolling ? (
+                        <div className="upi-polling-box">
+                          <div className="upi-polling-spinner" />
+                          <div>
+                            <p className="upi-polling-title">Waiting for payment approval…</p>
+                            <p className="upi-polling-sub">Check <strong>{upiId}</strong> on your phone and approve</p>
+                            <p className="upi-polling-timer">⏱ {Math.floor(upiPolling.secondsLeft / 60)}:{String(upiPolling.secondsLeft % 60).padStart(2, '0')} remaining</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <input
+                            type="text"
+                            className={`upi-id-input ${upiError ? 'error-input' : ''}`}
+                            placeholder="Enter UPI ID (e.g. name@okhdfcbank)"
+                            value={upiId}
+                            onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
+                          />
+                          {upiError && <span className="error-text">{upiError}</span>}
+                          <p className="upi-id-hint">💡 A collect request will be sent to your UPI app. Approve it to complete payment.</p>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+
           </div>
 
           <button type="submit" className="pay-button" disabled={loading}>
