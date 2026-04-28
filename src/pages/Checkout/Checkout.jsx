@@ -628,7 +628,7 @@ const Checkout = () => {
         payment_status: paymentStatus,
         payment_method: formData.paymentMethod,
         order_status: 'placed',
-        items: cartItems,
+        cart_items: cartItems,
         razorpay_payment_id: paymentId,
       };
 
@@ -717,7 +717,6 @@ const Checkout = () => {
     } catch (err) {
       console.error("CRITICAL Checkout Error:", err);
       notify(`Checkout Error: ${err.message}`, 'error');
-      alert(`Oops! Something went wrong. ${err.message}`);
     } finally {
       setLoading(false);
     }
