@@ -17,6 +17,9 @@ const Checkout = () => {
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
   const [shippingFee, setShippingFee] = useState(60);
+  const [upiId, setUpiId] = useState('');
+  const [upiError, setUpiError] = useState('');
+  const [upiPolling, setUpiPolling] = useState(null); // { secondsLeft, paymentId }
 
   // Promo code state
   const [promoInput, setPromoInput] = useState('');
@@ -118,9 +121,9 @@ const Checkout = () => {
       let query = supabase.from('orders').select('shipping_address');
       if (user.email) query = query.eq('customer_email', user.email);
       else if (user.mobile) query = query.eq('customer_phone', user.mobile.replace('+91', ''));
-      
+
       const { data } = await query.order('placed_at', { ascending: false });
-      
+
       if (data) {
         const uniqueAddresses = [];
         const seen = new Set();
@@ -165,7 +168,7 @@ const Checkout = () => {
       addressType: addr.address_type || 'home'
     }));
     calculateShipping(addr.pincode, 'pincode');
-    
+
     if (isEdit) {
       // Scroll smoothly to the flatNo input
       setTimeout(() => {
@@ -191,7 +194,7 @@ const Checkout = () => {
         if (parsed.chargeDelivery === false) chargeDelivery = false;
         if (parsed.freeShippingThreshold) freeShippingThreshold = Number(parsed.freeShippingThreshold);
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // If global delivery is off or cart total exceeds free shipping threshold
     if (!chargeDelivery || cartTotal >= freeShippingThreshold) {
@@ -513,6 +516,65 @@ const Checkout = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const processUpiId = async () => {
+    if (!upiId || !upiId.includes('@')) {
+      setUpiError('Please enter a valid UPI ID (e.g. name@okhdfcbank)');
+      throw new Error('Invalid UPI ID');
+    }
+    setUpiError('');
+
+    const apiUrl = API_URL.replace('/payment', '/payment');
+    const res = await fetch(`${apiUrl}/upi-pay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: finalTotal,
+        vpa: upiId.trim(),
+        contact: formData.phone,
+        email: formData.email,
+        name: `${formData.firstName} ${formData.lastName}`
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'UPI payment initiation failed');
+
+    const { payment_id } = data;
+    notify(`UPI collect request sent to ${upiId}. Please approve on your phone!`, 'success');
+
+    // Poll for payment status for up to 5 minutes
+    return new Promise((resolve, reject) => {
+      let secondsLeft = 300;
+      setUpiPolling({ secondsLeft, paymentId: payment_id });
+
+      const interval = setInterval(async () => {
+        secondsLeft -= 3;
+        setUpiPolling({ secondsLeft: Math.max(0, secondsLeft), paymentId: payment_id });
+
+        try {
+          const statusRes = await fetch(`${apiUrl}/status/${payment_id}`);
+          const statusData = await statusRes.json();
+
+          if (statusData.status === 'captured' || statusData.status === 'authorized') {
+            clearInterval(interval);
+            setUpiPolling(null);
+            resolve(payment_id);
+          } else if (statusData.status === 'failed') {
+            clearInterval(interval);
+            setUpiPolling(null);
+            reject(new Error('UPI payment was declined by the bank.'));
+          }
+        } catch (err) { /* keep polling */ }
+
+        if (secondsLeft <= 0) {
+          clearInterval(interval);
+          setUpiPolling(null);
+          reject(new Error('UPI payment timed out. Please try again.'));
+        }
+      }, 3000);
+    });
+  };
+
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -529,6 +591,14 @@ const Checkout = () => {
         console.log("Initializing Razorpay Flow...");
         paymentId = await processRazorpay();
         if (!paymentId) throw new Error("Payment initialization failed");
+        paymentStatus = 'paid';
+      }
+
+      // UPI ID Direct Flow
+      if (formData.paymentMethod === 'upi_id') {
+        console.log("Initializing UPI ID Flow...");
+        paymentId = await processUpiId();
+        if (!paymentId) throw new Error("UPI payment failed");
         paymentStatus = 'paid';
       }
 
@@ -723,11 +793,11 @@ const Checkout = () => {
                     <div key={idx} className="saved-addr-card" onClick={() => handleSelectAddress(addr)}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <div className="addr-type-badge" style={{ margin: 0 }}>{addr.address_type || 'Home'}</div>
-                        <button 
-                          className="addr-edit-btn" 
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
-                            handleSelectAddress(addr, true); 
+                        <button
+                          className="addr-edit-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelectAddress(addr, true);
                           }}
                         >
                           Edit
@@ -862,9 +932,44 @@ const Checkout = () => {
                 <input type="radio" name="paymentMethod" value="razorpay" checked={formData.paymentMethod === 'razorpay'} onChange={handleChange} />
                 <div className="pay-details">
                   <strong>Online Payment (Razorpay)</strong>
-                  <span>UPI, Cards, Wallets, NetBanking</span>
+                  <span>Cards, Wallets, NetBanking, UPI QR</span>
                 </div>
               </label>
+
+              <label className={`pay-option ${formData.paymentMethod === 'upi_id' ? 'selected' : ''}`}>
+                <input type="radio" name="paymentMethod" value="upi_id" checked={formData.paymentMethod === 'upi_id'} onChange={handleChange} />
+                <div className="pay-details">
+                  <strong>Pay via UPI ID</strong>
+                  <span>Enter your UPI ID — approve on your phone</span>
+                </div>
+              </label>
+
+              {formData.paymentMethod === 'upi_id' && (
+                <div className="upi-id-input-wrap">
+                  {upiPolling ? (
+                    <div className="upi-polling-box">
+                      <div className="upi-polling-spinner" />
+                      <div>
+                        <p className="upi-polling-title">Waiting for payment approval…</p>
+                        <p className="upi-polling-sub">Check <strong>{upiId}</strong> on your phone and approve the request</p>
+                        <p className="upi-polling-timer">⏱ {Math.floor(upiPolling.secondsLeft / 60)}:{String(upiPolling.secondsLeft % 60).padStart(2, '0')} remaining</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <input
+                        type="text"
+                        className={`upi-id-input ${upiError ? 'error-input' : ''}`}
+                        placeholder="Enter UPI ID (e.g. name@okhdfcbank)"
+                        value={upiId}
+                        onChange={e => { setUpiId(e.target.value); setUpiError(''); }}
+                      />
+                      {upiError && <span className="error-text">{upiError}</span>}
+                      <p className="upi-id-hint">💡 A collect request will be sent to your UPI app. Open it and approve to complete payment.</p>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

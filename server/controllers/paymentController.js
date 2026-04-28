@@ -28,6 +28,68 @@ export const createOrder = async (req, res) => {
     }
 };
 
+// Create a UPI collect payment (customer enters their UPI ID)
+export const createUpiPayment = async (req, res) => {
+    try {
+        const { amount, vpa, contact, email, name } = req.body;
+
+        if (!vpa || !vpa.includes('@')) {
+            return res.status(400).json({ error: 'Invalid UPI ID. Must include @ (e.g. name@upi)' });
+        }
+
+        // Step 1: Create a Razorpay Order
+        const order = await razorpay.orders.create({
+            amount: Math.round(amount * 100),
+            currency: 'INR',
+            receipt: `upi_${Date.now()}`
+        });
+
+        // Step 2: Create a Customer
+        let customer;
+        try {
+            customer = await razorpay.customers.create({ name, email, contact });
+        } catch (e) {
+            // If customer already exists, it's okay
+            customer = { id: null };
+        }
+
+        // Step 3: Create the UPI payment with collect flow
+        const payment = await razorpay.payments.createUpi({
+            amount: Math.round(amount * 100),
+            currency: 'INR',
+            order_id: order.id,
+            method: 'upi',
+            vpa,
+            customer_id: customer.id || undefined,
+            description: 'Shoraluxe Order Payment',
+            email,
+            contact,
+        });
+
+        res.status(200).json({
+            success: true,
+            payment_id: payment.razorpay_payment_id || payment.id,
+            order_id: order.id,
+            next: payment.next || []
+        });
+    } catch (error) {
+        console.error('UPI Payment Create Error:', JSON.stringify(error));
+        res.status(500).json({ error: error.error?.description || error.message || 'UPI payment failed' });
+    }
+};
+
+// Poll payment status
+export const checkPaymentStatus = async (req, res) => {
+    try {
+        const { payment_id } = req.params;
+        const payment = await razorpay.payments.fetch(payment_id);
+        res.status(200).json({ status: payment.status, payment });
+    } catch (error) {
+        console.error('Payment Status Error:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 export const verifyPayment = async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
