@@ -85,10 +85,54 @@ export const ShopProvider = ({ children }) => {
     };
   }, []);
 
-  // Sync cart to LocalStorage
+  // Sync cart to LocalStorage AND Supabase Cloud
   useEffect(() => {
     localStorage.setItem('shoraluxe_cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+
+    // Sync to Cloud if user is logged in
+    const syncCloudCart = async () => {
+      if (user && user.id) {
+        try {
+          // Attempt to update - will fail gracefully if SQL script hasn't been run yet
+          await supabase.from('users').update({ cart_items: cartItems }).eq('id', user.id);
+        } catch (err) {
+          console.error("Cloud cart sync failed:", err);
+        }
+      }
+    };
+
+    const timeout = setTimeout(syncCloudCart, 500);
+    return () => clearTimeout(timeout);
+  }, [cartItems, user]);
+
+  // Fetch Cloud Cart on Login
+  useEffect(() => {
+    const fetchCloudCart = async () => {
+      if (user && user.id) {
+        try {
+          const { data, error } = await supabase.from('users').select('cart_items').eq('id', user.id).single();
+          if (!error && data && data.cart_items && Array.isArray(data.cart_items)) {
+            const cloudCart = data.cart_items;
+            
+            // Merge local and cloud carts
+            setCartItems(prevLocal => {
+              const merged = [...cloudCart];
+              prevLocal.forEach(localItem => {
+                if (!merged.find(c => c.id === localItem.id)) {
+                  merged.push(localItem);
+                }
+              });
+              return merged;
+            });
+          }
+        } catch (err) {
+          console.error("Failed to fetch cloud cart:", err);
+        }
+      }
+    };
+
+    fetchCloudCart();
+  }, [user?.id]);
 
   // Actions: Cart
   const addToCart = (product, quantity = 1) => {

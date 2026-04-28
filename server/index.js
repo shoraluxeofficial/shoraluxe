@@ -50,7 +50,7 @@ try {
 }
 
 app.get('/', (req, res) => {
-    res.send('Shoraluxe Auth API');
+  res.send('Shoraluxe Auth API');
 });
 
 // quick test route
