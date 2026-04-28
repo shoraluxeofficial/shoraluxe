@@ -39,10 +39,14 @@ const UserLogin = () => {
     setError('');
     
     try {
-      const response = await fetch(API_URL + '/login', {
+      const response = await fetch(API_URL + '/email-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email, passcode: form.passcode }),
+        body: JSON.stringify({ 
+          email: form.email, 
+          passcode: form.passcode,
+          deviceId: 'browser'
+        }),
       });
       
       const data = await response.json();
@@ -64,16 +68,14 @@ const UserLogin = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     setLoading(true);
+    setError('');
     try {
-      const decoded = jwtDecode(credentialResponse.credential);
-      const response = await fetch(API_URL + '/google-verify', {
+      const response = await fetch(API_URL + '/oauth-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          token: credentialResponse.credential,
-          email: decoded.email,
-          name: decoded.name,
-          image: decoded.picture
+          credential: credentialResponse.credential,
+          deviceId: 'browser'
         }),
       });
 
