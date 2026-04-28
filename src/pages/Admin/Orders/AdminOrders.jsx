@@ -42,20 +42,70 @@ const AdminOrders = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
+      const updates = { 
+        order_status: newStatus, 
+        updated_at: new Date() 
+      };
+
+      // Add timestamp based on status
+      if (newStatus === 'confirmed') updates.confirmed_at = new Date();
+      if (newStatus === 'shipped') updates.shipped_at = new Date();
+      if (newStatus === 'delivered') updates.delivered_at = new Date();
+
       const { error } = await supabase
         .from('orders')
-        .update({ order_status: newStatus, updated_at: new Date() })
+        .update(updates)
         .eq('id', orderId);
 
       if (error) throw error;
       
-      // Update local state
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, order_status: newStatus } : o));
-      if (selectedOrder && selectedOrder.id === orderId) {
-        setSelectedOrder(prev => ({ ...prev, order_status: newStatus }));
-      }
+      notify(`Order marked as ${newStatus}`, 'success');
+      fetchOrders(); // Refresh list
     } catch (err) {
       notify('Failed to update status: ' + err.message, 'error');
+    }
+  };
+
+  const syncShiprocket = async (order) => {
+    try {
+      notify('Syncing with Shiprocket...', 'info');
+      const SHIPPING_API_URL = import.meta.env.PROD ? '/api/shipping' : 'http://localhost:5000/api/shipping';
+      
+      const response = await fetch(`${SHIPPING_API_URL}/sync-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order.id,
+          firstName: order.customer_name.split(' ')[0],
+          lastName: order.customer_name.split(' ')[1] || '',
+          email: order.customer_email,
+          phone: order.customer_phone,
+          address1: order.shipping_address.address_line1,
+          flatNo: order.shipping_address.flat_no,
+          city: order.shipping_address.city,
+          state: order.shipping_address.state,
+          pincode: order.shipping_address.pincode,
+          amount: order.total_amount,
+          paymentMethod: order.payment_method,
+          // We'll need to fetch items if we want a perfect sync, 
+          // but for now, we pass a dummy item to create the order record.
+          items: [{ title: 'Order Fulfillment', price: order.total_amount, quantity: 1 }]
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await supabase.from('orders').update({
+          shiprocket_order_id: String(data.shiprocket_order_id),
+          order_status: 'confirmed'
+        }).eq('id', order.id);
+        notify('Successfully synced with Shiprocket!', 'success');
+        fetchOrders();
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (err) {
+      notify('Shiprocket Sync Failed: ' + err.message, 'error');
     }
   };
 
@@ -250,6 +300,9 @@ const AdminOrders = () => {
               <div className="modal-section">
                 <h4>Order Status Actions</h4>
                 <div className="status-actions">
+                  {!selectedOrder.shiprocket_order_id && (
+                    <button onClick={() => syncShiprocket(selectedOrder)} className="btn-sync">Sync to Shiprocket</button>
+                  )}
                   <button onClick={() => updateOrderStatus(selectedOrder.id, 'confirmed')} disabled={selectedOrder.order_status === 'confirmed'} className="btn-confirm">Mark Confirmed</button>
                   <button onClick={() => updateOrderStatus(selectedOrder.id, 'shipped')} disabled={selectedOrder.order_status === 'shipped'} className="btn-ship">Mark Shipped</button>
                   <button onClick={() => updateOrderStatus(selectedOrder.id, 'delivered')} disabled={selectedOrder.order_status === 'delivered'} className="btn-deliver">Mark Delivered</button>

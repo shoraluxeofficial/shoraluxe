@@ -107,10 +107,10 @@ const MyOrders = () => {
                     </div>
                   )}
 
-                  {order.tracking_awb && (
+                  {order.shiprocket_awb && (
                     <div className="mo-awb">
-                      <span><strong>Tracking AWB:</strong> {order.tracking_awb}</span>
-                      <a href={`https://shiprocket.co/tracking/${order.tracking_awb}`} target="_blank" rel="noreferrer" style={{color: '#6d0e2c', fontWeight: 600, textDecoration: 'none'}}>Track Package &rarr;</a>
+                      <span><strong>Tracking AWB:</strong> {order.shiprocket_awb}</span>
+                      <a href={order.tracking_url || `https://shiprocket.co/tracking/${order.shiprocket_awb}`} target="_blank" rel="noreferrer" style={{color: '#6d0e2c', fontWeight: 600, textDecoration: 'none'}}>Track Package &rarr;</a>
                     </div>
                   )}
                 </div>
