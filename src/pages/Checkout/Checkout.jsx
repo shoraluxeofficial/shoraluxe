@@ -483,7 +483,7 @@ const Checkout = () => {
                 instruments: [
                   {
                     method: "upi",
-                    flows: ["collect", "qr", "intent"]
+                    flows: ["collect", "intent"]
                   }
                 ]
               }
