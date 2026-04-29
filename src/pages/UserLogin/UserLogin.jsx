@@ -1,32 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Phone, User, ShoppingBag, CheckCircle, Mail, RotateCcw, Lock, ArrowRight, X, AlertCircle, Truck, Eye, EyeOff, Fingerprint } from 'lucide-react';
+import { Phone, User, ShoppingBag, CheckCircle, Mail, RotateCcw, Lock, ArrowRight, X, AlertCircle, Truck, Eye, EyeOff } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useShop } from '../../context/ShopContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
-import { startRegistration, startAuthentication } from '@simplewebauthn/browser';
 import './UserLogin.css';
-// Firebase removed per request: no client-side Firebase usage
 
 const API_URL = import.meta.env.PROD ? '/api/auth' : 'http://localhost:5000/api/auth';
 
 const UserLogin = () => {
-  // We switched to email-based login + Google OAuth. Phone OTP flow is commented out below.
   const [isSignup, setIsSignup] = useState(false);
   const [showPasscode, setShowPasscode] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', mobile: '', passcode: '', confirmPasscode: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [toast, setToast] = useState(null); // { message: '', type: 'success' }
-  const [userId, setUserId] = useState(null);
+  const [toast, setToast] = useState(null); 
 
   const { user, setUser } = useShop();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [promoCodes, setPromoCodes] = useState([]);
-  const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -84,77 +77,6 @@ const UserLogin = () => {
     }
   };
 
-  const handleBiometricLogin = async () => {
-    if (!form.email) {
-      setError('Please enter your email first to use biometrics.');
-      return;
-    }
-    setLoading(true);
-    setError('');
-    try {
-      const optionsRes = await fetch(API_URL + '/bio-auth-options', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email }),
-      });
-      const options = await optionsRes.json();
-      if (!optionsRes.ok) throw new Error(options.error);
-
-      const authResponse = await startAuthentication(options);
-
-      const verifyRes = await fetch(API_URL + '/bio-auth-verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email, authResponse, deviceId: 'browser' }),
-      });
-      const data = await verifyRes.json();
-      if (!verifyRes.ok) throw new Error(data.error);
-
-      localStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
-      localStorage.setItem('auth_token', data.token);
-      setUser(data.user);
-      showToast('Login successful with Biometrics!');
-      
-      const redirect = new URLSearchParams(location.search).get('redirect');
-      setTimeout(() => navigate(redirect ? `/${redirect}` : '/'), 1500);
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'Biometric login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRegisterBiometric = async () => {
-    setLoading(true);
-    try {
-      const optionsRes = await fetch(API_URL + '/bio-register-options', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id }),
-      });
-      const options = await optionsRes.json();
-      if (!optionsRes.ok) throw new Error(options.error);
-
-      const registrationResponse = await startRegistration(options);
-
-      const verifyRes = await fetch(API_URL + '/bio-register-verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, registrationResponse }),
-      });
-      const data = await verifyRes.json();
-      if (!verifyRes.ok) throw new Error(data.error);
-
-      showToast('Fingerprint registered successfully!');
-    } catch (err) {
-      console.error(err);
-      alert(err.message || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGoogleSuccess = async (credentialResponse) => {
     setLoading(true);
     setError('');
@@ -186,7 +108,6 @@ const UserLogin = () => {
     }
   };
 
-  // Logout logic
   const handleLogout = () => {
     localStorage.removeItem('shoraluxe_user');
     localStorage.removeItem('auth_token');
@@ -195,11 +116,8 @@ const UserLogin = () => {
     setTimeout(() => navigate('/'), 1000);
   };
 
-  // ... (rest of the component logic)
-
   return (
     <div className="user-login-page">
-      {/* TOAST NOTIFICATION */}
       {toast && (
         <div className="shora-toast anim-fade-in shadow-lg">
           <div className="toast-content">
@@ -259,10 +177,6 @@ const UserLogin = () => {
                   </Link>
                 </div>
 
-                <button onClick={handleRegisterBiometric} className="ul-bio-btn register-bio" disabled={loading}>
-                  <Fingerprint size={18} /> {loading ? 'Registering...' : 'Link Fingerprint / PIN'}
-                </button>
-
                 <button onClick={handleLogout} className="ul-submit logout-btn">
                   Logout
                 </button>
@@ -274,7 +188,6 @@ const UserLogin = () => {
                 </div>
               </div>
             ) : (
-              /* EMAIL LOGIN - Primary flow */
               <div className="anim-slide-in">
                 <h2>{isSignup ? 'Create Account' : 'Sign in'}</h2>
                 <p className="form-sub">
@@ -349,12 +262,6 @@ const UserLogin = () => {
                   <button type="submit" className="ul-submit" disabled={loading || form.passcode.length !== 6}>
                     {loading ? 'Processing...' : (isSignup ? 'Create My Account' : 'Sign in with PIN')}
                   </button>
-
-                  {!isSignup && (
-                    <button type="button" onClick={handleBiometricLogin} className="ul-bio-btn">
-                      <Fingerprint size={18} /> Use Fingerprint / Phone PIN
-                    </button>
-                  )}
                 </form>
 
                 <div className="ul-toggle-mode">
@@ -375,7 +282,7 @@ const UserLogin = () => {
                     onSuccess={handleGoogleSuccess}
                     onError={() => {
                       console.log('Login Failed');
-                      setError('Google Login popup closed or failed. (Check console for origin errors)');
+                      setError('Google Login failed.');
                     }}
                     useOneTap
                     theme="outline"
