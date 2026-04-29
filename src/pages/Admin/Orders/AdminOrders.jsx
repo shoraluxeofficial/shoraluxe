@@ -9,6 +9,7 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterPayment, setFilterPayment] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [cancelConfirm, setCancelConfirm] = useState(null);
@@ -16,7 +17,7 @@ const AdminOrders = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, [filterStatus]);
+  }, [filterStatus, filterPayment]);
 
   const fetchOrders = async () => {
     try {
@@ -28,6 +29,10 @@ const AdminOrders = () => {
 
       if (filterStatus !== 'all') {
         query = query.eq('order_status', filterStatus);
+      }
+
+      if (filterPayment !== 'all') {
+        query = query.eq('payment_status', filterPayment);
       }
 
       const { data, error } = await query;
@@ -211,12 +216,17 @@ const AdminOrders = () => {
           </div>
           <div className="admin-filters">
             <select className="admin-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-              <option value="all">All Statuses</option>
+              <option value="all">Order Status: All</option>
               <option value="placed">Newly Placed</option>
               <option value="confirmed">Confirmed</option>
               <option value="shipped">Shipped</option>
               <option value="delivered">Delivered</option>
               <option value="cancelled">Cancelled</option>
+            </select>
+            <select className="admin-select" value={filterPayment} onChange={(e) => setFilterPayment(e.target.value)}>
+              <option value="all">Payment: All</option>
+              <option value="paid">Paid Only</option>
+              <option value="pending">Pending Only</option>
             </select>
           </div>
         </div>
@@ -248,7 +258,12 @@ const AdminOrders = () => {
                       <span>{order.customer_phone}</span>
                     </div>
                   </td>
-                  <td>{new Date(order.placed_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</td>
+                  <td className="date-cell">
+                    <div className="date-stack">
+                      <strong>{new Date(order.placed_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</strong>
+                      <span>{new Date(order.placed_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                    </div>
+                  </td>
                   <td><strong>₹{order.total_amount.toLocaleString('en-IN')}</strong></td>
                   <td>
                     <span className={`pay-badge ${order.payment_status}`}>

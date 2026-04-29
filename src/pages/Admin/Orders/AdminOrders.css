@@ -43,6 +43,24 @@
   border-radius: 4px;
 }
 
+.date-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.date-stack strong {
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.date-stack span {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+
 .t-action-btn.view {
   display: inline-flex;
   align-items: center;
