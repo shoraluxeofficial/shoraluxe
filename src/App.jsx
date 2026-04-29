@@ -38,11 +38,95 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Simple loading skeleton for fast page transitions
+// Premium Page Loader for Shoraluxe
 const PageLoader = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width: '100vw', backgroundColor: '#fafaf8' }}>
-    <div style={{ width: '40px', height: '40px', border: '3px solid #f0f0f0', borderTopColor: '#6d0e2c', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+  <div className="premium-loader-container">
+    <div className="loader-content">
+      <div className="logo-pulse-wrap">
+        <img src="/Logo.png" alt="Shoraluxe Logo" className="loader-logo" />
+        <div className="loader-ring"></div>
+      </div>
+      <div className="loader-text">
+        <span className="shimmer-text">SHORALUXE</span>
+      </div>
+    </div>
+    <style>{`
+      .premium-loader-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+      .logo-pulse-wrap {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .loader-logo {
+        width: 80px;
+        height: auto;
+        z-index: 2;
+        animation: logoPulse 2s ease-in-out infinite;
+      }
+      .loader-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid transparent;
+        border-top-color: #731930; /* Burgundy */
+        border-right-color: #c5a028; /* Gold */
+        border-radius: 50%;
+        animation: spinRing 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        box-shadow: 0 0 15px rgba(115, 25, 48, 0.1);
+      }
+      .loader-text {
+        font-family: 'Playfair Display', serif;
+        font-size: 14px;
+        letter-spacing: 6px;
+        color: #731930;
+        font-weight: 700;
+        opacity: 0.8;
+      }
+      .shimmer-text {
+        background: linear-gradient(
+          to right, 
+          #731930 20%, 
+          #c5a028 40%, 
+          #c5a028 60%, 
+          #731930 80%
+        );
+        background-size: 200% auto;
+        color: transparent;
+        -webkit-background-clip: text;
+        background-clip: text;
+        animation: textShimmer 3s linear infinite;
+      }
+      @keyframes logoPulse {
+        0%, 100% { transform: scale(0.95); opacity: 0.8; }
+        50% { transform: scale(1.05); opacity: 1; }
+      }
+      @keyframes spinRing {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes textShimmer {
+        to { background-position: 200% center; }
+      }
+    `}</style>
   </div>
 );
 
