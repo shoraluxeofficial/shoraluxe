@@ -983,17 +983,35 @@ const Checkout = () => {
               <label className="pay-option selected">
                 <input type="radio" name="paymentMethod" value="razorpay" checked={true} readOnly />
                 <div className="pay-details">
-                  <strong>Online Payment (Razorpay)</strong>
-                  <span>Cards, Wallets, NetBanking, UPI QR, UPI ID</span>
+                  <strong>Online Payment</strong>
+                  <span>UPI &nbsp;·&nbsp; Cards &nbsp;·&nbsp; Netbanking &nbsp;·&nbsp; Wallets</span>
+                </div>
+                <div className="rzp-badge">
+                  <img src="https://razorpay.com/favicon.png" alt="Razorpay" width="16" height="16" />
+                  <span>Razorpay</span>
                 </div>
               </label>
 
+              {/* UPI ID Quick Pay Section */}
               <div className="upi-id-input-section">
-                <p className="upi-input-label">Pay faster with UPI ID (Optional)</p>
+                <div className="upi-section-header">
+                  <div className="upi-logo-row">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1200px-UPI-Logo-vector.svg.png"
+                      alt="UPI"
+                      className="upi-logo-img"
+                    />
+                    <div>
+                      <p className="upi-input-label">Enter UPI ID</p>
+                      <p className="upi-sub-desc">Get a payment request on your UPI app</p>
+                    </div>
+                  </div>
+                </div>
                 <div className="upi-input-wrapper">
+                  <span className="upi-at-icon">@</span>
                   <input
                     type="text"
-                    placeholder="Enter UPI ID (e.g. name@okicici)"
+                    placeholder="yourname@bankname"
                     value={upiId}
                     onChange={(e) => setUpiId(e.target.value)}
                     className="upi-id-field"
@@ -1004,7 +1022,7 @@ const Checkout = () => {
                     </button>
                   )}
                 </div>
-                <p className="upi-hint">Enter your UPI ID to receive a payment request on your app</p>
+                <p className="upi-hint">Supported: GPay, PhonePe, Paytm, BHIM &amp; all UPI apps</p>
               </div>
             </div>
 
