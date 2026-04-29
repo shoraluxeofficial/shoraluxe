@@ -487,4 +487,10 @@
     font-size: 0.7rem;
     border-radius: 8px;
   }
+
+  /* Hide benefit and offer text for a cleaner mobile look */
+  .product-desc-row,
+  .product-offer-text {
+    display: none !important;
+  }
 }
