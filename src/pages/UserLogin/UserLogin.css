@@ -238,6 +238,70 @@
   color: #6d0e2c;
 }
 
+.ul-eye-btn {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.ul-eye-btn:hover {
+  color: #6d0e2c;
+}
+
+.ul-bio-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: #fff;
+  color: #374151;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ul-bio-btn:hover {
+  border-color: #6d0e2c;
+  background: #fffafa;
+  color: #6d0e2c;
+}
+
+.ul-toggle-mode {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.ul-toggle-mode button {
+  background: none;
+  border: none;
+  color: #6d0e2c;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 4px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.2s;
+}
+
+.ul-toggle-mode button:hover {
+  color: #5a0c24;
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .user-brand-panel {
