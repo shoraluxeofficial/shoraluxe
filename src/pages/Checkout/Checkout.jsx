@@ -547,7 +547,19 @@ const Checkout = () => {
         throw new Error("Invalid payment method selected");
       }
 
-      // 1. Construct Main Order Payload (Minimum Required Fields to Avoid Errors)
+      // 1. Initiate Razorpay FIRST
+      console.log("Initiating Razorpay Payment Modal...");
+      let paymentId;
+      try {
+        paymentId = await processRazorpay();
+      } catch (payErr) {
+        console.warn("Payment modal closed or failed:", payErr.message);
+        throw payErr; // Stop here, nothing is saved to DB
+      }
+
+      if (!paymentId) throw new Error("Payment incomplete");
+
+      // 2. Construct Main Order Payload (NOW WITH PAID STATUS)
       const shipping_address = {
         flat_no: formData.flatNo,
         address_line1: formData.address1,
@@ -560,7 +572,6 @@ const Checkout = () => {
       };
 
       const orderPayload = {
-        // user_id removed temporarily to avoid "Foreign Key Constraint" errors
         customer_name: `${formData.firstName} ${formData.lastName}`,
         customer_phone: formData.phone,
         customer_email: formData.email,
@@ -569,30 +580,30 @@ const Checkout = () => {
         shipping_charge: shippingFee, 
         discount_amount: discountAmount, 
         total_amount: finalTotal,
-        payment_status: 'pending',
+        payment_status: 'paid', // Saved directly as paid
         payment_method: formData.paymentMethod,
-        order_status: 'placed', // Changed from 'pending_payment' to 'placed' to pass DB check
-        razorpay_order_id: null,
-        razorpay_payment_id: null,
+        order_status: 'placed',
+        razorpay_order_id: null, // Will be filled if needed, or left null
+        razorpay_payment_id: paymentId,
       };
 
-      console.log("Creating Order record in Supabase...");
+      // 3. Create Order record in Supabase (ONLY ON SUCCESS)
+      console.log("Payment Success! Saving Order to Supabase...");
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert([orderPayload])
         .select();
 
       if (orderError) {
-        console.error("Order Insert Error:", orderError);
-        // If it still fails, it's likely a missing column or a different constraint
-        throw new Error(`Database Error: ${orderError.message}`);
+        console.error("CRITICAL: Payment successful but DB save failed:", orderError);
+        throw new Error(`Database Error: ${orderError.message}. Please contact support with Payment ID: ${paymentId}`);
       }
 
       const dbOrderId = orderData[0].id;
       setOrderId(dbOrderId);
 
-      // 2. Insert Items into order_items table
-      console.log("Creating Order Items records...");
+      // 4. Insert Items into order_items table
+      console.log("Saving Order Items...");
       try {
         const orderItemsPayload = cartItems.map(item => ({
           order_id: dbOrderId,
@@ -613,49 +624,18 @@ const Checkout = () => {
         console.error("Failed to map/save items:", itemErr);
       }
 
-      // 3. Initiate Razorpay
-      console.log("Initiating Razorpay Payment Modal...");
-      let paymentId;
-      try {
-        paymentId = await processRazorpay();
-      } catch (payErr) {
-        console.warn("Payment modal closed or failed:", payErr.message);
-        // If payment fails, the order stays as 'placed' with 'pending' payment
-        throw payErr;
-      }
-
-      if (!paymentId) throw new Error("Payment incomplete");
-
-      // 4. Update Status on Success
-      console.log("Payment Success! Updating order status...");
-      const { error: updateError } = await supabase
-        .from('orders')
-        .update({
-          payment_status: 'paid',
-          razorpay_payment_id: paymentId
-        })
-        .eq('id', dbOrderId);
-
-      if (updateError) console.error("Status Update Error:", updateError);
-
       console.log("Order SUCCESS! ID:", dbOrderId);
 
       // 5. Deduct Stock from Supabase
       console.log("Deducting inventory counts...");
       for (const item of cartItems) {
-        // Find the base numeric ID (handle variants like 5-QUJDSE)
         const baseProductId = typeof item.id === 'string' ? item.id.split('-')[0] : item.id;
-
-        // Use RPC or decrement logic. Since we know the item.id/baseProductId, 
-        // we fetch the current stock first or use an update with logic.
-        // For simplicity with standard JS client:
         const { data: pData } = await supabase.from('products').select('stock, category, benefits').eq('id', baseProductId).single();
         if (pData) {
           const currentStock = pData.stock || 0;
           const newStock = Math.max(0, currentStock - item.quantity);
           await supabase.from('products').update({ stock: newStock }).eq('id', baseProductId);
 
-          // NEW: If this is a combo, decrement the stock of its individual bundled items
           if (pData.category === 'combo' && pData.benefits) {
             try {
               let benefitsObj = typeof pData.benefits === 'string' ? JSON.parse(pData.benefits) : pData.benefits;
@@ -665,7 +645,6 @@ const Checkout = () => {
                   const { data: bData } = await supabase.from('products').select('stock').eq('id', bundledBaseId).single();
                   if (bData) {
                     const bCurrentStock = bData.stock || 0;
-                    // Subtract the quantity of combos purchased from the single item's stock
                     const bNewStock = Math.max(0, bCurrentStock - item.quantity);
                     await supabase.from('products').update({ stock: bNewStock }).eq('id', bundledBaseId);
                   }
@@ -678,7 +657,7 @@ const Checkout = () => {
         }
       }
 
-      // 4. Sync Order to Shiprocket
+      // 6. Sync Order to Shiprocket
       console.log("Syncing Order to Shiprocket...");
       try {
         const shippingApiUrl = API_URL.replace('/payment', '/shipping');
