@@ -41,6 +41,17 @@ export const sendOrderConfirmationEmail = async (email, orderDetails) => {
                     <p><strong>Total Amount:</strong> ₹${orderDetails.total_amount}</p>
                     <p><strong>Payment Method:</strong> ${orderDetails.payment_method}</p>
                 </div>
+
+                <div style="background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+                    <h4 style="margin-top: 0; color: #92400e;">How to track your order:</h4>
+                    <p style="margin-bottom: 5px;">You can track your package directly on our website anytime using:</p>
+                    <ul style="padding-left: 20px; margin-top: 5px;">
+                        <li><strong>Order ID:</strong> #${orderDetails.id.slice(0, 8).toUpperCase()}</li>
+                        <li><strong>Your Email:</strong> ${email}</li>
+                        <li><strong>Your Registered Phone Number</strong></li>
+                    </ul>
+                    <p style="margin-top: 10px;"><a href="https://shoraluxe.vercel.app/track-order" style="color: #6d0e2c; font-weight: bold;">Click here to Track Order →</a></p>
+                </div>
                 
                 <p>We will notify you again once your order ships.</p>
                 <p>Best regards,<br>The Shoraluxe Team</p>
@@ -79,6 +90,17 @@ export const sendStatusUpdateEmail = async (email, orderDetails, status) => {
                 <h2 style="color: #6d0e2c;">Order Status Update</h2>
                 <p>Hi ${orderDetails.customer_name},</p>
                 <p>${message}</p>
+                
+                <div style="background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+                    <h4 style="margin-top: 0; color: #92400e;">Tracking Details:</h4>
+                    <ul style="padding-left: 20px; margin-top: 5px;">
+                        <li><strong>Website Order ID:</strong> #${orderDetails.id.slice(0, 8).toUpperCase()}</li>
+                        <li><strong>Your Email / Phone</strong></li>
+                        ${orderDetails.shiprocket_awb ? `<li><strong>Shiprocket AWB:</strong> ${orderDetails.shiprocket_awb}</li>` : ''}
+                    </ul>
+                    <p style="margin-top: 10px;"><a href="https://shoraluxe.vercel.app/track-order" style="color: #6d0e2c; font-weight: bold;">Track on our website →</a></p>
+                </div>
+
                 <br>
                 <p>Best regards,<br>The Shoraluxe Team</p>
             </div>
