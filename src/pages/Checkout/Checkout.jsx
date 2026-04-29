@@ -17,9 +17,7 @@ const Checkout = () => {
   const [success, setSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
   const [shippingFee, setShippingFee] = useState(60);
-  const [upiId, setUpiId] = useState('');
-  const [upiError, setUpiError] = useState('');
-  const [upiPolling, setUpiPolling] = useState(null); // { secondsLeft, paymentId }
+
 
   // Promo code state
   const [promoInput, setPromoInput] = useState('');
@@ -528,8 +526,6 @@ const Checkout = () => {
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
           contact: formData.phone,
-          // If UPI ID entered: pre-select UPI and pre-fill the VPA in the modal
-          ...(upiId ? { method: "upi", vpa: upiId } : {})
         },
         theme: { color: "#6d0e2c" },
         modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
@@ -969,40 +965,6 @@ const Checkout = () => {
                 </div>
               </label>
 
-              {/* UPI ID Quick Pay Section */}
-              <div className="upi-id-input-section">
-                <div className="upi-section-header">
-                  <div className="upi-logo-row">
-                    <svg className="upi-logo-img" viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg" height="28" width="70">
-                      <rect width="60" height="24" rx="4" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1"/>
-                      <text x="5" y="17" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="13" fill="#6d0e2c">UPI</text>
-                      <circle cx="47" cy="8" r="4" fill="#00b9f1"/>
-                      <circle cx="53" cy="8" r="4" fill="#eb2027"/>
-                      <path d="M47 12 Q50 16 53 12" stroke="#6d0e2c" strokeWidth="1.5" fill="none"/>
-                    </svg>
-                    <div>
-                      <p className="upi-input-label">Enter UPI ID</p>
-                      <p className="upi-sub-desc">Get a payment request on your UPI app</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="upi-input-wrapper">
-                  <span className="upi-at-icon">@</span>
-                  <input
-                    type="text"
-                    placeholder="yourname@bankname"
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    className="upi-id-field"
-                  />
-                  {upiId && (
-                    <button type="button" className="clear-upi" onClick={() => setUpiId('')}>
-                      <X size={14} />
-                    </button>
-                  )}
-                </div>
-                <p className="upi-hint">Supported: GPay, PhonePe, Paytm, BHIM &amp; all UPI apps</p>
-              </div>
             </div>
 
           </div>
