@@ -285,7 +285,7 @@ export const getRegistrationOptions = async (req, res) => {
             attestationType: 'none',
             authenticatorSelection: {
                 residentKey: 'preferred',
-                userVerification: 'preferred',
+                userVerification: 'required',
                 authenticatorAttachment: 'platform',
             },
         });
@@ -347,7 +347,7 @@ export const getAuthenticationOptions = async (req, res) => {
                 type: 'public-key',
                 transports: ['internal'],
             })),
-            userVerification: 'preferred',
+            userVerification: 'required',
         });
 
         await supabase.from('users').update({ current_challenge: options.challenge }).eq('id', user.id);
