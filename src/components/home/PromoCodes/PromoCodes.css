@@ -3,8 +3,8 @@
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   
-  /* Premium Pink Gradient */
-  background: linear-gradient(135deg, #ff7eb3 0%, #ff758c 40%, #e44280 80%, #b81c54 100%);
+  /* Premium Solid Maroon */
+  background: #e9305f;
   
   /* Smooth Liquid Wave Mask (Slight Curves) */
   -webkit-mask-image: 
@@ -26,7 +26,7 @@
   mask-repeat: repeat-x, repeat-x, no-repeat;
 
   /* Soft shadow for depth */
-  filter: drop-shadow(0 6px 12px rgba(228, 66, 128, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  filter: drop-shadow(0 6px 12px rgba(223, 49, 93, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
   
   /* Floating Animation */
   animation: liquidFloat 4s ease-in-out infinite;
@@ -136,7 +136,7 @@
 
 .promo-ribbon-arrow:hover {
   background: #fff;
-  color: #e44280;
+  color: #731930;
   transform: scale(1.1) translateX(4px); /* modern subtle float right */
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
 }
