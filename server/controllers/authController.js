@@ -280,7 +280,7 @@ export const getRegistrationOptions = async (req, res) => {
         const options = await generateRegistrationOptions({
             rpName: 'Shoraluxe',
             rpID,
-            userID: user.id,
+            userID: Buffer.from(user.id),
             userName: user.email,
             attestationType: 'none',
             authenticatorSelection: {
