@@ -501,7 +501,6 @@ const Checkout = () => {
 
     return new Promise((resolve, reject) => {
 
-      // ── Shared verify helper ────────────────────────────────
       const verifyAndResolve = async (response) => {
         const verifyRes = await fetch(`${API_URL}/verify-payment`, {
           method: 'POST',
@@ -516,73 +515,36 @@ const Checkout = () => {
         }
       };
 
-      if (upiId) {
-        // ── PATH A: Direct UPI Collect — NO modal ──────────────
-        // Sends a collect request straight to customer's UPI app
-        console.log("UPI Collect flow → VPA:", upiId);
-
-        const rzpCollect = new window.Razorpay({
-          key: "rzp_live_SdI77DtoaiASCw",
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: "Shoraluxe",
-          description: "Premium Skincare Purchase",
-          image: "/logo.png",
-          order_id: orderData.id,
-          theme: { color: "#6d0e2c" },
-        });
-
-        rzpCollect.on('payment.success', function (response) {
-          verifyAndResolve(response);
-        });
-
-        rzpCollect.on('payment.error', function (response) {
-          const msg = response.error?.description || "UPI payment failed. Check your UPI ID.";
-          notify(msg, 'error');
-          reject(new Error(msg));
-        });
-
-        rzpCollect.createPayment({
-          amount: orderData.amount,
-          currency: orderData.currency,
+      const rzp = new window.Razorpay({
+        key: "rzp_live_SdI77DtoaiASCw",
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Shoraluxe",
+        description: "Premium Skincare Purchase",
+        image: "/logo.png",
+        order_id: orderData.id,
+        handler: verifyAndResolve,
+        prefill: {
+          name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
           contact: formData.phone,
-          order_id: orderData.id,
-          method: "upi",
-          vpa: upiId,
-          "_[flow]": "collect"
-        });
+          // If UPI ID entered: pre-select UPI and pre-fill the VPA in the modal
+          ...(upiId ? { method: "upi", vpa: upiId } : {})
+        },
+        theme: { color: "#6d0e2c" },
+        modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
+      });
 
-      } else {
-        // ── PATH B: Normal Razorpay Modal ───────────────────────
-        const rzpModal = new window.Razorpay({
-          key: "rzp_live_SdI77DtoaiASCw",
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: "Shoraluxe",
-          description: "Premium Skincare Purchase",
-          image: "/logo.png",
-          order_id: orderData.id,
-          handler: verifyAndResolve,
-          prefill: {
-            name: `${formData.firstName} ${formData.lastName}`,
-            email: formData.email,
-            contact: formData.phone,
-          },
-          theme: { color: "#6d0e2c" },
-          modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
-        });
+      rzp.on('payment.failed', function (response) {
+        console.error("RAZORPAY ERROR:", response.error);
+        notify(`Payment failed: ${response.error.description || 'Please try again.'}`, 'error');
+        reject(new Error(`Razorpay Error: ${response.error.description}`));
+      });
 
-        rzpModal.on('payment.failed', function (response) {
-          console.error("RAZORPAY INTERNAL ERROR:", response.error);
-          alert(`Razorpay Error: ${response.error.reason || response.error.description || 'Unknown'}\nStep: ${response.error.step}`);
-          reject(new Error(`Razorpay Error: ${response.error.description}`));
-        });
-
-        rzpModal.open();
-      }
+      rzp.open();
     });
   };
+
 
   const validate = () => {
     const newErrors = {};
@@ -1011,11 +973,13 @@ const Checkout = () => {
               <div className="upi-id-input-section">
                 <div className="upi-section-header">
                   <div className="upi-logo-row">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1200px-UPI-Logo-vector.svg.png"
-                      alt="UPI"
-                      className="upi-logo-img"
-                    />
+                    <svg className="upi-logo-img" viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg" height="28" width="70">
+                      <rect width="60" height="24" rx="4" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1"/>
+                      <text x="5" y="17" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="13" fill="#6d0e2c">UPI</text>
+                      <circle cx="47" cy="8" r="4" fill="#00b9f1"/>
+                      <circle cx="53" cy="8" r="4" fill="#eb2027"/>
+                      <path d="M47 12 Q50 16 53 12" stroke="#6d0e2c" strokeWidth="1.5" fill="none"/>
+                    </svg>
                     <div>
                       <p className="upi-input-label">Enter UPI ID</p>
                       <p className="upi-sub-desc">Get a payment request on your UPI app</p>
