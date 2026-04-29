@@ -83,9 +83,10 @@ const VideoBanners = () => {
               muted 
               loop 
               playsInline 
+              preload="metadata"
               className="banner-video"
             >
-              <source src={getOptimizedImageUrl(v.url)} type="video/mp4" />
+              <source src={v.url} type="video/mp4" />
             </video>
             <div className="video-overlay">
               <div className="video-info">

@@ -99,9 +99,12 @@ const Hero = () => {
                     />
                   ) : (
                     <img 
-                      src={getOptimizedImageUrl(banner.desktopImg || banner.img, 'w_2560,q_auto,f_auto')} 
+                      src={getOptimizedImageUrl(banner.desktopImg || banner.img, 'w_2000,q_auto,f_auto')} 
                       alt={banner.alt} 
                       className="hero-slide-img" 
+                      loading={index === 0 ? "eager" : "lazy"}
+                      fetchpriority={index === 0 ? "high" : "auto"}
+                      decoding="async"
                     />
                   )}
                 </div>
@@ -119,6 +122,9 @@ const Hero = () => {
                       src={getOptimizedImageUrl(banner.mobileImg || banner.img, 'w_1080,q_auto,f_auto')} 
                       alt={banner.alt} 
                       className="hero-slide-img" 
+                      loading={index === 0 ? "eager" : "lazy"}
+                      fetchpriority={index === 0 ? "high" : "auto"}
+                      decoding="async"
                     />
                   )}
                 </div>
