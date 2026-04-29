@@ -529,43 +529,6 @@ const Checkout = () => {
           ...(upiId ? { method: "upi", vpa: upiId } : {})
         },
         theme: { color: "#6d0e2c" },
-        // Dynamic config: UPI ID entered → force UPI Collect only mode
-        // No UPI ID → show full payment modal with all options
-        ...(upiId ? {
-          config: {
-            display: {
-              blocks: {
-                upi_collect: {
-                  name: "Pay via UPI ID",
-                  instruments: [{ method: "upi", flows: ["collect"] }]
-                }
-              },
-              sequence: ["block.upi_collect"],
-              preferences: {
-                show_default_blocks: false  // 🔑 KEY FIX: hide all other payment methods
-              }
-            }
-          }
-        } : {
-          config: {
-            display: {
-              blocks: {
-                upi_collect: {
-                  name: "Pay via UPI ID",
-                  instruments: [{ method: "upi", flows: ["collect"] }]
-                },
-                upi_others: {
-                  name: "UPI Apps / QR",
-                  instruments: [{ method: "upi", flows: ["intent", "qr"] }]
-                }
-              },
-              sequence: ["block.upi_collect", "block.upi_others"],
-              preferences: {
-                show_default_blocks: true
-              }
-            }
-          }
-        }),
         modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
       };
 
