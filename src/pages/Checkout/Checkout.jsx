@@ -500,53 +500,87 @@ const Checkout = () => {
     if (!orderRes.ok) throw new Error(orderData.error || "Failed to create Razorpay order");
 
     return new Promise((resolve, reject) => {
-      const options = {
-        key: "rzp_live_SdI77DtoaiASCw",
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Shoraluxe",
-        description: "Premium Skincare Purchase",
-        image: "/logo.png",
-        order_id: orderData.id,
-        handler: async (response) => {
-          // 3. Verify Payment on Server
-          const verifyRes = await fetch(`${API_URL}/verify-payment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(response)
-          });
-          const verifyData = await verifyRes.json();
-          if (verifyData.success) {
-            resolve(response.razorpay_payment_id);
-          } else {
-            reject(new Error("Payment verification failed"));
-          }
-        },
-        prefill: {
-          name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-          contact: formData.phone,
-          ...(upiId ? { method: "upi", vpa: upiId } : {})
-        },
-        theme: { color: "#6d0e2c" },
-        modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
+
+      // ── Shared verify helper ────────────────────────────────
+      const verifyAndResolve = async (response) => {
+        const verifyRes = await fetch(`${API_URL}/verify-payment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(response)
+        });
+        const verifyData = await verifyRes.json();
+        if (verifyData.success) {
+          resolve(response.razorpay_payment_id);
+        } else {
+          reject(new Error("Payment verification failed"));
+        }
       };
 
-      console.log("Razorpay Options generated:", {
-        key: options.key,
-        order_id: options.order_id,
-        amount: options.amount
-      });
+      if (upiId) {
+        // ── PATH A: Direct UPI Collect — NO modal ──────────────
+        // Sends a collect request straight to customer's UPI app
+        console.log("UPI Collect flow → VPA:", upiId);
 
-      const rzp = new window.Razorpay(options);
+        const rzpCollect = new window.Razorpay({
+          key: "rzp_live_SdI77DtoaiASCw",
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: "Shoraluxe",
+          description: "Premium Skincare Purchase",
+          image: "/logo.png",
+          order_id: orderData.id,
+          theme: { color: "#6d0e2c" },
+        });
 
-      rzp.on('payment.failed', function (response) {
-        console.error("RAZORPAY INTERNAL ERROR:", response.error);
-        alert(`Razorpay Error: ${response.error.reason || response.error.description || 'Unknown'}\nStep: ${response.error.step}`);
-        reject(new Error(`Razorpay Error: ${response.error.description}`));
-      });
+        rzpCollect.on('payment.success', function (response) {
+          verifyAndResolve(response);
+        });
 
-      rzp.open();
+        rzpCollect.on('payment.error', function (response) {
+          const msg = response.error?.description || "UPI payment failed. Check your UPI ID.";
+          notify(msg, 'error');
+          reject(new Error(msg));
+        });
+
+        rzpCollect.createPayment({
+          amount: orderData.amount,
+          currency: orderData.currency,
+          email: formData.email,
+          contact: formData.phone,
+          order_id: orderData.id,
+          method: "upi",
+          vpa: upiId,
+          "_[flow]": "collect"
+        });
+
+      } else {
+        // ── PATH B: Normal Razorpay Modal ───────────────────────
+        const rzpModal = new window.Razorpay({
+          key: "rzp_live_SdI77DtoaiASCw",
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: "Shoraluxe",
+          description: "Premium Skincare Purchase",
+          image: "/logo.png",
+          order_id: orderData.id,
+          handler: verifyAndResolve,
+          prefill: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            contact: formData.phone,
+          },
+          theme: { color: "#6d0e2c" },
+          modal: { ondismiss: () => reject(new Error("Payment cancelled by user")) }
+        });
+
+        rzpModal.on('payment.failed', function (response) {
+          console.error("RAZORPAY INTERNAL ERROR:", response.error);
+          alert(`Razorpay Error: ${response.error.reason || response.error.description || 'Unknown'}\nStep: ${response.error.step}`);
+          reject(new Error(`Razorpay Error: ${response.error.description}`));
+        });
+
+        rzpModal.open();
+      }
     });
   };
 
