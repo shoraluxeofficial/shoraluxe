@@ -9,7 +9,7 @@ import {
     verifyAuthenticationResponse 
 } from '@simplewebauthn/server';
 
-const rpID = 'shoraluxe.vercel.app';
+const rpID = 'shoraluxe.com';
 const origin = `https://${rpID}`;
 
 export const registerUser = async (req, res) => {

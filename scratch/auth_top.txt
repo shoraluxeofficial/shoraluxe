@@ -1,0 +1,17 @@
+import { supabase } from '../config/db.js';
+import { hashPasscode, verifyPasscode, generateToken, validatePasscodeFormat } from '../utils/authUtils.js';
+import { sendEmailOTP } from '../utils/emailUtils.js';
+import { sendSMS_OTP } from '../utils/smsUtils.js';
+import { 
+    generateRegistrationOptions, 
+    verifyRegistrationResponse, 
+    generateAuthenticationOptions, 
+    verifyAuthenticationResponse 
+} from '@simplewebauthn/server';
+
+const rpID = 'shoraluxe.com';
+const origin = `https://${rpID}`;
+
+export const registerUser = async (req, res) => {
+    try {
+        const { name, mobile, email, initialPasscode } = req.body;
