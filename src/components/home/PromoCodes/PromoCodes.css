@@ -3,8 +3,8 @@
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   
-  /* Premium Solid Maroon */
-  background: #e9305f;
+  /* Premium Satin Red Gradient (Matches Top Bar) */
+  background: var(--satin-red-bg);
   
   /* Smooth Liquid Wave Mask (Slight Curves) */
   -webkit-mask-image: 
@@ -26,7 +26,7 @@
   mask-repeat: repeat-x, repeat-x, no-repeat;
 
   /* Soft shadow for depth */
-  filter: drop-shadow(0 6px 12px rgba(223, 49, 93, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  filter: drop-shadow(0 6px 12px rgba(115, 25, 48, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
   
   /* Floating Animation */
   animation: liquidFloat 4s ease-in-out infinite;
@@ -85,7 +85,8 @@
   font-weight: 800; /* bold */
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #fff;
+  color: var(--brand-gold);
+  text-shadow: 0 0 8px rgba(197, 160, 40, 0.3);
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(4px); /* glass effect on badge */
   padding: 4px 14px;
@@ -113,7 +114,7 @@
 }
 
 .promo-ribbon-code-badge strong {
-  color: #fff;
+  color: var(--brand-gold);
   font-weight: 800;
   letter-spacing: 0.5px;
 }
