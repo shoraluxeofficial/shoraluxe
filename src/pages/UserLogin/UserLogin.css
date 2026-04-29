@@ -302,6 +302,19 @@
   color: #5a0c24;
 }
 
+.register-bio {
+  margin-bottom: 1.5rem;
+  background: #fdf2f8;
+  border-color: #fbcfe8;
+  color: #9d174d;
+}
+
+.register-bio:hover {
+  background: #fce7f3;
+  border-color: #f472b6;
+  color: #be185d;
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .user-brand-panel {

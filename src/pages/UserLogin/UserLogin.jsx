@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti';
 import { useShop } from '../../context/ShopContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { startRegistration, startAuthentication } from '@simplewebauthn/browser';
 import './UserLogin.css';
 // Firebase removed per request: no client-side Firebase usage
 
@@ -84,9 +85,74 @@ const UserLogin = () => {
   };
 
   const handleBiometricLogin = async () => {
-    showToast('Biometric authentication starting...', 'info');
-    // We will implement WebAuthn logic here in the next step
-    setError('Biometric hardware not detected or setup incomplete.');
+    if (!form.email) {
+      setError('Please enter your email first to use biometrics.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      const optionsRes = await fetch(API_URL + '/bio-auth-options', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email }),
+      });
+      const options = await optionsRes.json();
+      if (!optionsRes.ok) throw new Error(options.error);
+
+      const authResponse = await startAuthentication(options);
+
+      const verifyRes = await fetch(API_URL + '/bio-auth-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, authResponse, deviceId: 'browser' }),
+      });
+      const data = await verifyRes.json();
+      if (!verifyRes.ok) throw new Error(data.error);
+
+      localStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
+      localStorage.setItem('auth_token', data.token);
+      setUser(data.user);
+      showToast('Login successful with Biometrics!');
+      
+      const redirect = new URLSearchParams(location.search).get('redirect');
+      setTimeout(() => navigate(redirect ? `/${redirect}` : '/'), 1500);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Biometric login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegisterBiometric = async () => {
+    setLoading(true);
+    try {
+      const optionsRes = await fetch(API_URL + '/bio-register-options', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id }),
+      });
+      const options = await optionsRes.json();
+      if (!optionsRes.ok) throw new Error(options.error);
+
+      const registrationResponse = await startRegistration(options);
+
+      const verifyRes = await fetch(API_URL + '/bio-register-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, registrationResponse }),
+      });
+      const data = await verifyRes.json();
+      if (!verifyRes.ok) throw new Error(data.error);
+
+      showToast('Fingerprint registered successfully!');
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -192,6 +258,10 @@ const UserLogin = () => {
                     <span>Track Order</span>
                   </Link>
                 </div>
+
+                <button onClick={handleRegisterBiometric} className="ul-bio-btn register-bio" disabled={loading}>
+                  <Fingerprint size={18} /> {loading ? 'Registering...' : 'Link Fingerprint / PIN'}
+                </button>
 
                 <button onClick={handleLogout} className="ul-submit logout-btn">
                   Logout

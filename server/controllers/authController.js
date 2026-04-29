@@ -2,6 +2,15 @@ import { supabase } from '../config/db.js';
 import { hashPasscode, verifyPasscode, generateToken, validatePasscodeFormat } from '../utils/authUtils.js';
 import { sendEmailOTP } from '../utils/emailUtils.js';
 import { sendSMS_OTP } from '../utils/smsUtils.js';
+import { 
+    generateRegistrationOptions, 
+    verifyRegistrationResponse, 
+    generateAuthenticationOptions, 
+    verifyAuthenticationResponse 
+} from '@simplewebauthn/server';
+
+const rpID = 'shoraluxe.vercel.app';
+const origin = `https://${rpID}`;
 
 export const registerUser = async (req, res) => {
     try {
@@ -255,6 +264,128 @@ export const verifyOTP = async (req, res) => {
         }
         await supabase.from('otp_logs').delete().eq('id', log.id);
         res.status(200).json({ message: 'Mobile verified' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// --- BIOMETRIC (WEBAUTHN) LOGIC ---
+
+export const getRegistrationOptions = async (req, res) => {
+    const { userId } = req.body;
+    try {
+        const { data: user } = await supabase.from('users').select('*').eq('id', userId).single();
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const options = await generateRegistrationOptions({
+            rpName: 'Shoraluxe',
+            rpID,
+            userID: user.id,
+            userName: user.email,
+            attestationType: 'none',
+            authenticatorSelection: {
+                residentKey: 'preferred',
+                userVerification: 'preferred',
+                authenticatorAttachment: 'platform',
+            },
+        });
+
+        // Store challenge temporarily in user record or a separate table
+        await supabase.from('users').update({ current_challenge: options.challenge }).eq('id', user.id);
+
+        res.json(options);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const verifyRegistration = async (req, res) => {
+    const { userId, registrationResponse } = req.body;
+    try {
+        const { data: user } = await supabase.from('users').select('*').eq('id', userId).single();
+        const expectedChallenge = user.current_challenge;
+
+        const verification = await verifyRegistrationResponse({
+            response: registrationResponse,
+            expectedChallenge,
+            expectedOrigin: origin,
+            expectedRPID: rpID,
+        });
+
+        if (verification.verified) {
+            const { registrationInfo } = verification;
+            const { credentialPublicKey, credentialID, counter } = registrationInfo;
+
+            await supabase.from('user_credentials').insert([{
+                user_id: user.id,
+                credential_id: Buffer.from(credentialID).toString('base64url'),
+                public_key: Buffer.from(credentialPublicKey).toString('base64url'),
+                counter,
+            }]);
+
+            res.json({ verified: true });
+        } else {
+            res.status(400).json({ error: 'Registration failed' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getAuthenticationOptions = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const { data: user } = await supabase.from('users').select('*').eq('email', email).single();
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const { data: credentials } = await supabase.from('user_credentials').select('*').eq('user_id', user.id);
+
+        const options = await generateAuthenticationOptions({
+            rpID,
+            allowCredentials: credentials.map(c => ({
+                id: c.credential_id,
+                type: 'public-key',
+                transports: ['internal'],
+            })),
+            userVerification: 'preferred',
+        });
+
+        await supabase.from('users').update({ current_challenge: options.challenge }).eq('id', user.id);
+
+        res.json(options);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const verifyAuthentication = async (req, res) => {
+    const { email, authResponse, deviceId } = req.body;
+    try {
+        const { data: user } = await supabase.from('users').select('*').eq('email', email).single();
+        const { data: cred } = await supabase.from('user_credentials')
+            .select('*')
+            .eq('credential_id', authResponse.id)
+            .single();
+
+        const verification = await verifyAuthenticationResponse({
+            response: authResponse,
+            expectedChallenge: user.current_challenge,
+            expectedOrigin: origin,
+            expectedRPID: rpID,
+            authenticator: {
+                credentialID: Buffer.from(cred.credential_id, 'base64url'),
+                credentialPublicKey: Buffer.from(cred.public_key, 'base64url'),
+                counter: parseInt(cred.counter),
+            },
+        });
+
+        if (verification.verified) {
+            await supabase.from('user_credentials').update({ counter: verification.authenticationInfo.newCounter }).eq('id', cred.id);
+            const token = generateToken(user.id, deviceId);
+            res.json({ verified: true, token, user: { id: user.id, name: user.name, email: user.email } });
+        } else {
+            res.status(400).json({ error: 'Authentication failed' });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

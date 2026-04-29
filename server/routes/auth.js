@@ -6,7 +6,11 @@ import {
     forgotPasscodeSendEmailOTP,
     resetPasscode,
     sendOTP,
-    verifyOTP
+    verifyOTP,
+    getRegistrationOptions,
+    verifyRegistration,
+    getAuthenticationOptions,
+    verifyAuthentication
 } from '../controllers/authController.js';
 
 const router = express.Router();
@@ -24,6 +28,12 @@ router.post('/reset-passcode', resetPasscode);
 import { loginWithEmail, oauthLogin, oauthStart, oauthCallback } from '../controllers/authController.js';
 router.post('/email-login', loginWithEmail);
 router.post('/oauth-login', oauthLogin);
+
+// Biometric Routes
+router.post('/bio-register-options', getRegistrationOptions);
+router.post('/bio-register-verify', verifyRegistration);
+router.post('/bio-auth-options', getAuthenticationOptions);
+router.post('/bio-auth-verify', verifyAuthentication);
 
 // Server-side Google OAuth (start + callback)
 router.get('/oauth/google', oauthStart);
