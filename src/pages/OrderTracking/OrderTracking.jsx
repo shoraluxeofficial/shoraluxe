@@ -34,21 +34,52 @@ const OrderTracking = () => {
     setOrder(null);
 
     try {
-      // Build a smart query: 
-      // 1. Search ID by ilike (matches partial UUID)
-      // 2. Search Phone by eq (exact) or ilike
-      // 3. Search Email by ilike
-      const { data, error: err } = await supabase
+      // Build a smart query:
+      // 1. First, try to match by Phone or Email which are text fields
+      let queryBuilder = supabase
         .from('orders')
         .select(`
           *,
           items:order_items(*)
         `)
-        .or(`id.ilike.%${searchTerm}%,customer_phone.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`)
+        .or(`customer_phone.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`);
+
+      // 2. If the searchTerm looks like a UUID (36 chars) or a partial ID (8+ chars), 
+      // we try to match the ID. Since Supabase .or() doesn't support casting UUID to text,
+      // we handle ID search as a fallback if the first query doesn't yield results,
+      // or we try an exact match if it's a valid UUID.
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(searchTerm);
+      
+      let { data, error: err } = await queryBuilder
         .order('placed_at', { ascending: false })
         .limit(1);
 
-      if (err) throw err;
+      if (err) {
+        console.warn('Initial search failed, trying exact ID match...', err);
+        // If the .or failed (likely due to searchTerm in columns), fallback to just ID if valid
+        if (isUUID) {
+          const { data: idData, error: idErr } = await supabase
+            .from('orders')
+            .select(`*, items:order_items(*)`)
+            .eq('id', searchTerm)
+            .single();
+          
+          if (idErr) throw idErr;
+          data = idData ? [idData] : [];
+        } else {
+          throw err;
+        }
+      }
+
+      // 3. If no result from phone/email, and it's a valid UUID, try one more time for ID
+      if ((!data || data.length === 0) && isUUID) {
+        const { data: idData } = await supabase
+          .from('orders')
+          .select(`*, items:order_items(*)`)
+          .eq('id', searchTerm)
+          .single();
+        if (idData) data = [idData];
+      }
 
       if (!data || data.length === 0) {
         setError('No order found. Please check your Order ID, Email, or Phone Number.');
@@ -57,7 +88,7 @@ const OrderTracking = () => {
       }
     } catch (err) {
       console.error('Search Error:', err);
-      setError('Something went wrong. Please try again.');
+      setError('Order not found or query error. Please check your details.');
     } finally {
       setLoading(false);
     }
