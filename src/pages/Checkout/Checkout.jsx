@@ -87,8 +87,23 @@ const Checkout = () => {
     }
 
     if (appliedPromo.discount_type === 'percentage') {
-      return Math.round(cartSubtotal * appliedPromo.discount_value / 100);
+      const category = appliedPromo.applicable_category || 'all';
+      let eligibleSubtotal = 0;
+
+      cartItems.forEach(item => {
+        const isCombo = item.category === 'combo' || item.title.toLowerCase().includes('combo');
+        
+        // Skip combos for 'all' category to prevent double-discounting
+        if (category === 'all' && isCombo) return;
+
+        if (category === 'all' || (category === 'combo' && isCombo) || item.title.toLowerCase().includes(category.toLowerCase())) {
+          eligibleSubtotal += item.price * item.quantity;
+        }
+      });
+
+      return Math.round(eligibleSubtotal * appliedPromo.discount_value / 100);
     } else {
+      // Fixed amount discount: also limit to eligible items if needed, or just cap at subtotal
       return Math.min(appliedPromo.discount_value, cartSubtotal);
     }
   };
@@ -112,7 +127,11 @@ const Checkout = () => {
     // Fetch available promos
     const fetchPromos = async () => {
       const { data } = await supabase.from('promo_codes').select('*').eq('is_active', true);
-      setAvailablePromos(data || []);
+      // Filter out combo-specific codes as they aren't needed
+      const filtered = (data || []).filter(p => 
+        !p.applicable_category?.toLowerCase().includes('combo')
+      );
+      setAvailablePromos(filtered);
     };
     fetchPromos();
 
@@ -280,9 +299,11 @@ const Checkout = () => {
     // B2G1: Buy 2 Get 1 — need at least 3 total items of the applicable category
     if (data.promo_type === 'b2g1') {
       const category = data.applicable_category || 'all';
-      const eligibleItems = category === 'all'
-        ? cartItems
-        : cartItems.filter(item => item.title.toLowerCase().includes(category.toLowerCase()));
+      const eligibleItems = cartItems.filter(item => {
+        const isCombo = item.category === 'combo' || item.title.toLowerCase().includes('combo');
+        if (isCombo) return false; // Combos never count for B2G1
+        return category === 'all' || item.title.toLowerCase().includes(category.toLowerCase());
+      });
 
       const eligibleQty = eligibleItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -301,6 +322,12 @@ const Checkout = () => {
       }
     }
 
+    if (data.applicable_category?.toLowerCase().includes('combo')) {
+      setPromoError('Promo codes are not available for Combos as they already have built-in discounts.');
+      setPromoLoading(false);
+      return;
+    }
+
     // NEW USER: check they have no prior orders
     if (data.promo_type === 'new_user') {
       if (!user?.id) {
@@ -314,6 +341,22 @@ const Checkout = () => {
       if (count > 0) {
         setPromoError('This offer is only valid for first-time customers.');
         setAppliedPromo(null); setPromoLoading(false); return;
+      }
+    }
+
+    // Category Validation for standard discounts (Percentage/Fixed)
+    if (data.applicable_category && data.applicable_category !== 'all') {
+      const cat = data.applicable_category.toLowerCase();
+      const hasEligible = cartItems.some(item => {
+        const isCombo = item.category === 'combo' || item.title.toLowerCase().includes('combo');
+        if (cat === 'combo') return isCombo;
+        return item.title.toLowerCase().includes(cat);
+      });
+
+      if (!hasEligible) {
+        setPromoError(`This code is only valid for ${data.applicable_category} items.`);
+        setPromoLoading(false);
+        return;
       }
     }
 
@@ -577,8 +620,8 @@ const Checkout = () => {
         customer_email: formData.email,
         shipping_address: shipping_address,
         subtotal: cartTotal,
-        shipping_charge: shippingFee, 
-        discount_amount: discountAmount, 
+        shipping_charge: shippingFee,
+        discount_amount: discountAmount,
         total_amount: finalTotal,
         payment_status: 'paid', // Saved directly as paid
         payment_method: formData.paymentMethod,
@@ -664,34 +707,34 @@ const Checkout = () => {
         const syncResponse = await fetch(`${shippingApiUrl}/sync-order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-              ...orderPayload, 
-              orderId: dbOrderId, 
-              items: cartItems,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              email: formData.email,
-              phone: formData.phone,
-              address1: formData.address1,
-              flatNo: formData.flatNo,
-              city: formData.city,
-              state: formData.state,
-              pincode: formData.pincode,
-              amount: finalTotal,
-              paymentMethod: formData.paymentMethod
+          body: JSON.stringify({
+            ...orderPayload,
+            orderId: dbOrderId,
+            items: cartItems,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            address1: formData.address1,
+            flatNo: formData.flatNo,
+            city: formData.city,
+            state: formData.state,
+            pincode: formData.pincode,
+            amount: finalTotal,
+            paymentMethod: formData.paymentMethod
           })
         });
-        
+
         const syncData = await syncResponse.json();
-        
+
         if (syncData.success) {
-            console.log("Updating Supabase with Shiprocket tracking...");
-            const updates = { shiprocket_order_id: String(syncData.shiprocket_order_id) };
-            if (syncData.awb_code) {
-                updates.shiprocket_awb = syncData.awb_code;
-                updates.tracking_url = `https://shiprocket.co/tracking/${syncData.awb_code}`;
-            }
-            await supabase.from('orders').update(updates).eq('id', dbOrderId);
+          console.log("Updating Supabase with Shiprocket tracking...");
+          const updates = { shiprocket_order_id: String(syncData.shiprocket_order_id) };
+          if (syncData.awb_code) {
+            updates.shiprocket_awb = syncData.awb_code;
+            updates.tracking_url = `https://shiprocket.co/tracking/${syncData.awb_code}`;
+          }
+          await supabase.from('orders').update(updates).eq('id', dbOrderId);
         }
       } catch (err) {
         console.error("Shiprocket sync failed (but order was placed successfully):", err);
@@ -727,7 +770,7 @@ const Checkout = () => {
         <h2>Thank You!</h2>
         <p>Your order <strong>#{orderId?.slice(0, 8).toUpperCase()}</strong> is confirmed.</p>
         <p>We've sent a receipt and order details to your email.</p>
-        
+
         <div className="success-actions">
           <Link to="/track-order" className="btn-track">Track Package</Link>
           <Link to="/shop" className="btn-home">Continue Shopping</Link>
