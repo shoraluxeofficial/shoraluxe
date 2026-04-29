@@ -21,26 +21,42 @@ const OrderTracking = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    let searchTerm = query.trim();
+    if (!searchTerm) return;
+
+    // Remove '#' if user typed it at the start
+    if (searchTerm.startsWith('#')) {
+      searchTerm = searchTerm.substring(1);
+    }
+
     setLoading(true);
     setError('');
     setOrder(null);
 
     try {
+      // Build a smart query: 
+      // 1. Search ID by ilike (matches partial UUID)
+      // 2. Search Phone by eq (exact) or ilike
+      // 3. Search Email by ilike
       const { data, error: err } = await supabase
         .from('orders')
-        .select('*')
-        .or(`id.ilike.%${query.trim()}%,customer_phone.eq.${query.trim()},customer_email.ilike.%${query.trim()}%`)
+        .select(`
+          *,
+          items:order_items(*)
+        `)
+        .or(`id.ilike.%${searchTerm}%,customer_phone.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`)
         .order('placed_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
 
-      if (err || !data) {
-        setError('No order found. Please check your Order ID or phone number.');
+      if (err) throw err;
+
+      if (!data || data.length === 0) {
+        setError('No order found. Please check your Order ID, Email, or Phone Number.');
       } else {
-        setOrder(data);
+        setOrder(data[0]);
       }
-    } catch {
+    } catch (err) {
+      console.error('Search Error:', err);
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
