@@ -533,20 +533,16 @@ const Checkout = () => {
         config: {
           display: {
             blocks: {
-              upi_qr: {
-                name: "UPI QR",
-                instruments: [{ method: "upi", flows: ["qr"] }]
-              },
-              upi_intent: {
-                name: "UPI Apps",
-                instruments: [{ method: "upi", flows: ["intent"] }]
-              },
               upi_collect: {
-                name: "UPI ID",
+                name: "Pay via UPI ID",
                 instruments: [{ method: "upi", flows: ["collect"] }]
+              },
+              upi_others: {
+                name: "UPI Apps / QR",
+                instruments: [{ method: "upi", flows: ["intent", "qr"] }]
               }
             },
-            sequence: ["block.upi_qr", "block.upi_intent", "block.upi_collect"],
+            sequence: ["block.upi_collect", "block.upi_others"],
             preferences: {
               show_default_blocks: true
             }
