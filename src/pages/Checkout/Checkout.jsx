@@ -698,6 +698,7 @@ const Checkout = () => {
       }
 
       setSuccess(true);
+      window.scrollTo(0, 0); // Auto-scroll to top to see success message
       clearCart();
 
       // Increment promo code usage count
