@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
 import { supabase } from '../../lib/supabase';
-import { CheckCircle, Truck, ShieldCheck, MapPin, CreditCard, User, Navigation, Tag, X } from 'lucide-react';
+import { CheckCircle, Truck, ShieldCheck, MapPin, CreditCard, User, Navigation, Tag, X, Trash2 } from 'lucide-react';
 import { useNotify } from '../../components/common/Notification/Notification';
 import SEO from '../../components/SEO/SEO';
 import './Checkout.css';
 
 const Checkout = () => {
-  const { cartItems, cartTotal, cartSubtotal, cartDiscount, qtyDiscountPct, cartQty, b2g1Discount, tierDiscountAmt, setIsCartOpen, user, clearCart } = useShop();
+  const { cartItems, cartTotal, cartSubtotal, cartDiscount, qtyDiscountPct, cartQty, b2g1Discount, tierDiscountAmt, setIsCartOpen, user, clearCart, removeFromCart } = useShop();
   const navigate = useNavigate();
   const { notify } = useNotify();
   const API_URL = import.meta.env.PROD ? '/api/payment' : 'http://localhost:5000/api/payment';
@@ -159,7 +159,14 @@ const Checkout = () => {
       }
     };
     if (user) fetchSavedAddresses();
-  }, [cartItems, setIsCartOpen, navigate, success, user]);
+  }, [setIsCartOpen, navigate, user]);
+
+  useEffect(() => {
+    // Redirect if cart is empty
+    if (cartItems.length === 0 && !success) {
+      navigate('/');
+    }
+  }, [cartItems, success, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -1000,7 +1007,17 @@ const Checkout = () => {
                   <span className="s-qty-badge">{item.quantity}</span>
                 </div>
                 <div className="s-info">
-                  <h4>{item.title}</h4>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <h4>{item.title}</h4>
+                    <button 
+                      type="button" 
+                      className="s-remove-btn" 
+                      onClick={() => removeFromCart(item.id)}
+                      title="Remove from cart"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                   <p>{formatSize(item.size)} <span style={{ opacity: 0.7, margin: '0 4px' }}>|</span> Qty: {item.quantity}</p>
                 </div>
                 <div className="s-price">

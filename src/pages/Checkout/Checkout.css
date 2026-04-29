@@ -888,3 +888,23 @@
   font-size: 0.8rem;
   font-weight: 700;
 }
+
+/* Checkout Order Summary Remove Button */
+.s-remove-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.s-remove-btn:hover {
+  color: #ef4444;
+  background: #fee2e2;
+}
