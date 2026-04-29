@@ -39,7 +39,8 @@ export const syncOrder = async (req, res) => {
                     id: orderPayload.orderId,
                     customer_name: orderPayload.firstName,
                     total_amount: orderPayload.amount,
-                    payment_method: orderPayload.paymentMethod
+                    payment_method: orderPayload.paymentMethod,
+                    items: orderPayload.items // Add items for the professional receipt
                 };
                 await sendOrderConfirmationEmail(orderPayload.email, orderDetails);
             }
@@ -117,6 +118,12 @@ export const shiprocketWebhook = async (req, res) => {
                 .update(updates)
                 .eq('id', orderUuid);
 
+            // Fetch items for this order to show in the email
+            const { data: items } = await supabase
+                .from('order_items')
+                .select('*')
+                .eq('order_id', orderUuid);
+
             if (!updateError) {
                 // Send email notification to customer
                 try {
@@ -124,7 +131,8 @@ export const shiprocketWebhook = async (req, res) => {
                         id: order.id,
                         customer_name: order.customer_name,
                         shiprocket_awb: updates.shiprocket_awb,
-                        tracking_url: updates.tracking_url
+                        tracking_url: updates.tracking_url,
+                        items: items || [] // Pass items to the email template
                     };
                     await sendStatusUpdateEmail(order.customer_email, orderDetails, internalStatus);
                     console.log(`Email sent for ${internalStatus} status update.`);

@@ -29,36 +29,53 @@ export const sendEmailOTP = async (email, otp) => {
 
 export const sendOrderConfirmationEmail = async (email, orderDetails) => {
     try {
+        const itemsHtml = (orderDetails.items || []).map(item => `
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                    <img src="${item.product_img || item.img}" alt="${item.product_title || item.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                    <div style="font-weight: bold; color: #333;">${item.product_title || item.title}</div>
+                    <div style="font-size: 12px; color: #666;">Qty: ${item.quantity}</div>
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right; color: #333;">
+                    ₹${(item.price * item.quantity).toLocaleString('en-IN')}
+                </td>
+            </tr>
+        `).join('');
+
         const mailOptions = {
             from: process.env.SMTP_FROM || 'contact@shoraluxe.com',
             to: email,
             subject: `Order Confirmed: #${orderDetails.id.slice(0, 8).toUpperCase()} - Shoraluxe`,
             html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-                <h2 style="color: #6d0e2c;">Thank you for your order!</h2>
-                <p>Hi ${orderDetails.customer_name},</p>
-                <p>We've received your order and we're getting it ready for shipment.</p>
-                
-                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <h3 style="margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Order Summary</h3>
-                    <p><strong>Order ID:</strong> #${orderDetails.id.slice(0, 8).toUpperCase()}</p>
-                    <p><strong>Total Amount:</strong> ₹${orderDetails.total_amount}</p>
-                    <p><strong>Payment Method:</strong> ${orderDetails.payment_method}</p>
+            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                <div style="background: #6d0e2c; padding: 30px; text-align: center;">
+                    <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">SHORALUXE</h1>
                 </div>
+                <div style="padding: 30px;">
+                    <h2 style="color: #111827; margin-top: 0;">Thank you for your order!</h2>
+                    <p style="color: #4b5563; line-height: 1.6;">Hi ${orderDetails.customer_name}, we've received your order <strong>#${orderDetails.id.slice(0, 8).toUpperCase()}</strong> and we're getting it ready for shipment.</p>
+                    
+                    <div style="margin: 25px 0;">
+                        <h3 style="font-size: 16px; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 10px; margin-bottom: 15px;">Order Summary</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            ${itemsHtml}
+                            <tr>
+                                <td colspan="2" style="padding: 20px 10px 10px; text-align: right; color: #6b7280;">Subtotal:</td>
+                                <td style="padding: 20px 10px 10px; text-align: right; font-weight: bold; color: #111827;">₹${orderDetails.total_amount?.toLocaleString('en-IN')}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-top: 30px;">
+                        <p style="margin: 0; font-size: 14px; color: #6b7280;"><strong>Payment Method:</strong> ${orderDetails.payment_method?.toUpperCase()}</p>
+                        <p style="margin: 5px 0 0; font-size: 14px; color: #6b7280;"><strong>Shipping Address:</strong> Verified</p>
+                    </div>
 
-                <div style="background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0;">
-                    <h4 style="margin-top: 0; color: #92400e;">How to track your order:</h4>
-                    <p style="margin-bottom: 5px;">You can track your package directly on our website anytime using:</p>
-                    <ul style="padding-left: 20px; margin-top: 5px;">
-                        <li><strong>Order ID:</strong> #${orderDetails.id.slice(0, 8).toUpperCase()}</li>
-                        <li><strong>Your Email:</strong> ${email}</li>
-                        <li><strong>Your Registered Phone Number</strong></li>
-                    </ul>
-                    <p style="margin-top: 10px;"><a href="https://shoraluxe.vercel.app/track-order" style="color: #6d0e2c; font-weight: bold;">Click here to Track Order →</a></p>
+                    <p style="margin-top: 30px; color: #4b5563; font-size: 14px;">We will notify you again with tracking details once your order ships.</p>
+                    <p style="margin-top: 20px; border-top: 1px solid #f3f4f6; padding-top: 20px; color: #6b7280; font-size: 14px;">Best regards,<br><strong>The Shoraluxe Team</strong></p>
                 </div>
-                
-                <p>We will notify you again once your order ships.</p>
-                <p>Best regards,<br>The Shoraluxe Team</p>
             </div>
             `
         };
@@ -76,37 +93,59 @@ export const sendStatusUpdateEmail = async (email, orderDetails, status) => {
         if (status === 'shipped') {
             subject = `Your Shoraluxe Order is on the way! 🚚`;
             message = `Great news! Your order is on its way to you.<br><br>`;
-            if (orderDetails.shiprocket_awb) {
-                message += `<strong>Tracking AWB:</strong> ${orderDetails.shiprocket_awb}<br>`;
-                message += `<a href="${orderDetails.tracking_url || `https://shiprocket.co/tracking/${orderDetails.shiprocket_awb}`}" style="display: inline-block; padding: 10px 20px; background: #6d0e2c; color: white; text-decoration: none; border-radius: 5px; margin-top: 15px;">Track Package</a>`;
-            }
         } else if (status === 'delivered') {
             subject = `Your Shoraluxe Order has been delivered! 🎉`;
             message = `Your package has been delivered successfully. We hope you love your products!`;
         }
+
+        const itemsHtml = (orderDetails.items || []).map(item => `
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                    <img src="${item.product_img || item.img}" alt="${item.product_title || item.title}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; font-size: 13px;">
+                    <div style="font-weight: bold; color: #333;">${item.product_title || item.title}</div>
+                    <div style="color: #666;">Qty: ${item.quantity}</div>
+                </td>
+            </tr>
+        `).join('');
 
         const mailOptions = {
             from: process.env.SMTP_FROM || 'contact@shoraluxe.com',
             to: email,
             subject: subject,
             html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-                <h2 style="color: #6d0e2c;">Order Status Update</h2>
-                <p>Hi ${orderDetails.customer_name},</p>
-                <p>${message}</p>
-                
-                <div style="background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0;">
-                    <h4 style="margin-top: 0; color: #92400e;">Tracking Details:</h4>
-                    <ul style="padding-left: 20px; margin-top: 5px;">
-                        <li><strong>Website Order ID:</strong> #${orderDetails.id.slice(0, 8).toUpperCase()}</li>
-                        <li><strong>Your Email / Phone</strong></li>
-                        ${orderDetails.shiprocket_awb ? `<li><strong>Shiprocket AWB:</strong> ${orderDetails.shiprocket_awb}</li>` : ''}
-                    </ul>
-                    <p style="margin-top: 10px;"><a href="https://shoraluxe.vercel.app/track-order" style="color: #6d0e2c; font-weight: bold;">Track on our website →</a></p>
+            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                <div style="background: #6d0e2c; padding: 30px; text-align: center;">
+                    <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">SHORALUXE</h1>
                 </div>
+                <div style="padding: 30px;">
+                    <h2 style="color: #111827; margin-top: 0;">Order Update</h2>
+                    <p style="color: #4b5563; line-height: 1.6;">Hi ${orderDetails.customer_name},</p>
+                    <p style="color: #4b5563; line-height: 1.6;">${message}</p>
+                    
+                    ${orderDetails.items ? `
+                    <div style="margin: 20px 0;">
+                        <h4 style="font-size: 14px; text-transform: uppercase; color: #9ca3af; margin-bottom: 10px;">Items in this shipment:</h4>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            ${itemsHtml}
+                        </table>
+                    </div>
+                    ` : ''}
 
-                <br>
-                <p>Best regards,<br>The Shoraluxe Team</p>
+                    <div style="background: #fffbeb; padding: 25px; border-radius: 12px; border-left: 5px solid #f59e0b; margin: 30px 0;">
+                        <h4 style="margin-top: 0; color: #92400e; font-size: 18px;">Tracking Information:</h4>
+                        <ul style="padding-left: 20px; color: #4b5563; line-height: 1.8;">
+                            <li><strong>Order ID:</strong> #${orderDetails.id.slice(0, 8).toUpperCase()}</li>
+                            ${orderDetails.shiprocket_awb ? `<li><strong>Shiprocket AWB:</strong> ${orderDetails.shiprocket_awb}</li>` : ''}
+                        </ul>
+                        <div style="margin-top: 25px; text-align: center;">
+                            <a href="https://shoraluxe.vercel.app/track-order" style="display: inline-block; padding: 14px 28px; background: #6d0e2c; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold;">Track on Website →</a>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 30px; color: #6b7280; font-size: 14px; border-top: 1px solid #f3f4f6; padding-top: 20px;">Best regards,<br><strong>The Shoraluxe Team</strong></p>
+                </div>
             </div>
             `
         };
