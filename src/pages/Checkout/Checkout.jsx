@@ -525,7 +525,9 @@ const Checkout = () => {
         prefill: {
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
-          contact: formData.phone
+          contact: formData.phone,
+          method: upiId ? "upi" : undefined,
+          vpa: upiId || undefined
         },
         theme: { color: "#6d0e2c" },
         config: {
@@ -989,6 +991,25 @@ const Checkout = () => {
                   <span>Cards, Wallets, NetBanking, UPI QR, UPI ID</span>
                 </div>
               </label>
+
+              <div className="upi-id-input-section">
+                <p className="upi-input-label">Pay faster with UPI ID (Optional)</p>
+                <div className="upi-input-wrapper">
+                  <input
+                    type="text"
+                    placeholder="Enter UPI ID (e.g. name@okicici)"
+                    value={upiId}
+                    onChange={(e) => setUpiId(e.target.value)}
+                    className="upi-id-field"
+                  />
+                  {upiId && (
+                    <button type="button" className="clear-upi" onClick={() => setUpiId('')}>
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+                <p className="upi-hint">Enter your UPI ID to receive a payment request on your app</p>
+              </div>
             </div>
 
           </div>
