@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Droplets, Sparkles, Sun, Hourglass, Leaf, Waves, Wind, Shield } from 'lucide-react';
+import { getOptimizedImageUrl } from '../../../lib/upload';
 import './ShopByConcern.css';
 
 const concernData = [
@@ -10,11 +11,11 @@ const concernData = [
     icon: Droplets,
     desc: 'Unclogs pores, reduces oil, and treats active breakouts.',
     products: [
-      { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=600' },
-      { name: 'Charcoal Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/charcoalfacewash.png?v=1761301942&width=600' },
-      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
-      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
-      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+      { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291865/ozy4pn5a42m3iuixbvvq.jpg' },
+      { name: 'Charcoal Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291884/dmfsfzcf1ohz3jbz6oo6.jpg' },
+      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291894/ymnkwiizm3yy8c1bkmdx.jpg' },
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291949/pytxmjbmiqabjo9omnjl.png' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291977/fzfjpmt0lstbg4ruvny4.png' },
     ]
   },
   {
@@ -23,11 +24,11 @@ const concernData = [
     icon: Sparkles,
     desc: 'Brightens skin, fades marks, and evens out skin tone.',
     products: [
-      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
-      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
-      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
-      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
-      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291938/mjhqto4tbzvlgy3u9puu.png' },
+      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291894/ymnkwiizm3yy8c1bkmdx.jpg' },
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291893/peh6ewngoo2nkl6rv2au.jpg' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291977/fzfjpmt0lstbg4ruvny4.png' },
     ]
   },
   {
@@ -36,13 +37,13 @@ const concernData = [
     icon: Sun,
     desc: 'Glow-boosting, brightening & radiance-enhancing products.',
     products: [
-      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
-      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
-      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_4.jpg?v=1774992113&width=600' },
-      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
-      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
-      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=600' },
-      { name: 'Lavender Body Wash', sizes: '200ml', img: 'http://www.shoraluxe.com/cdn/shop/files/LavenderBodyWash.png?v=1761305931&width=600' },
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291938/mjhqto4tbzvlgy3u9puu.png' },
+      { name: 'Vitamin C Ubtan Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291894/ymnkwiizm3yy8c1bkmdx.jpg' },
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291893/peh6ewngoo2nkl6rv2au.jpg' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291899/bcwssh2xvdfr8twcotor.jpg' },
+      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292010/e6nailc3g5iegngqbpuw.jpg' },
+      { name: 'Lavender Body Wash', sizes: '200ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292004/euvgyuciha81uc0vfphk.jpg' },
     ]
   },
   {
@@ -51,11 +52,11 @@ const concernData = [
     icon: Hourglass,
     desc: 'Supports collagen, smooths texture & reduces early aging.',
     products: [
-      { name: 'Retinol Night Cream', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=600' },
-      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
-      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
-      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
-      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+      { name: 'Retinol Night Cream', sizes: '50gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291946/aqjhfpko6sqpwbighl0s.jpg' },
+      { name: 'Vitamin C & Niacinamide Face Serum', sizes: '30ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292031/yja05pf25ue7xhxwqnxz.jpg' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291938/mjhqto4tbzvlgy3u9puu.png' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291899/bcwssh2xvdfr8twcotor.jpg' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291977/fzfjpmt0lstbg4ruvny4.png' },
     ]
   },
   {
@@ -64,12 +65,12 @@ const concernData = [
     icon: Leaf,
     desc: 'Gentle, soothing & barrier-supporting formulas.',
     products: [
-      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
-      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
-      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
-      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=600' },
-      { name: 'Shea Butter Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11.jpg?v=1774992113&width=600' },
-      { name: 'Lavender Body Wash', sizes: '200ml', img: 'http://www.shoraluxe.com/cdn/shop/files/LavenderBodyWash.png?v=1761305931&width=600' },
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291893/peh6ewngoo2nkl6rv2au.jpg' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291899/bcwssh2xvdfr8twcotor.jpg' },
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291949/pytxmjbmiqabjo9omnjl.png' },
+      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292010/e6nailc3g5iegngqbpuw.jpg' },
+      { name: 'Shea Butter Body Lotion', sizes: '100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292018/lfusckv6o5dg477fehuu.jpg' },
+      { name: 'Lavender Body Wash', sizes: '200ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292004/euvgyuciha81uc0vfphk.jpg' },
     ]
   },
   {
@@ -78,12 +79,12 @@ const concernData = [
     icon: Waves,
     desc: 'Deep hydration, nourishment & moisture-locking care.',
     products: [
-      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
-      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2025-11-28_at_13.14.19.jpg?v=1764316619&width=600' },
-      { name: 'Shea Butter Body Lotion', sizes: '100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11.jpg?v=1774992113&width=600' },
-      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/HydratingGelCleanser-FaceWash.png?v=1761303017&width=600' },
-      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_3.jpg?v=1774992113&width=600' },
-      { name: 'Retinol Night Cream', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsApp_Image_2026-03-31_at_22.18.11_1.jpg?v=1774992113&width=600' },
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291949/pytxmjbmiqabjo9omnjl.png' },
+      { name: 'Daily Hydrating Body Lotion', sizes: '100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292010/e6nailc3g5iegngqbpuw.jpg' },
+      { name: 'Shea Butter Body Lotion', sizes: '100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777292018/lfusckv6o5dg477fehuu.jpg' },
+      { name: 'Hyaluronic Acid Hydrating Gel Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291899/bcwssh2xvdfr8twcotor.jpg' },
+      { name: 'Rice Water Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291893/peh6ewngoo2nkl6rv2au.jpg' },
+      { name: 'Retinol Night Cream', sizes: '50gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291946/aqjhfpko6sqpwbighl0s.jpg' },
     ]
   },
   {
@@ -92,10 +93,10 @@ const concernData = [
     icon: Wind,
     desc: 'Oil-balancing, pore-clearing & mattifying products.',
     products: [
-      { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_1-01.png?v=1768804156&width=600' },
-      { name: 'Charcoal Face Wash', sizes: '80ml', img: 'http://www.shoraluxe.com/cdn/shop/files/charcoalfacewash.png?v=1761301942&width=600' },
-      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/001_3.png?v=1768804151&width=600' },
-      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
+      { name: 'Salicylic Acid Face Wash', sizes: '50ml · 100ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291865/ozy4pn5a42m3iuixbvvq.jpg' },
+      { name: 'Charcoal Face Wash', sizes: '80ml', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291884/dmfsfzcf1ohz3jbz6oo6.jpg' },
+      { name: 'Non Sticky Moisturizer', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291949/pytxmjbmiqabjo9omnjl.png' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291977/fzfjpmt0lstbg4ruvny4.png' },
     ]
   },
   {
@@ -104,8 +105,8 @@ const concernData = [
     icon: Shield,
     desc: 'Protect from UV damage, tanning & premature aging.',
     products: [
-      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'http://www.shoraluxe.com/cdn/shop/files/poster_3-01.png?v=1768804184&width=600' },
-      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'http://www.shoraluxe.com/cdn/shop/files/WhatsAppImage2026-03-31at21.42.42_1.jpg?v=1774990739&width=600' },
+      { name: 'Sunscreen Cream SPF 50+++', sizes: '50gm · 100gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291977/fzfjpmt0lstbg4ruvny4.png' },
+      { name: 'Brightening Day Cream with SPF', sizes: '50gm', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291938/mjhqto4tbzvlgy3u9puu.png' },
     ]
   }
 ];
@@ -116,7 +117,7 @@ const ShopByConcern = () => {
   const navigate = useNavigate();
   const current = concernData[active];
 
-  // Show hovered product image, else show first 4 stacked
+  // Show hovered product image, else show first
   const featuredImg = hoveredProduct !== null
     ? current.products[hoveredProduct]?.img
     : current.products[0]?.img;
@@ -130,7 +131,7 @@ const ShopByConcern = () => {
         <p className="sbc-subheading">Select your skin concern to discover the right products for you.</p>
       </div>
 
-      {/* CONCERN PILL TABS — wrapped for mobile horizontal scroll */}
+      {/* CONCERN PILL TABS */}
       <div className="sbc-tabs-wrapper">
         <div className="sbc-tabs">
           {concernData.map((c, idx) => (
@@ -173,7 +174,7 @@ const ShopByConcern = () => {
               >
                 {/* tiny thumbnail */}
                 <div className="sbc-row-thumb">
-                  <img src={p.img} alt={p.name} />
+                  <img src={getOptimizedImageUrl(p.img, 'w_100,q_auto,f_auto')} alt={p.name} />
                 </div>
                 <div className="sbc-product-text">
                   <span className="sbc-product-name">{p.name}</span>
@@ -198,9 +199,10 @@ const ShopByConcern = () => {
           <div className="sbc-featured-img-wrap">
             <img
               key={featuredImg}
-              src={featuredImg}
+              src={getOptimizedImageUrl(featuredImg, 'w_800,q_auto,f_auto')}
               alt={current.title}
               className="sbc-featured-img"
+              loading="lazy"
             />
             {/* count badge */}
             <div className="sbc-img-badge">
@@ -220,7 +222,7 @@ const ShopByConcern = () => {
                 onClick={() => navigate('/shop')}
                 title={p.name}
               >
-                <img src={p.img} alt={p.name} />
+                <img src={getOptimizedImageUrl(p.img, 'w_100,q_auto,f_auto')} alt={p.name} />
               </div>
             ))}
             {current.products.length > 4 && (
