@@ -39,7 +39,6 @@ const Footer = () => {
               <a href="#" className="f-social-link instagram"><FaInstagram size={18} /></a>
               <a href="#" className="f-social-link facebook"><FaFacebook size={18} /></a>
               <a href="#" className="f-social-link youtube"><FaYoutube size={18} /></a>
-              <a href="#" className="f-social-link twitter"><FaTwitter size={18} /></a>
             </div>
           </div>
 
