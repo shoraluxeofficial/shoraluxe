@@ -45,8 +45,7 @@ const Contact = () => {
               </div>
               <div className="info-text">
                 <h3>Visit Us</h3>
-                <p>Shoraluxe Private Limited</p>
-                <address>Plot No. 42, Luxury Lane, Financial District, Hyderabad, India</address>
+                <address>Residential Apartments, Road no 21, Vivekananda Nagar colony, Hyderabad, 500072</address>
               </div>
             </div>
 

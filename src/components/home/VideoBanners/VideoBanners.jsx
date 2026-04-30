@@ -72,7 +72,7 @@ const VideoBanners = () => {
   return (
     <section className="video-banners-section">
       <div className="section-intro">
-        <h2 className="section-heading">Shoraluxe In Motion</h2>
+        <h2 className="section-heading">Explore our Rituals</h2>
       </div>
       
       <div className="video-scroll-container">
