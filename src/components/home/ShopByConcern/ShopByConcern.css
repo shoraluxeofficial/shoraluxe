@@ -124,7 +124,7 @@
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,0.09);
   animation: sbc-cardIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) both;
-  min-height: 520px;
+  min-height: 460px; /* Reduced from 520px */
 }
 
 @keyframes sbc-cardIn {
@@ -134,25 +134,33 @@
 
 /* ── LEFT: product list ────────────────────── */
 .sbc-card-left {
-  padding: 3rem 3rem;
+  padding: 2.2rem 2.5rem; /* Reduced from 3rem 3rem */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
+.sbc-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
 .sbc-card-icon {
   line-height: 1;
-  margin-bottom: 0.9rem;
   color: var(--brand-gold);
+  display: flex;
+  align-items: center;
 }
 
 .sbc-card-title {
   font-family: var(--font-serif);
-  font-size: 1.85rem;
+  font-size: 1.7rem; /* Slightly reduced */
   font-weight: 700;
   color: #111;
-  margin: 0 0 0.5rem;
-  line-height: 1.2;
+  margin: 0;
+  line-height: 1.1;
 }
 
 .sbc-card-desc {
@@ -170,12 +178,12 @@
 }
 
 .sbc-products-label {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 2.5px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--brand-gold);
-  margin: 0 0 0.9rem;
+  margin: 1.2rem 0 0.7rem; /* Added margin-top to separate from description */
 }
 
 /* ── PRODUCT ROWS ──────────────────────────── */

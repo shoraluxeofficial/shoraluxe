@@ -154,12 +154,13 @@ const ShopByConcern = () => {
 
         {/* LEFT: product list */}
         <div className="sbc-card-left">
-          <div className="sbc-card-icon">
-            <current.icon size={48} strokeWidth={1.5} />
+          <div className="sbc-card-header">
+            <div className="sbc-card-icon">
+              <current.icon size={32} strokeWidth={2} />
+            </div>
+            <h3 className="sbc-card-title">{current.title}</h3>
           </div>
-          <h3 className="sbc-card-title">{current.title}</h3>
           <p className="sbc-card-desc">{current.desc}</p>
-          <div className="sbc-divider" />
           <p className="sbc-products-label">Recommended Products</p>
 
           <ul className="sbc-product-list">
