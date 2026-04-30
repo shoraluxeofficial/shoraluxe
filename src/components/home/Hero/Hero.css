@@ -7,7 +7,7 @@
 
 .hero-slider-wrap {
   width: 100%;
-  aspect-ratio: 16 / 6; /* Slimmer ultra-wide aspect ratio to reduce vertical height */
+  aspect-ratio: 16 / 8; /* Increased from 16/6 to show more vertical content of videos */
   height: auto;
   overflow: hidden;
   position: relative;
