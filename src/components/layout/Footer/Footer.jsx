@@ -1,7 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { FaInstagram, FaFacebook, FaYoutube, FaTwitter, FaCcVisa, FaCcMastercard, FaCcPaypal, FaCcApplePay, FaGooglePay } from 'react-icons/fa';
-import { SiRazorpay } from 'react-icons/si';
+import { FaInstagram, FaFacebook, FaYoutube, FaTwitter } from 'react-icons/fa';
 import './Footer.css';
 
 const Footer = () => {
@@ -24,9 +24,9 @@ const Footer = () => {
       <div className="footer-content-wrap">
         {/* TOP BRAND SIGNATURE */}
         <div className="footer-top-signature">
-          <a href="/" className="footer-logo-link">
+          <Link to="/" className="footer-logo-link">
             <img src="/Logo.png" alt="Shoraluxe" className="footer-logo-img" />
-          </a>
+          </Link>
           <p className="footer-mission-text">Elevating your daily ritual through the science of luxury skincare.</p>
         </div>
 
@@ -45,19 +45,19 @@ const Footer = () => {
 
           <div className="f-col">
             <h4 className="f-col-title">Shop Collections</h4>
-              <a href="/shop" className="f-nav-item">All Products</a>
-              <a href="/shop" className="f-nav-item">New Arrivals</a>
-              <a href="/shop" className="f-nav-item">Bestsellers</a>
-              <a href="/shop?category=combo" className="f-nav-item">Combos & Kits</a>
+              <Link to="/shop" className="f-nav-item">All Products</Link>
+              <Link to="/shop" className="f-nav-item">New Arrivals</Link>
+              <Link to="/shop" className="f-nav-item">Bestsellers</Link>
+              <Link to="/shop?category=combo" className="f-nav-item">Combos & Kits</Link>
           </div>
 
           <div className="f-col">
             <h4 className="f-col-title">Guest Services</h4>
             <nav className="f-nav">
-              <a href="/track-order" className="f-nav-item">Track Order</a>
-              <a href="/quiz" className="f-nav-item">Skin Consultation</a>
-              <a href="/account" className="f-nav-item">My Account</a>
-              <a href="/my-orders" className="f-nav-item">My Orders</a>
+              <Link to="/track-order" className="f-nav-item">Track Order</Link>
+              <Link to="/quiz" className="f-nav-item">Skin Consultation</Link>
+              <Link to="/account" className="f-nav-item">My Account</Link>
+              <Link to="/my-orders" className="f-nav-item">My Orders</Link>
               <a href="#" className="f-nav-item">Privacy & Terms</a>
             </nav>
           </div>
