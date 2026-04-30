@@ -238,7 +238,7 @@ const HomepageManager = () => {
         <div className="hm-visual-upload">
           <label>{label}</label>
           <label className={`hm-visual-preview ${url ? 'has-img' : ''} ${isMobile ? 'hm-mobile-preview' : ''}`}>
-            <input type="file" accept="image/*,video/mp4" hidden onChange={e => handleUpload(e, field)} />
+            <input type="file" accept="image/*,video/mp4,video/quicktime,video/webm" hidden onChange={e => handleUpload(e, field)} />
             {url ? (
               <>
                 {isVideo ? (
@@ -282,10 +282,10 @@ const HomepageManager = () => {
           
           {/* SECTION 1: MEDIA UPLOAD */}
           <div className="builder-section">
-            <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#111827', margin: '0 0 1rem 0', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>1. Upload Banner Media</h4>
+            <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#111827', margin: '0 0 1rem 0', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>1. Upload Banner Media (Image or Video)</h4>
             <div className="hm-field-grid" style={{ gap: '1.5rem' }}>
-              {renderVisualUpload('desktopImg', 'Desktop Banner (16:6 | 2560 x 960 px)')}
-              {renderVisualUpload('mobileImg', 'Mobile Banner (4:5 | 1080 x 1350 px)', true)}
+              {renderVisualUpload('desktopImg', 'Desktop Media (16:6 | Image or MP4 Video)')}
+              {renderVisualUpload('mobileImg', 'Mobile Media (4:5 | Image or MP4 Video)', true)}
             </div>
           </div>
 

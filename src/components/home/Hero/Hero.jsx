@@ -91,10 +91,11 @@ const Hero = () => {
               <div className="hero-slide-item">
                 {/* Desktop Media */}
                 <div className="hero-media-desktop">
-                  {(banner.desktopImg || banner.img)?.toLowerCase().endsWith('.mp4') ? (
+                  {((banner.desktopImg || banner.img)?.toLowerCase().includes('/video/upload/') || (banner.desktopImg || banner.img)?.toLowerCase().endsWith('.mp4')) ? (
                     <video 
                       src={getOptimizedImageUrl(banner.desktopImg || banner.img)} 
                       autoPlay muted loop playsInline 
+                      preload="auto"
                       className="hero-slide-img" 
                     />
                   ) : (
@@ -111,10 +112,11 @@ const Hero = () => {
 
                 {/* Mobile Media */}
                 <div className="hero-media-mobile">
-                  {(banner.mobileImg || banner.img)?.toLowerCase().endsWith('.mp4') ? (
+                  {((banner.mobileImg || banner.img)?.toLowerCase().includes('/video/upload/') || (banner.mobileImg || banner.img)?.toLowerCase().endsWith('.mp4')) ? (
                     <video 
                       src={getOptimizedImageUrl(banner.mobileImg || banner.img)} 
                       autoPlay muted loop playsInline 
+                      preload="auto"
                       className="hero-slide-img" 
                     />
                   ) : (
