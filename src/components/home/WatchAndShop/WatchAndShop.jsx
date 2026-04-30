@@ -1,30 +1,76 @@
-import React, { useRef } from 'react';
-import { ChevronLeft, ChevronRight, Video } from 'lucide-react';
+import React, { useRef, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { getOptimizedImageUrl } from '../../../lib/upload';
 import './WatchAndShop.css';
 
-const fallbackStories = [
-  {
-    id: 1,
-    video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4',
-  },
-  {
-    id: 2,
-    video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4',
-  },
-  {
-    id: 3,
-    video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4',
-  }
-];
+// Optimized sub-component to handle video playback performance
+const StoryCard = ({ story }) => {
+  const videoRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { 
+        threshold: 0.5, // Play when 50% visible
+        rootMargin: '0px' 
+      }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) observer.unobserve(videoRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    
+    if (isVisible) {
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Auto-play was prevented by browser
+        });
+      }
+    } else {
+      videoRef.current.pause();
+    }
+  }, [isVisible]);
+
+  return (
+    <div className="story-card">
+      <div className="story-media-wrap">
+        {story.video ? (
+          <video
+            ref={videoRef}
+            className="story-video"
+            src={getOptimizedImageUrl(story.video, 'q_auto:eco,w_400,vc_h264:baseline,br_1m')}
+            poster={getOptimizedImageUrl(story.video, 'f_jpg,so_auto,w_400,q_auto:eco')}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <div className="no-video-placeholder">No Video</div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const WatchAndShop = () => {
   const scrollRef = useRef(null);
-  const [stories, setStories] = React.useState(null);
+  const [stories, setStories] = useState(null);
 
-  // Fetch data and subscribe to realtime changes
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const { data, error } = await supabase
@@ -32,14 +78,15 @@ const WatchAndShop = () => {
           .select('content')
           .eq('section_name', 'watchAndShop')
           .single();
+        
         if (data && data.content && data.content.length > 0) {
           setStories(data.content);
         } else {
-          setStories(fallbackStories);
+          setStories([]); // No videos found
         }
       } catch (e) {
-        console.error(e);
-        setStories(fallbackStories);
+        console.error('WatchAndShop fetch error:', e);
+        setStories([]);
       }
     };
     fetchData();
@@ -47,8 +94,7 @@ const WatchAndShop = () => {
     const subscription = supabase
       .channel('public:watchAndShop')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.watchAndShop" }, (payload) => {
-        if (payload.new && payload.new.content && payload.new.content.length > 0) {
-          // Only update if content has changed to prevent blinking/re-renders
+        if (payload.new && payload.new.content) {
           setStories(prev => {
             if (JSON.stringify(prev) === JSON.stringify(payload.new.content)) return prev;
             return payload.new.content;
@@ -70,13 +116,8 @@ const WatchAndShop = () => {
     }
   };
 
-  if (!stories) {
-    return (
-      <section className="watch-section">
-        <div className="watch-inner" style={{ minHeight: '400px', background: '#f5f5f5', borderRadius: '20px', animation: 'pulse 1.5s infinite' }}></div>
-      </section>
-    );
-  }
+  // If loading or no stories, don't render the section at all
+  if (!stories || stories.length === 0) return null;
 
   return (
     <section className="watch-section">
@@ -91,25 +132,7 @@ const WatchAndShop = () => {
 
         <div className="watch-grid" ref={scrollRef}>
           {stories.map((story, index) => (
-            <div key={index} className="story-card">
-              <div className="story-media-wrap">
-                {story.video ? (
-                  <video
-                    key={story.video}
-                    className="story-video"
-                    src={getOptimizedImageUrl(story.video, 'q_auto,w_500,vc_h264')}
-                    poster={getOptimizedImageUrl(story.video, 'f_jpg,so_auto,w_500,q_auto')}
-                    muted
-                    loop
-                    autoPlay
-                    playsInline
-                    preload="metadata"
-                  />
-                ) : (
-                  <div className="no-video-placeholder">No Video</div>
-                )}
-              </div>
-            </div>
+            <StoryCard key={story.video || index} story={story} />
           ))}
         </div>
       </div>
