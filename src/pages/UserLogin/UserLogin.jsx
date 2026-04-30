@@ -62,8 +62,8 @@ const UserLogin = () => {
         setIsSignup(false);
         setForm({ ...form, passcode: '', confirmPasscode: '' });
       } else {
-        localStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
-        localStorage.setItem('auth_token', data.token);
+        sessionStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
+        sessionStorage.setItem('auth_token', data.token);
         setUser(data.user);
         showToast('Welcome back to Shoraluxe!');
         
@@ -93,8 +93,8 @@ const UserLogin = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Google verification failed');
 
-      localStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
-      localStorage.setItem('auth_token', data.token);
+      sessionStorage.setItem('shoraluxe_user', JSON.stringify(data.user));
+      sessionStorage.setItem('auth_token', data.token);
       setUser(data.user);
       showToast(`Welcome, ${data.user.name}!`);
       
@@ -109,8 +109,8 @@ const UserLogin = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('shoraluxe_user');
-    localStorage.removeItem('auth_token');
+    sessionStorage.removeItem('shoraluxe_user');
+    sessionStorage.removeItem('auth_token');
     setUser(null);
     showToast('Successfully logged out!');
     setTimeout(() => navigate('/'), 1000);

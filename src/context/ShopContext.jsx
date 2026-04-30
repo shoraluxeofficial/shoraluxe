@@ -10,9 +10,9 @@ export const ShopProvider = ({ children }) => {
   const [products, setProducts] = useState(fallbackProducts);
   const [loading, setLoading] = useState(true);
 
-  // Auth State
+  // Auth State (Using sessionStorage for auto-logout on browser close)
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('shoraluxe_user');
+    const saved = sessionStorage.getItem('shoraluxe_user');
     return (saved && saved !== 'undefined') ? JSON.parse(saved) : null;
   });
 

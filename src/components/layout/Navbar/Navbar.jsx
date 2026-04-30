@@ -62,8 +62,8 @@ const Navbar = () => {
   }, [promoCodes]);
 
   const handleLogout = () => {
-    localStorage.removeItem('shoraluxe_user');
-    localStorage.removeItem('auth_token');
+    sessionStorage.removeItem('shoraluxe_user');
+    sessionStorage.removeItem('auth_token');
     setUser(null);
     navigate('/');
   };
