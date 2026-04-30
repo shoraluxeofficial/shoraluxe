@@ -19,6 +19,9 @@
   height: 100%;
   width: 100%;
   transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); /* Ultra-smooth scroll effect */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 .hero-slide-link {

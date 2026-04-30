@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
+  scroll-behavior: smooth;
   /* Primary Logo Reds (Velvet/Satin Palette) */
   --logo-red-dark: #3B0616;       /* Deepest shadow */
   --logo-red-base: #6D0E2C;       /* Main brand body */
@@ -46,17 +47,18 @@
   padding: 0;
 }
 
-html, body {
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-main);
   color: var(--text-main);
-  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  overflow-x: hidden;
 }
 
 img {
@@ -80,6 +82,30 @@ button {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Global Hardware Acceleration Utility */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+/* Optimized Scrolling Containers */
+.smooth-scroll-container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
+}
+
+/* Rendering Containment for Performance */
+section {
+  contain: content;
+  content-visibility: auto; /* Browser skip-paint for off-screen sections */
+  contain-intrinsic-size: 0 500px; /* Placeholder size for off-screen sections */
+}
+
 .section-heading-underlined {
   position: relative;
   display: inline-block;
