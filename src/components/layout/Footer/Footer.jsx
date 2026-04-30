@@ -45,23 +45,19 @@ const Footer = () => {
 
           <div className="f-col">
             <h4 className="f-col-title">Shop Collections</h4>
-            <nav className="f-nav">
-              <a href="#" className="f-nav-item">New Arrivals</a>
-              <a href="#" className="f-nav-item">Bestsellers</a>
-              <a href="#" className="f-nav-item">Skin Concerns</a>
-              <a href="#" className="f-nav-item">Gifting Suite</a>
-              <a href="#" className="f-nav-item">Limited Editions</a>
-            </nav>
+              <a href="/shop" className="f-nav-item">All Products</a>
+              <a href="/shop" className="f-nav-item">New Arrivals</a>
+              <a href="/shop" className="f-nav-item">Bestsellers</a>
+              <a href="/shop?category=combo" className="f-nav-item">Combos & Kits</a>
           </div>
 
           <div className="f-col">
             <h4 className="f-col-title">Guest Services</h4>
             <nav className="f-nav">
-              <a href="#" className="f-nav-item">Concierge (Support)</a>
               <a href="/track-order" className="f-nav-item">Track Order</a>
-              <a href="#" className="f-nav-item">Shipping Policy</a>
-              <a href="#" className="f-nav-item">Skin Consultations</a>
-              <a href="#" className="f-nav-item">Store Registry</a>
+              <a href="/quiz" className="f-nav-item">Skin Consultation</a>
+              <a href="/account" className="f-nav-item">My Account</a>
+              <a href="/my-orders" className="f-nav-item">My Orders</a>
               <a href="#" className="f-nav-item">Privacy & Terms</a>
             </nav>
           </div>
