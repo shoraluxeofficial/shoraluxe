@@ -23,7 +23,16 @@ const PromoCodes = () => {
         const hasValidValue = c.discount_value > 0;
         return isNotExpired && hasValidValue;
       });
-      setCodes(validCodes);
+
+      if (validCodes.length > 0) {
+        setCodes(validCodes);
+      } else {
+        // Fallback to dummy codes if no valid ones in DB
+        setCodes([
+          { id: 'd1', code: "SL-SUMMERGLOW1", discount_type: "percentage", discount_value: 15, is_active: true, description: "Get 15% off Summer Essentials!" },
+          { id: 'd2', code: "SL-GLOWTRIO", discount_type: "percentage", discount_value: 20, is_active: true, description: "Get 20% off the Glow Trio Bundle" }
+        ]);
+      }
     };
     fetchCodes();
   }, []);
