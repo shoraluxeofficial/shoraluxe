@@ -143,6 +143,11 @@ const UserLogin = () => {
         </div>
 
         <div className="user-form-panel">
+          <div className="mobile-form-logo desktop-hidden">
+            <Link to="/">
+              <img src="/Logo.png" alt="Shoraluxe" />
+            </Link>
+          </div>
           <div className="user-form-wrap">
             {user ? (
               <div className="anim-slide-in profile-view">

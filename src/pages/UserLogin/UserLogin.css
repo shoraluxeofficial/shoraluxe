@@ -1,5 +1,5 @@
 .user-login-page {
-  min-height: calc(100vh - 120px);
+  min-height: 100vh;
   display: flex;
   align-items: stretch;
   background: #f9fafb;
@@ -106,6 +106,21 @@
 .user-form-wrap {
   width: 100%;
   max-width: 440px;
+}
+
+.desktop-hidden {
+  display: none;
+}
+
+.mobile-form-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.mobile-form-logo img {
+  height: 50px;
+  width: auto;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
 }
 
 .user-form-wrap h2 {
@@ -336,6 +351,10 @@
 
   .user-form-wrap {
     max-width: 100%;
+  }
+
+  .desktop-hidden {
+    display: block;
   }
 }
 
