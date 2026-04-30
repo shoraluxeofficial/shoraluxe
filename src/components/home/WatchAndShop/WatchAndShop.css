@@ -63,15 +63,17 @@
 
 .story-card {
   flex: 0 0 280px;
-  background: #fff;
+  background: #000; /* Solid black background for videos */
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  transform: translateZ(0); /* Hardware acceleration */
 }
 
 .story-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) translateZ(0);
 }
 
 .story-media-wrap {
@@ -80,6 +82,7 @@
   overflow: hidden;
   background-color: #000;
   display: block;
+  transform: translateZ(0);
 }
 
 .story-img,
@@ -92,6 +95,9 @@
   object-fit: cover;
   object-position: center;
   display: block;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .no-video-placeholder {

@@ -48,7 +48,11 @@ const WatchAndShop = () => {
       .channel('public:watchAndShop')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.watchAndShop" }, (payload) => {
         if (payload.new && payload.new.content && payload.new.content.length > 0) {
-          setStories(payload.new.content);
+          // Only update if content has changed to prevent blinking/re-renders
+          setStories(prev => {
+            if (JSON.stringify(prev) === JSON.stringify(payload.new.content)) return prev;
+            return payload.new.content;
+          });
         }
       })
       .subscribe();
@@ -93,12 +97,13 @@ const WatchAndShop = () => {
                   <video
                     key={story.video}
                     className="story-video"
-                    src={getOptimizedImageUrl(story.video)}
+                    src={getOptimizedImageUrl(story.video, 'q_auto,w_500,vc_h264')}
+                    poster={getOptimizedImageUrl(story.video, 'f_jpg,so_auto,w_500,q_auto')}
                     muted
                     loop
                     autoPlay
                     playsInline
-                    preload="auto"
+                    preload="metadata"
                   />
                 ) : (
                   <div className="no-video-placeholder">No Video</div>
