@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { FaInstagram, FaFacebook, FaYoutube, FaTwitter } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
+import { SiThreads } from 'react-icons/si';
 import './Footer.css';
 
 const Footer = () => {
@@ -36,9 +37,10 @@ const Footer = () => {
             <h4 className="f-col-title">About the Brand</h4>
             <p className="f-brand-desc">Shoraluxe is a tribute to timeless beauty, blending ancient rituals with modern dermatology. Our formulations are crafted for results, designed for luxury.</p>
             <div className="f-social-aura">
-              <a href="#" className="f-social-link instagram"><FaInstagram size={18} /></a>
-              <a href="#" className="f-social-link facebook"><FaFacebook size={18} /></a>
-              <a href="#" className="f-social-link youtube"><FaYoutube size={18} /></a>
+              <a href="https://www.instagram.com/shora_luxe?igsh=MXhnNW82ZG0zbHVoaQ==" target="_blank" rel="noopener noreferrer" className="f-social-link instagram"><FaInstagram size={18} /></a>
+              <a href="https://www.facebook.com/profile.php?id=61580485915665&sk=directory_links" target="_blank" rel="noopener noreferrer" className="f-social-link facebook"><FaFacebook size={18} /></a>
+              <a href="https://youtube.com/@shoraluxe?si=nWwGVUSLCTnNGWyz" target="_blank" rel="noopener noreferrer" className="f-social-link youtube"><FaYoutube size={18} /></a>
+              <a href="https://www.threads.net/@shora_luxe" target="_blank" rel="noopener noreferrer" className="f-social-link threads"><SiThreads size={18} /></a>
             </div>
           </div>
 
