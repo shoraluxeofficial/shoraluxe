@@ -98,6 +98,21 @@ const WatchAndShop = () => {
     }
   };
 
+  const handleShare = (e, story) => {
+    e.stopPropagation();
+    const productUrl = `${window.location.origin}/product/${story.productId}`;
+    if (navigator.share) {
+      navigator.share({
+        title: story.title,
+        text: story.overlayText || 'Check out this product!',
+        url: productUrl,
+      }).catch(err => console.log('Error sharing:', err));
+    } else {
+      navigator.clipboard.writeText(productUrl);
+      alert('Link copied to clipboard!');
+    }
+  };
+
   if (!stories) {
     return (
       <section className="watch-section">
@@ -138,7 +153,7 @@ const WatchAndShop = () => {
                 )}
 
                 {/* Top Badge: Discount */}
-                <div className="story-discount-badge">{story.discount}</div>
+                {story.discount && <div className="story-discount-badge">{story.discount}</div>}
 
                 {/* Top Right: Views */}
                 <div className="story-views-badge">
@@ -153,8 +168,9 @@ const WatchAndShop = () => {
 
                 {/* Interaction Icons */}
                 <div className="story-actions">
-                  <button className="story-icon-btn" onClick={(e) => { e.stopPropagation(); }}><Heart size={18} /></button>
-                  <button className="story-icon-btn" onClick={(e) => { e.stopPropagation(); }}><Send size={18} /></button>
+                  <button className="story-icon-btn" onClick={(e) => handleShare(e, story)}>
+                    <Send size={18} />
+                  </button>
                 </div>
               </div>
 
@@ -164,7 +180,13 @@ const WatchAndShop = () => {
                   <span className="story-current-price">₹ {story.price}</span>
                   {story.originalPrice && <span className="story-original-price">₹ {story.originalPrice}</span>}
                 </div>
-                <button className="story-buy-btn">
+                <button 
+                  className="story-buy-btn" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProductClick(story.productId);
+                  }}
+                >
                   <ShoppingBag size={16} /> Shop Now
                 </button>
               </div>
