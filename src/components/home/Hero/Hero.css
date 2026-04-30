@@ -7,7 +7,8 @@
 
 .hero-slider-wrap {
   width: 100%;
-  aspect-ratio: 16 / 8; /* Increased from 16/6 to show more vertical content of videos */
+  aspect-ratio: 16 / 6;
+  /* Slimmer ultra-wide aspect ratio to reduce vertical height */
   height: auto;
   overflow: hidden;
   position: relative;
@@ -18,7 +19,8 @@
   display: flex;
   height: 100%;
   width: 100%;
-  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); /* Ultra-smooth scroll effect */
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  /* Ultra-smooth scroll effect */
   transform: translateZ(0);
   backface-visibility: hidden;
   will-change: transform;
@@ -38,21 +40,37 @@
   overflow: hidden;
 }
 
-.hero-media-desktop { display: block; height: 100%; width: 100%; }
-.hero-media-mobile { display: none; height: 100%; width: 100%; }
+.hero-media-desktop {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.hero-media-mobile {
+  display: none;
+  height: 100%;
+  width: 100%;
+}
 
 @media (max-width: 768px) {
-  .hero-media-desktop { display: none; }
-  .hero-media-mobile { display: block; }
+  .hero-media-desktop {
+    display: none;
+  }
+
+  .hero-media-mobile {
+    display: block;
+  }
 }
 
 .hero-slide-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center; /* Ensures the sharpest focal point is centered */
+  object-position: center;
+  /* Ensures the sharpest focal point is centered */
   display: block;
-  image-rendering: auto; /* Uses smooth scaling for compressed images */
+  image-rendering: auto;
+  /* Uses smooth scaling for compressed images */
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -65,7 +83,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.15) 100%);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.15) 100%);
   z-index: 2;
 }
 
@@ -87,7 +105,8 @@
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s ease;
-  opacity: 0; /* Hide by default, show on hover */
+  opacity: 0;
+  /* Hide by default, show on hover */
 }
 
 .hero-slider-wrap:hover .slider-arrow {
@@ -99,8 +118,13 @@
   color: var(--brand-red-base);
 }
 
-.slider-arrow.prev { left: 20px; }
-.slider-arrow.next { right: 20px; }
+.slider-arrow.prev {
+  left: 20px;
+}
+
+.slider-arrow.next {
+  right: 20px;
+}
 
 /* Pagination Dots */
 .hero-pagination {
@@ -127,7 +151,7 @@
 .pagination-dot.active {
   background-color: #fff;
   transform: scale(1.4);
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .pagination-dot:hover {
@@ -144,17 +168,23 @@
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 0; /* Flush to edges on mobile */
+    padding: 0;
+    /* Flush to edges on mobile */
   }
+
   .hero-slider-wrap {
     height: auto;
-    aspect-ratio: 4 / 5; /* Standard mobile portrait ratio */
-    border-radius: 0; /* Flush edge-to-edge on mobile too */
+    aspect-ratio: 4 / 5;
+    /* Standard mobile portrait ratio */
+    border-radius: 0;
+    /* Flush edge-to-edge on mobile too */
   }
+
   .slider-arrow {
     width: 40px;
     height: 40px;
   }
+
   .hero-pagination {
     bottom: 22px;
     gap: 10px;
