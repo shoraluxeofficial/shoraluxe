@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
-import { ChevronLeft, ChevronRight, Heart, Send, Eye, ShoppingBag } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, Video } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { getOptimizedImageUrl } from '../../../lib/upload';
 import './WatchAndShop.css';
@@ -79,7 +78,7 @@ const WatchAndShop = () => {
     <section className="watch-section">
       <div className="watch-inner">
         <div className="watch-header">
-          <h2 className="watch-main-heading">Watch</h2>
+          <h2 className="watch-main-heading">Video Stories</h2>
           <div className="watch-controls">
             <button className="watch-scroll-btn" onClick={() => scroll('left')}><ChevronLeft size={20} /></button>
             <button className="watch-scroll-btn" onClick={() => scroll('right')}><ChevronRight size={20} /></button>

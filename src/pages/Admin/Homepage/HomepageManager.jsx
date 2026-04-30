@@ -28,7 +28,7 @@ const TABS = [
   { key: 'cta', label: 'CTA Section', icon: LayoutDashboard, type: 'object' },
   { key: 'quiz', label: 'Quiz Section', icon: FileText, type: 'object' },
   { key: 'videoBanners', label: 'Video Banners', icon: Video, type: 'array' },
-  { key: 'watchAndShop', label: 'Watch & Shop', icon: ShoppingBag, type: 'array' },
+  { key: 'watchAndShop', label: 'Video Stories', icon: Video, type: 'array' },
 ];
 
 // ── INLINE EDIT MODAL ────────────────────────────────────────────────────────
