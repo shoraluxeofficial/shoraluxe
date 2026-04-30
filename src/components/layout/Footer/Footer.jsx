@@ -57,11 +57,10 @@ const Footer = () => {
           <div className="f-col">
             <h4 className="f-col-title">Guest Services</h4>
             <nav className="f-nav">
-              <Link to="/track-order" className="f-nav-item">Track Order</Link>
-              <Link to="/quiz" className="f-nav-item">Skin Consultation</Link>
-              <Link to="/account" className="f-nav-item">My Account</Link>
-              <Link to="/my-orders" className="f-nav-item">My Orders</Link>
-              <Link to="/privacy" className="f-nav-item">Privacy & Terms</Link>
+              <Link to="/contact" className="f-nav-item">Contact Us</Link>
+              <Link to="/policies" className="f-nav-item">Our Policies</Link>
+              <Link to="/terms-conditions" className="f-nav-item">Terms and Conditions</Link>
+              <Link to="/terms-service" className="f-nav-item">Terms of Service</Link>
             </nav>
           </div>
         </div>
