@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../../components/layout/Navbar/Navbar';
 import Footer from '../../components/layout/Footer/Footer';
 import CartSidebar from '../../components/cart/CartSidebar';
+import ScrollToTop from '../../components/layout/ScrollToTop/ScrollToTop';
 
 import { useShop } from '../../context/ShopContext';
 
@@ -22,6 +23,7 @@ const UserLayout = () => {
         <Outlet />
       </main>
       <CartSidebar />
+      <ScrollToTop />
       {pathname !== '/account' && <Footer />}
     </div>
   );
