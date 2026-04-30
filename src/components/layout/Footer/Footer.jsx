@@ -42,6 +42,9 @@ const Footer = () => {
               <a href="https://youtube.com/@shoraluxe?si=nWwGVUSLCTnNGWyz" target="_blank" rel="noopener noreferrer" className="f-social-link youtube"><FaYoutube size={18} /></a>
               <a href="https://www.threads.net/@shora_luxe" target="_blank" rel="noopener noreferrer" className="f-social-link threads"><SiThreads size={18} /></a>
             </div>
+            <div className="f-contact-info">
+              <a href="mailto:contact@shoraluxe.com" className="f-contact-link">contact@shoraluxe.com</a>
+            </div>
           </div>
 
           <div className="f-col">

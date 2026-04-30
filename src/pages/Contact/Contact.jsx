@@ -24,7 +24,7 @@ const Contact = () => {
               <div className="info-text">
                 <h3>Email Us</h3>
                 <p>For order inquiries & support:</p>
-                <a href="mailto:support@shoraluxe.com">support@shoraluxe.com</a>
+                <a href="mailto:contact@shoraluxe.com">contact@shoraluxe.com</a>
               </div>
             </div>
 
@@ -35,7 +35,7 @@ const Contact = () => {
               <div className="info-text">
                 <h3>Call Us</h3>
                 <p>Mon-Sat: 10:00 AM - 7:00 PM</p>
-                <a href="tel:+919876543210">+91 98765 43210</a>
+                <a href="tel:+916304546107">+91 6304546107</a>
               </div>
             </div>
 
@@ -57,7 +57,7 @@ const Contact = () => {
               <div className="info-text">
                 <h3>WhatsApp</h3>
                 <p>Instant support via chat</p>
-                <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer">Chat with us</a>
+                <a href="https://wa.me/916304546107" target="_blank" rel="noopener noreferrer">Chat with us</a>
               </div>
             </div>
           </div>
@@ -79,20 +79,8 @@ const Contact = () => {
                     <input type="email" placeholder="your@email.com" required />
                   </div>
                 </div>
-
                 <div className="form-group">
-                  <label>Subject</label>
-                  <select>
-                    <option>Order Inquiry</option>
-                    <option>Product Recommendation</option>
-                    <option>Business/Partnership</option>
-                    <option>Feedback/Suggestion</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>Message</label>
+                  <label>Feedback/Suggestion</label>
                   <textarea rows="5" placeholder="How can we help?"></textarea>
                 </div>
 

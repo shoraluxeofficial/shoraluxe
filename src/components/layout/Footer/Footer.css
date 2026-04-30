@@ -191,6 +191,27 @@
   background: #000000;
 }
 
+.f-contact-info {
+  margin-top: 1.5rem;
+}
+
+.f-contact-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  display: inline-block;
+  border-bottom: 1px solid transparent;
+}
+
+.f-contact-link:hover {
+  opacity: 1;
+  color: var(--brand-gold);
+  border-bottom-color: var(--brand-gold);
+}
+
 /* NAV ITEMS */
 .f-nav {
   display: flex;
