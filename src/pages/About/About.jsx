@@ -19,7 +19,7 @@ const About = () => {
             <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?q=80&w=1000" alt="Shoraluxe Products" />
           </div>
           <div className="story-text">
-            <h2 className="story-heading">Made Specifically for Indian Skin Types</h2>
+            <h2 className="story-heading">Shora Luxe - A skincare that made especially for Indian skin conditions.</h2>
             <p>At Shora Luxe, we believe skincare should do more than look good on a label—it should deliver results you can see and feel. While much of the global skincare industry formulates for broader, often different skin needs, Indian skin requires a more thoughtful approach.</p>
             <p>From intense heat and humidity to pigmentation, sensitivity, and daily environmental stress, these are not occasional concerns—they're part of everyday life. That's where Shora Luxe is different.</p>
             <p>We create skincare that is intentionally formulated for Indian skin types combining advanced scientific research with carefully selected, high performance ingredients. Every product is designed to address real concerns with precision, effectiveness, and consistency.</p>
@@ -27,18 +27,18 @@ const About = () => {
             <div className="approach-box">
               <h3>Our approach is simple:</h3>
               <ul>
-                <li><span>•</span> No unnecessary fillers</li>
-                <li><span>•</span> No complicated routines</li>
-                <li><span>•</span> No empty promises</li>
+                <li>No unnecessary fillers</li>
+                <li>No complicated routines</li>
+                <li>No empty promises</li>
               </ul>
             </div>
 
             <p>Only purposeful formulations that support your skin in the climate and conditions you actually live in. Because when skincare is created with your skin in mind, it doesn't just promise results, it delivers them.</p>
             
             <div className="feature-checkmarks">
-              <div className="check-item">✓ Dermatologist Tested & Approved</div>
-              <div className="check-item">✓ Cruelty-Free & Clean Formulations</div>
-              <div className="check-item">✓ Made for Indian Skin Types</div>
+              <div className="check-item">✔️ Dermatologist Tested & Approved</div>
+              <div className="check-item">✔️ Cruelty-Free & Clean Formulations</div>
+              <div className="check-item">✔️ Made for Indian Skin Types</div>
             </div>
 
             <p className="story-closing">At Shora Luxe, our philosophy is simple — <strong>Glow effortlessly, live luxuriously, and love your skin unconditionally.</strong></p>
