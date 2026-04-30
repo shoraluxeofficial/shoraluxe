@@ -44,10 +44,12 @@ const Footer = () => {
 
           <div className="f-col">
             <h4 className="f-col-title">Shop Collections</h4>
+            <nav className="f-nav">
               <Link to="/shop" className="f-nav-item">All Products</Link>
               <Link to="/shop" className="f-nav-item">New Arrivals</Link>
               <Link to="/shop" className="f-nav-item">Bestsellers</Link>
               <Link to="/shop?category=combo" className="f-nav-item">Combos & Kits</Link>
+            </nav>
           </div>
 
           <div className="f-col">
