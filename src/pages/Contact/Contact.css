@@ -24,7 +24,7 @@
   font-size: 0.8rem;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--brand-gold);
+  color: #c5a059;
   margin-bottom: 1rem;
 }
 
@@ -76,13 +76,13 @@
 
 .info-card:hover {
   transform: translateY(-5px);
-  border-color: var(--brand-red-base);
+  border-color: #6d0e2c;
   box-shadow: 0 15px 40px rgba(109, 14, 44, 0.1);
 }
 
 .info-icon-box {
   background: rgba(109, 14, 44, 0.05);
-  color: var(--brand-red-base);
+  color: #6d0e2c;
   width: 60px;
   height: 60px;
   border-radius: 16px;
@@ -114,7 +114,7 @@
 }
 
 .info-text a:hover {
-  color: var(--brand-red-base);
+  color: #6d0e2c;
 }
 
 /* FORM COL */
@@ -174,13 +174,13 @@
 }
 
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  border-color: var(--brand-red-base);
+  border-color: #6d0e2c;
   background: #fff;
   box-shadow: 0 0 0 4px rgba(109, 14, 44, 0.05);
 }
 
 .contact-submit-btn {
-  background: var(--brand-red-base);
+  background: #6d0e2c;
   color: #fff;
   padding: 1.2rem;
   border: none;
