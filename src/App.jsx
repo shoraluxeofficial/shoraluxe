@@ -13,6 +13,7 @@ const OrderTracking = lazy(() => import('./pages/OrderTracking/OrderTracking'));
 const UserLogin = lazy(() => import('./pages/UserLogin/UserLogin'));
 const MyOrders = lazy(() => import('./pages/MyOrders/MyOrders'));
 const Contact = lazy(() => import('./pages/Contact/Contact'));
+const About = lazy(() => import('./pages/About/About'));
 const Policies = lazy(() => import('./pages/Legal/Policies'));
 const TermsConditions = lazy(() => import('./pages/Legal/TermsConditions'));
 const TermsService = lazy(() => import('./pages/Legal/TermsService'));
@@ -155,6 +156,7 @@ function App() {
               <Route path="track-order" element={<OrderTracking />} />
               <Route path="quiz" element={<QuizSection />} />
               <Route path="contact" element={<Contact />} />
+              <Route path="about" element={<About />} />
               <Route path="policies" element={<Policies />} />
               <Route path="terms-conditions" element={<TermsConditions />} />
               <Route path="terms-service" element={<TermsService />} />
