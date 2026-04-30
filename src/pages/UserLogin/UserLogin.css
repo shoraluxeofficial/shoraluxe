@@ -333,21 +333,34 @@
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  .user-brand-panel {
-    display: none;
+  .user-login-page {
+    background: linear-gradient(150deg, #6d0e2c 0%, #3d0618 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
   }
 
   .user-login-split {
     background: transparent;
+    width: 100%;
+    height: auto;
   }
 
   .user-form-panel {
-    padding: 2rem 1.5rem;
-    align-items: center;
-    background: #fff;
-    border-radius: 20px;
-    margin: 1.5rem;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 3rem 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-form-logo img {
+    height: 60px;
+    margin-bottom: 0.5rem;
   }
 
   .user-form-wrap {
