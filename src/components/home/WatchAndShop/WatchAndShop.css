@@ -2,6 +2,7 @@
   width: 100%;
   padding: 3rem 0;
   background-color: var(--bg-main);
+  contain: content; /* Rendering optimization */
 }
 
 .watch-inner {
@@ -59,17 +60,21 @@
   padding: 1rem 0 2rem;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; /* Smooth momentum scroll for iOS */
+  transform: translateZ(0);
+  will-change: scroll-position;
 }
 
 .story-card {
   flex: 0 0 280px;
-  background: #000; /* Solid black background for videos */
+  background: #000;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
-  transform: translateZ(0); /* Hardware acceleration */
+  transform: translateZ(0);
+  content-visibility: auto; /* Browser optimization for off-screen cards */
 }
 
 .story-card:hover {
@@ -85,7 +90,6 @@
   transform: translateZ(0);
 }
 
-.story-img,
 .story-video {
   position: absolute;
   top: 0;
