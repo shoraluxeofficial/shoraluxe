@@ -18,7 +18,11 @@ const PromoCodes = () => {
         .order('created_at', { ascending: false });
       
       const now = new Date();
-      const validCodes = (data || []).filter(c => !c.expires_at || new Date(c.expires_at) > now);
+      const validCodes = (data || []).filter(c => {
+        const isNotExpired = !c.expires_at || new Date(c.expires_at) > now;
+        const hasValidValue = c.discount_value > 0;
+        return isNotExpired && hasValidValue;
+      });
       setCodes(validCodes);
     };
     fetchCodes();
