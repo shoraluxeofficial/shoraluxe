@@ -36,10 +36,10 @@ const Footer = () => {
             <h4 className="f-col-title">About the Brand</h4>
             <p className="f-brand-desc">Shoraluxe is a tribute to timeless beauty, blending ancient rituals with modern dermatology. Our formulations are crafted for results, designed for luxury.</p>
             <div className="f-social-aura">
-              <a href="#" className="f-social-link"><FaInstagram size={18} /></a>
-              <a href="#" className="f-social-link"><FaFacebook size={18} /></a>
-              <a href="#" className="f-social-link"><FaYoutube size={18} /></a>
-              <a href="#" className="f-social-link"><FaTwitter size={18} /></a>
+              <a href="#" className="f-social-link instagram"><FaInstagram size={18} /></a>
+              <a href="#" className="f-social-link facebook"><FaFacebook size={18} /></a>
+              <a href="#" className="f-social-link youtube"><FaYoutube size={18} /></a>
+              <a href="#" className="f-social-link twitter"><FaTwitter size={18} /></a>
             </div>
           </div>
 
@@ -58,7 +58,7 @@ const Footer = () => {
               <Link to="/quiz" className="f-nav-item">Skin Consultation</Link>
               <Link to="/account" className="f-nav-item">My Account</Link>
               <Link to="/my-orders" className="f-nav-item">My Orders</Link>
-              <a href="#" className="f-nav-item">Privacy & Terms</a>
+              <Link to="/privacy" className="f-nav-item">Privacy & Terms</Link>
             </nav>
           </div>
         </div>
