@@ -16,7 +16,7 @@ const About = () => {
       <section className="about-story">
         <div className="about-story-container">
           <div className="story-image">
-            <img src="https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?q=80&w=1000" alt="Shoraluxe Products" />
+            <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=1000" alt="Shoraluxe Luxury Collection" />
           </div>
           <div className="story-text">
             <h2 className="story-heading">Shora Luxe - A skincare that made especially for Indian skin conditions.</h2>
@@ -108,7 +108,7 @@ const About = () => {
         <div className="blog-grid">
           <div className="blog-card">
             <div className="blog-img-wrap">
-              <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=500" alt="Vitamin C Serum" />
+              <img src="https://images.unsplash.com/photo-1556229162-5c63ed9c4ffb?q=80&w=500" alt="Vitamin C Serum" />
             </div>
             <div className="blog-info">
               <h3>Vitamin C & Niacinamide Face Serum: The Brightening Duo Your Skin Has Been Waiting For</h3>
@@ -117,7 +117,7 @@ const About = () => {
           </div>
           <div className="blog-card">
             <div className="blog-img-wrap">
-              <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=500" alt="Sun Protection" />
+              <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500" alt="Sun Protection" />
             </div>
             <div className="blog-info">
               <h3>Thank Your Future Skin Using Our Sunscreen Cream SPF 50+: Your Everyday Defense Against Invisible Skin Damage</h3>
