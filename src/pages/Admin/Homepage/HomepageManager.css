@@ -211,6 +211,11 @@
   border: 1px solid #e5e7eb;
 }
 
+.hm-card-video-thumb.vertical {
+  height: 120px;
+  width: 68px; /* 9:16 ratio approximately */
+}
+
 .hm-card-no-img {
   width: 100px;
   height: 60px;

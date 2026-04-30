@@ -20,7 +20,7 @@ const VIDEO_DEFAULTS = [
   { url: '', title: 'Radiant Glow', desc: 'Unlock your natural luminosity safely.' },
 ];
 const WATCH_SHOP_DEFAULTS = [
-  { title: 'Non-Sticky Moisturizer', price: 389, originalPrice: 499, discount: '22% off', views: '1.2K', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png', video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4', overlayText: 'Deep hydration without the stickiness' },
+  { title: 'Brand Story', video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4' },
 ];
 
 const TABS = [
@@ -170,7 +170,7 @@ const HomepageManager = () => {
     const blanks = {
       hero: { desktopImg: '', mobileImg: '', url: '', alt: '' },
       videoBanners: { url: '', title: '', desc: '' },
-      watchAndShop: { title: '', price: '', originalPrice: '', discount: '', views: '0', img: '', video: '', overlayText: '' },
+      watchAndShop: { title: '', video: '' },
     };
     const currentTabObj = TABS.find(t => t.key === activeTab);
     const tabLabel = currentTabObj.label.replace(/s$/, ''); // e.g. "Hero Banner"
@@ -498,66 +498,11 @@ const HomepageManager = () => {
     if (activeTab === 'watchAndShop') return (
       <div className="hm-edit-fields">
         <div className="hm-field">
-          <label>Select Product (Auto-fill)</label>
-          <select
-            className="hm-url-select"
-            style={{ width: '100%', marginBottom: '0.5rem' }}
-            onChange={async (e) => {
-              const prodId = e.target.value.split('/').pop();
-              // Find product in our context products list
-              const p = products.find(prod => String(prod.id) === String(prodId));
-              if (p) {
-                setEditModal(prev => ({
-                  ...prev,
-                  draft: {
-                    ...prev.draft,
-                    title: p.title,
-                    price: p.price,
-                    originalPrice: p.original_price || p.originalPrice,
-                    img: p.img,
-                  }
-                }));
-              }
-            }}
-            value=""
-          >
-            <option value="" disabled>Pick a product to fill details...</option>
-            {products.map(p => (
-              <option key={p.id} value={`/product/${p.id}`}>{p.title}</option>
-            ))}
-          </select>
+          <label>Video Title (For Admin Reference)</label>
+          <input type="text" value={d.title || ''} onChange={e => upd('title', e.target.value)} placeholder="e.g. Morning Routine" />
         </div>
         <div className="hm-field">
-          <label>Product Title</label>
-          <input type="text" value={d.title || ''} onChange={e => upd('title', e.target.value)} />
-        </div>
-        <div className="hm-field-grid">
-          <div className="hm-field">
-            <label>Price (₹)</label>
-            <input type="number" value={d.price || ''} onChange={e => upd('price', e.target.value)} />
-          </div>
-          <div className="hm-field">
-            <label>Original Price (₹)</label>
-            <input type="number" value={d.originalPrice || ''} onChange={e => upd('originalPrice', e.target.value)} />
-          </div>
-          <div className="hm-field">
-            <label>Discount Tag</label>
-            <input type="text" value={d.discount || ''} onChange={e => upd('discount', e.target.value)} placeholder="e.g. 35% off" />
-          </div>
-          <div className="hm-field">
-            <label>Views Count</label>
-            <input type="text" value={d.views || ''} onChange={e => upd('views', e.target.value)} placeholder="e.g. 1.2K" />
-          </div>
-        </div>
-        <div className="hm-field">
-          <label>Overlay Text</label>
-          <input type="text" value={d.overlayText || ''} onChange={e => upd('overlayText', e.target.value)} placeholder="Tagline shown on video..." />
-        </div>
-        <div className="hm-field">
-          {renderVisualUpload('img', 'Product Image / Thumbnail')}
-        </div>
-        <div className="hm-field">
-          <label>Short Video (.mp4, 10–15 sec)</label>
+          <label>Video File (.mp4)</label>
           <div className="hm-field-row">
             <input type="text" value={d.video || ''} onChange={e => upd('video', e.target.value)} placeholder="https://..." />
             <label className={`hm-upload-btn ${uploading === 'video' ? 'loading' : ''}`}>
@@ -675,24 +620,21 @@ const HomepageManager = () => {
     if (activeTab === 'watchAndShop') return (
       <div className="hm-card" key={index}>
         <div className="hm-card-preview">
-          {item.img
-            ? <img src={item.img} alt={item.title} className="hm-card-img" onError={e => e.target.style.display = 'none'} />
-            : <div className="hm-card-no-img"><ShoppingBag size={20} /></div>
-          }
+          <div className="hm-card-video-thumb vertical">
+            {item.video
+              ? <video src={item.video} muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : <Video size={22} color="#9ca3af" />
+            }
+          </div>
           <div className="hm-card-info">
-            <p className="hm-card-title">{item.title || 'Untitled Product'}</p>
-            <div className="hm-card-chips">
-              <span className="hm-chip hm-chip-green">₹{item.price}</span>
-              {item.discount && <span className="hm-chip hm-chip-orange">{item.discount}</span>}
-              <span className={`hm-chip ${item.video ? 'hm-chip-purple' : 'hm-chip-red'}`}>
-                {item.video ? '🎥 Video' : '⚠ No video'}
-              </span>
-            </div>
-            {item.overlayText && <p className="hm-card-sub">{item.overlayText}</p>}
+            <p className="hm-card-title">{item.title || 'Untitled Video'}</p>
+            <span className={`hm-chip ${item.video ? 'hm-chip-purple' : 'hm-chip-red'}`}>
+              {item.video ? '🎥 Video Ready' : '⚠ No Video'}
+            </span>
           </div>
         </div>
         <div className="hm-card-actions">
-          <button className="hm-action-btn hm-btn-edit" title="Edit" onClick={() => openEdit(index, 'Product Story')}><Pencil size={14} /></button>
+          <button className="hm-action-btn hm-btn-edit" title="Edit" onClick={() => openEdit(index, 'Video Story')}><Pencil size={14} /></button>
           <button className="hm-action-btn hm-btn-delete" title="Delete" onClick={() => handleDelete(index)}><Trash2 size={14} /></button>
         </div>
       </div>
