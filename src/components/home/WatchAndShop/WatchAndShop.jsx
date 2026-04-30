@@ -8,87 +8,39 @@ import './WatchAndShop.css';
 const fallbackStories = [
   {
     id: 1,
-    productId: 9, // Moisturizer
+    productId: 9,
     title: 'Non-Sticky Moisturizer',
     price: 389,
     originalPrice: 489,
-    discount: '20% off',
+    discount: '22% off',
     views: '1.2K',
-    video: '/Watch&shop/1_Tube Moisturiser.mp4',
-    img: '',
+    video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png',
     overlayText: 'Deep hydration without the stickiness'
   },
   {
     id: 2,
-    productId: 6, // Serum
+    productId: 6,
     title: 'Vitamin C & Niacinamide Serum',
     price: 359,
     originalPrice: 399,
     discount: '10% off',
     views: '2.5K',
-    video: '/Watch&shop/2_Serum.mp4',
-    img: '',
+    video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291907/shtcmpj4cucedvppiale.jpg',
     overlayText: 'Glow-boosting daily serum'
   },
   {
     id: 3,
-    productId: 1, // Face Wash
+    productId: 1,
     title: 'Salicylic Acid Face Wash',
     price: 319,
     originalPrice: 399,
     discount: '20% off',
     views: '3.1K',
-    video: '/Watch&shop/3_Face Wash.mp4',
-    img: '',
+    video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291865/ozy4pn5a42m3iuixbvvq.jpg',
     overlayText: 'Clear acne and prevent breakouts'
-  },
-  {
-    id: 4,
-    productId: 7, // Day Cream / Moisturizer 2
-    title: 'Brightening Day Cream SPF',
-    price: 559,
-    originalPrice: 659,
-    discount: '15% off',
-    views: '840',
-    video: '/Watch&shop/4_Moisturiser.mp4',
-    img: '',
-    overlayText: 'UV protection & brightening'
-  },
-  {
-    id: 5,
-    productId: 10, // Sunscreen Tube
-    title: 'Sunscreen Cream SPF 50+++',
-    price: 359,
-    originalPrice: 449,
-    discount: '20% off',
-    views: '4.2K',
-    video: '/Watch&shop/5_Tube Sunscreen_1.mp4',
-    img: '',
-    overlayText: 'No white cast daily defense'
-  },
-  {
-    id: 6,
-    productId: 10, // Sunscreen Pump/Other
-    title: 'Sunscreen SPF 50 Broad Spectrum',
-    price: 359,
-    originalPrice: 449,
-    discount: '20% off',
-    views: '1.9K',
-    video: '/Watch&shop/6_Sunscreen.mp4',
-    img: '',
-    overlayText: 'Ultimate sun protection'
-  },
-  {
-    id: 7,
-    productId: 142, // Combo Pack
-    title: 'Complete Skincare Trio Combo',
-    price: 899,
-    originalPrice: 1299,
-    discount: '30% off',
-    views: '5.5K',
-    video: '/Watch&shop/7_Combo Pack.mp4',
-    img: '',
-    overlayText: 'Your full skincare routine'
   }
 ];
 
@@ -171,6 +123,7 @@ const WatchAndShop = () => {
               <div className="story-media-wrap">
                 {story.video ? (
                   <video
+                    key={story.video}
                     className="story-video"
                     src={getOptimizedImageUrl(story.video)}
                     poster={getOptimizedImageUrl(story.img, 'w_400,q_auto,f_auto')}
@@ -178,6 +131,7 @@ const WatchAndShop = () => {
                     loop
                     autoPlay
                     playsInline
+                    preload="auto"
                   />
                 ) : (
                   <img src={getOptimizedImageUrl(story.img, 'w_400,q_auto,f_auto')} alt={story.title} className="story-img" />

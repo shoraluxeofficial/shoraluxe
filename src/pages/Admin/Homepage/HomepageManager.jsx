@@ -20,7 +20,7 @@ const VIDEO_DEFAULTS = [
   { url: '', title: 'Radiant Glow', desc: 'Unlock your natural luminosity safely.' },
 ];
 const WATCH_SHOP_DEFAULTS = [
-  { title: 'Rewind Age Reversing Gel', price: 1234, originalPrice: 1899, discount: '35% off', views: '904', img: 'https://images.unsplash.com/photo-1590736962386-38703a987679?auto=format&fit=crop&q=80&w=400', video: '', overlayText: 'Reduces wrinkles by 11% in 5 days' },
+  { title: 'Non-Sticky Moisturizer', price: 389, originalPrice: 499, discount: '22% off', views: '1.2K', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png', video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4', overlayText: 'Deep hydration without the stickiness' },
 ];
 
 const TABS = [
@@ -233,7 +233,7 @@ const HomepageManager = () => {
     const renderVisualUpload = (field, label, isMobile = false) => {
       const isUploading = uploading === field;
       const url = d[field] || '';
-      const isVideo = url.toLowerCase().endsWith('.mp4');
+      const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.mov') || url.includes('/video/upload/');
       return (
         <div className="hm-visual-upload">
           <label>{label}</label>
@@ -565,6 +565,11 @@ const HomepageManager = () => {
               <input type="file" accept="video/mp4,video/quicktime" hidden onChange={e => handleUpload(e, 'video')} />
             </label>
           </div>
+          {d.video && (
+            <div className="hm-video-preview-wrap" style={{ marginTop: '0.5rem', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb', background: '#000', aspectRatio: '9/16', maxWidth: '200px', position: 'relative' }}>
+              <video src={d.video} muted loop playsInline autoPlay style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          )}
         </div>
       </div>
     );

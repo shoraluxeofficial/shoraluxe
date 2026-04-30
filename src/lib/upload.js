@@ -49,6 +49,7 @@ export const uploadToCloudinary = async (file) => {
  */
 export const getOptimizedImageUrl = (url, transformations = 'f_auto,q_auto') => {
   if (!url || !url.includes('cloudinary.com')) return url;
+  if (url.includes(transformations)) return url;
   return url.replace('/upload/', `/upload/${transformations}/`);
 };
 

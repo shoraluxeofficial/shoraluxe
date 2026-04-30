@@ -76,14 +76,22 @@
 
 .story-media-wrap {
   position: relative;
-  aspect-ratio: 9 / 14;
+  aspect-ratio: 9 / 16;
   overflow: hidden;
+  background-color: #000;
+  display: block;
 }
 
-.story-img {
+.story-img,
+.story-video {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 /* OVERLAYS */
