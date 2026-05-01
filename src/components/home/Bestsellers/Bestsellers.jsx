@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Star, ArrowRight, Heart, Share2 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
-import { getOptimizedImageUrl } from '../../../lib/upload';
+// Fallback for image optimization if import fails
+const getOptimizedImageUrl = (url, transformations = 'f_auto,q_auto') => {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  if (url.includes(transformations)) return url;
+  return url.replace('/upload/', `/upload/${transformations}/`);
+};
+
 import './Bestsellers.css';
 
 const Bestsellers = () => {
