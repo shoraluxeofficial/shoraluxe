@@ -430,14 +430,28 @@
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-/* Wishlist with Glass Effect */
-.wishlist-btn-luxe {
+/* Action Buttons Container */
+.product-card-actions {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   z-index: 10;
-  width: 42px;
-  height: 42px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.product-card:hover .product-card-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.wishlist-btn-luxe, .share-btn-luxe {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-effect);
@@ -447,15 +461,20 @@
   justify-content: center;
   cursor: pointer;
   color: var(--luxe-text-muted);
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-.wishlist-btn-luxe:hover, .wishlist-btn-luxe.active {
+.wishlist-btn-luxe:hover, .share-btn-luxe:hover {
   background: #fff;
-  color: #ff4757;
+  color: var(--luxe-burgundy);
   transform: scale(1.1);
-  box-shadow: 0 8px 25px rgba(255, 71, 87, 0.2);
+  box-shadow: 0 8px 25px rgba(109, 14, 44, 0.15);
+}
+
+.wishlist-btn-luxe.active {
+  color: #ff4757;
+  background: #fff;
 }
 
 .product-card-overlay {

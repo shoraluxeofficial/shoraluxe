@@ -14,7 +14,8 @@ import {
   Info,
   Sparkles,
   Beaker,
-  Tag
+  Tag,
+  Share2
 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { getOptimizedImageUrl } from '../../lib/upload';
@@ -247,6 +248,25 @@ const ProductDetail = () => {
   const isOutOfStock = product.stock === 0;
   const isLowStock = product.stock > 0 && product.stock <= 5;
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: `Check out ${product.title} from Shoraluxe!`,
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        notify('Link copied to clipboard!', 'success');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        notify('Sharing failed. Please try again.', 'error');
+      }
+    }
+  };
+
   return (
     <div className="product-page-wrap">
       <SEO 
@@ -454,9 +474,14 @@ const ProductDetail = () => {
             >
               {isOutOfStock ? 'OUT OF STOCK' : `ADD TO CART - ₹${(currentPrice * quantity).toLocaleString('en-IN')}`}
             </button>
-            <button className="btn-wishlist-luxe">
-              <Heart size={20} />
-            </button>
+            <div className="pd-secondary-actions">
+              <button className="btn-wishlist-luxe">
+                <Heart size={20} />
+              </button>
+              <button className="btn-share-luxe" onClick={handleShare}>
+                <Share2 size={20} />
+              </button>
+            </div>
           </div>
 
           {/* ICON-LED TABS (Neudeskin Style) */}

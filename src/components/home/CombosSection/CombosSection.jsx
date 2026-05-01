@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Star, ArrowRight, Heart, Gift } from 'lucide-react';
+import { ShoppingBag, Star, ArrowRight, Heart, Gift, Share2 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
 import './CombosSection.css';
 
@@ -8,6 +8,26 @@ const CombosSection = () => {
   const { products, addToCart, loading } = useShop();
   const [addedId, setAddedId] = useState(null);
   const [wishlist, setWishlist] = useState([]);
+
+  const handleShare = async (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/product/${product.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: `Check out this amazing combo: ${product.title} from Shoraluxe!`,
+          url: url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') console.error('Share failed:', err);
+    }
+  };
 
   const combos = (() => {
     return products.filter(p => {
@@ -108,13 +128,22 @@ const CombosSection = () => {
                       
                       <span className="cs-pill promo">COMBO SAVINGS</span>
 
-                      <button
-                        className={`cs-wish-btn ${isWishlisted ? 'active' : ''}`}
-                        onClick={e => toggleWishlist(e, product.id)}
-                        title="Add to wishlist"
-                      >
-                        <Heart size={15} fill={isWishlisted ? 'currentColor' : 'none'} />
-                      </button>
+                      <div className="cs-action-cluster">
+                        <button
+                          className={`cs-wish-btn ${isWishlisted ? 'active' : ''}`}
+                          onClick={e => toggleWishlist(e, product.id)}
+                          title="Add to wishlist"
+                        >
+                          <Heart size={14} fill={isWishlisted ? 'currentColor' : 'none'} />
+                        </button>
+                        <button
+                          className="cs-share-btn"
+                          onClick={e => handleShare(e, product)}
+                          title="Share product"
+                        >
+                          <Share2 size={14} />
+                        </button>
+                      </div>
 
                       <div className="cs-card-overlay">
                         <button

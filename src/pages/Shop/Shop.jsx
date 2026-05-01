@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { supabase } from '../../lib/supabase';
 import { getOptimizedImageUrl } from '../../lib/upload';
@@ -230,6 +230,26 @@ const Shop = () => {
     setTimeout(() => setAddedToCart(null), 1800);
   };
 
+  const handleShare = async (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/product/${product.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: `Check out ${product.title} from Shoraluxe!`,
+          url: url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') console.error('Share failed:', err);
+    }
+  };
+
   const toggleWishlist = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -291,13 +311,21 @@ const Shop = () => {
              product.isNew ? 'New Arrival' : 'Premium Care'}
           </div>
 
-          {/* Glass Wishlist */}
-          <button
-            className={`wishlist-btn-luxe ${isWishlisted ? 'active' : ''}`}
-            onClick={e => toggleWishlist(e, product.id)}
-          >
-            <Heart size={18} fill={isWishlisted ? '#ff4757' : 'none'} />
-          </button>
+          {/* Glass Actions */}
+          <div className="product-card-actions">
+            <button
+              className={`wishlist-btn-luxe ${isWishlisted ? 'active' : ''}`}
+              onClick={e => toggleWishlist(e, product.id)}
+            >
+              <Heart size={16} fill={isWishlisted ? '#ff4757' : 'none'} />
+            </button>
+            <button
+              className="share-btn-luxe"
+              onClick={e => handleShare(e, product)}
+            >
+              <Share2 size={16} />
+            </button>
+          </div>
 
           {/* Quick-Add Overlay on Hover */}
           <div className="product-card-overlay">

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Star, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, ArrowRight, Share2 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
 import { getOptimizedImageUrl } from '../../../lib/upload';
 import './Products.css';
@@ -8,6 +8,26 @@ import './Products.css';
 const Products = () => {
   const scrollRef = useRef(null);
   const { products, addToCart, loading } = useShop();
+
+  const handleShare = async (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/product/${product.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: `Check out ${product.title} from Shoraluxe!`,
+          url: url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') console.error('Share failed:', err);
+    }
+  };
 
   // Exclude test product (id 999) and combos from New Arrivals, cap to 16 products
   const displayProducts = products.filter(p => p.id !== 999 && p.category !== 'combo').slice(0, 16);
@@ -89,6 +109,16 @@ const Products = () => {
                           {product.badge}
                         </span>
                       )}
+
+                      {/* Floating Actions */}
+                      <div className="product-card-floating-actions">
+                        <button 
+                          className="floating-action-btn share"
+                          onClick={(e) => handleShare(e, product)}
+                        >
+                          <Share2 size={16} />
+                        </button>
+                      </div>
 
                       {/* Stock Special Badges */}
                       {product.stock === 0 && (

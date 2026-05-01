@@ -167,26 +167,50 @@
   border: 1px solid #fed7aa;
 }
 
-.cs-wish-btn {
+.cs-action-cluster {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255,255,255,0.9);
-  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.cs-card:hover .cs-action-cluster {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.cs-wish-btn, .cs-share-btn {
   width: 32px;
   height: 32px;
   border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #64748b;
+  color: #555;
   cursor: pointer;
-  transition: all 0.2s;
-  z-index: 2;
+  transition: all 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.cs-wish-btn:hover { background: white; color: #be185d; }
-.cs-wish-btn.active { background: white; color: #be185d; }
+.cs-wish-btn:hover, .cs-share-btn:hover {
+  background: var(--brand-burgundy, #6d0e2c);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.cs-wish-btn.active {
+  color: #ff4757;
+  background: #fff;
+}
 
 .cs-card-overlay {
   position: absolute;
