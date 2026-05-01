@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
 import { getOptimizedImageUrl } from '../../../lib/upload';
 import './VideoBanners.css';
@@ -27,6 +28,7 @@ const defaultVideos = [
 const VideoBanners = () => {
   const [banners, setBanners] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchBanners();
@@ -92,7 +94,7 @@ const VideoBanners = () => {
               <div className="video-info">
                 <h3 className="v-title">{v.title}</h3>
                 <p className="v-desc">{v.desc}</p>
-                <button className="v-cta">EXPLORE RITUAL</button>
+                <button className="v-cta" onClick={() => navigate('/shop')}>EXPLORE RITUAL</button>
               </div>
             </div>
           </div>
