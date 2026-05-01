@@ -32,6 +32,7 @@ const AdminSecurity = lazy(() => import('./pages/Admin/Security/AdminSecurity'))
 const AdminLogin = lazy(() => import('./pages/Admin/Login/AdminLogin'));
 const AdminPromoCodes = lazy(() => import('./pages/Admin/PromoCodes/AdminPromoCodes'));
 const AdminCombos = lazy(() => import('./pages/Admin/Combos/AdminCombos'));
+const AdminNewsletter = lazy(() => import('./pages/Admin/Newsletter/AdminNewsletter'));
 
 
 // Guard component preventing unauthorized access to the admin panel
@@ -183,6 +184,7 @@ function App() {
               <Route path="homepage" element={<AdminHomepage />} />
               <Route path="promo-codes" element={<AdminPromoCodes />} />
               <Route path="combos" element={<AdminCombos />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
 
             </Route>
           </Routes>

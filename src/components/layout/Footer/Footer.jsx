@@ -3,18 +3,37 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Mail } from 'lucide-react';
 import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { SiThreads } from 'react-icons/si';
+import { supabase } from '../../../lib/supabase';
 import './Footer.css';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email.trim() || !email.includes('@')) return;
-    // Store email locally (can wire to Supabase later)
-    const existing = JSON.parse(localStorage.getItem('sl_newsletter') || '[]');
-    localStorage.setItem('sl_newsletter', JSON.stringify([...existing, { email, date: new Date().toISOString() }]));
+    setLoading(true);
+    setError('');
+
+    const { error: sbError } = await supabase
+      .from('newsletter_subscribers')
+      .insert([{ email: email.trim().toLowerCase(), source: 'footer' }]);
+
+    setLoading(false);
+
+    if (sbError) {
+      if (sbError.code === '23505') {
+        // Duplicate email
+        setError('This email is already subscribed! 🎉');
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
+      return;
+    }
+
     setSubscribed(true);
     setEmail('');
   };
@@ -50,22 +69,26 @@ const Footer = () => {
                 ✨ You're on the list! Watch your inbox for exclusive updates.
               </div>
             ) : (
-              <form className="fnl-form" onSubmit={handleSubscribe}>
-                <div className="fnl-input-wrap">
-                  <Mail size={16} className="fnl-input-icon" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                    className="fnl-input"
-                    required
-                  />
-                </div>
-                <button type="submit" className="fnl-btn">
-                  Subscribe <ArrowRight size={15} />
-                </button>
-              </form>
+              <>
+                <form className="fnl-form" onSubmit={handleSubscribe}>
+                  <div className="fnl-input-wrap">
+                    <Mail size={16} className="fnl-input-icon" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      className="fnl-input"
+                      required
+                      disabled={loading}
+                    />
+                  </div>
+                  <button type="submit" className="fnl-btn" disabled={loading}>
+                    {loading ? 'Subscribing...' : <> Subscribe <ArrowRight size={15} /> </>}
+                  </button>
+                </form>
+                {error && <p className="fnl-error">{error}</p>}
+              </>
             )}
             <p className="fnl-note">No spam, ever. Unsubscribe anytime.</p>
           </div>

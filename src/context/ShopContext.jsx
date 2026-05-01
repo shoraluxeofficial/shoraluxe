@@ -113,7 +113,7 @@ export const ShopProvider = ({ children }) => {
           const { data, error } = await supabase.from('users').select('cart_items').eq('id', user.id).single();
           if (!error && data && data.cart_items && Array.isArray(data.cart_items)) {
             const cloudCart = data.cart_items;
-            
+
             // Merge local and cloud carts
             setCartItems(prevLocal => {
               const merged = [...cloudCart];
@@ -140,7 +140,7 @@ export const ShopProvider = ({ children }) => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
-        return prev.map(item => 
+        return prev.map(item =>
           item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
         );
       }
@@ -155,7 +155,7 @@ export const ShopProvider = ({ children }) => {
 
   const updateQuantity = (productId, newQty) => {
     if (newQty < 1) return;
-    setCartItems(prev => prev.map(item => 
+    setCartItems(prev => prev.map(item =>
       item.id === productId ? { ...item, quantity: newQty } : item
     ));
   };
@@ -173,7 +173,7 @@ export const ShopProvider = ({ children }) => {
 
     cartItems.forEach(item => {
       subtotal += item.price * item.quantity;
-      
+
       const baseId = parseInt(String(item.id).split('-')[0], 10);
       // Only apply tiered discounts to individual products (ID < 100), not combos
       if (baseId < 100) {
@@ -193,15 +193,15 @@ export const ShopProvider = ({ children }) => {
     // The extra discount amount is taken off the eligible subtotal directly
     const tierDiscountAmt = Math.round(eligibleSubtotal * extraDiscountPct);
     const finalTotal = subtotal - tierDiscountAmt;
-    
+
     // The exact percentage shown in the UI
     const displayPct = extraDiscountPct * 100;
 
-    return { 
-      subtotal, 
-      total: Math.max(0, finalTotal), 
+    return {
+      subtotal,
+      total: Math.max(0, finalTotal),
       discount: tierDiscountAmt,
-      qtyDiscountPct: displayPct, 
+      qtyDiscountPct: displayPct,
       totalQty: eligibleQty, // Used for the nudge UI
       b2g1Discount: 0,
       tierDiscountAmt

@@ -14,7 +14,8 @@ import {
   ShieldCheck,
   Home as HomeIcon,
   Tag,
-  Gift
+  Gift,
+  Mail
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -43,6 +44,7 @@ const AdminLayout = () => {
     { path: '/admin/revenue', icon: <IndianRupee size={20} />, label: 'Revenue' },
     { path: '/admin/security', icon: <ShieldCheck size={20} />, label: 'Firewall' },
     { path: '/admin/reviews', icon: <MessageSquare size={20} />, label: 'Testimonials' },
+    { path: '/admin/newsletter', icon: <Mail size={20} />, label: 'Newsletter' },
     { path: '/admin/settings', icon: <Settings size={20} />, label: 'Store Settings' },
   ];
 

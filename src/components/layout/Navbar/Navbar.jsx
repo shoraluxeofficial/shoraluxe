@@ -1,4 +1,4 @@
-  import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, User, Menu, X, ChevronDown, LogOut, Droplets, Sparkles, Sun, Hourglass, Leaf, Waves, Wind, Shield, Truck } from 'lucide-react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useShop } from '../../../context/ShopContext';
@@ -79,7 +79,7 @@ const Navbar = () => {
                 key={promo.id}
                 className={`promo-slide ${index === currentPromoIndex ? 'active' : ''}`}
               >
-                Use Code <strong className="promo-highlight">{promo.code}</strong> 
+                Use Code <strong className="promo-highlight">{promo.code}</strong>
                 {promo.description ? ` : ${promo.description}` : ` for ${promo.discount_type === 'percentage' ? promo.discount_value + '% OFF' : '₹' + promo.discount_value + ' OFF'}`}
               </span>
             ))}
@@ -145,7 +145,7 @@ const Navbar = () => {
             {/* Actions */}
             <div className="nav-actions">
               {/* Removed redundant mobile search button as the shared one is now above */}
-              
+
               {/* Track Order Icon (Now on Mobile too) */}
               <Link to="/track-order" className="action-icon-btn">
                 <Truck size={22} strokeWidth={1.5} />
