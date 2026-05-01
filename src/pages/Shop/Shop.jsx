@@ -297,7 +297,7 @@ const Shop = () => {
         <div className="product-card-img-container">
           <Link to={`/product/${product.id}`} className="product-card-img-link">
             <img 
-              src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
+              src={getOptimizedImageUrl(product.img, 'w_800,q_auto,f_auto')} 
               alt={product.title} 
               className="shop-product-img" 
               loading="lazy" 

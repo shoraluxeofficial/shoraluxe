@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Star, ArrowRight, Heart } from 'lucide-react';
+import { ShoppingBag, Star, ArrowRight, Heart, Share2 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
 import './Bestsellers.css';
 
@@ -8,6 +8,26 @@ const Bestsellers = () => {
   const { products, addToCart, loading } = useShop();
   const [addedId, setAddedId] = useState(null);
   const [wishlist, setWishlist] = useState([]);
+
+  const handleShare = async (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/product/${product.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: `Check out Shoraluxe's Bestseller: ${product.title}!`,
+          url: url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') console.error('Share failed:', err);
+    }
+  };
 
   // Pick the 4 bestseller products (filter isBestseller, fallback to first 4 real products)
   // Preferred Sequence from user image
@@ -124,9 +144,19 @@ const Bestsellers = () => {
                   <Link to={`/product/${product.id}`} className="bs-card-img-link">
                     <div className="bs-card-img-wrap">
                       <div className={`bs-card-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
-                        <img src={product.img} alt={product.title} className="bs-card-img main" loading="lazy" />
+                        <img 
+                          src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
+                          alt={product.title} 
+                          className="bs-card-img main" 
+                          loading="lazy" 
+                        />
                         {product.gallery && product.gallery.length > 1 && (
-                          <img src={product.gallery[1]} alt={product.title} className="bs-card-img hover" loading="lazy" />
+                          <img 
+                            src={getOptimizedImageUrl(product.gallery[1], 'w_600,q_auto,f_auto')} 
+                            alt={product.title} 
+                            className="bs-card-img hover" 
+                            loading="lazy" 
+                          />
                         )}
                       </div>
 
@@ -139,14 +169,23 @@ const Bestsellers = () => {
                       {product.isSale && !product.promoGroup && <span className="bs-pill sale">Sale</span>}
                       {product.isNew && !product.isBestseller && !product.promoGroup && <span className="bs-pill new">New</span>}
 
-                      {/* Wishlist */}
-                      <button
-                        className={`bs-wish-btn ${isWishlisted ? 'active' : ''}`}
-                        onClick={e => toggleWishlist(e, product.id)}
-                        title="Add to wishlist"
-                      >
-                        <Heart size={15} fill={isWishlisted ? 'currentColor' : 'none'} />
-                      </button>
+                      {/* Floating Actions */}
+                      <div className="bs-action-cluster">
+                        <button
+                          className={`bs-wish-btn ${isWishlisted ? 'active' : ''}`}
+                          onClick={e => toggleWishlist(e, product.id)}
+                          title="Add to wishlist"
+                        >
+                          <Heart size={14} fill={isWishlisted ? 'currentColor' : 'none'} />
+                        </button>
+                        <button
+                          className="bs-share-btn"
+                          onClick={e => handleShare(e, product)}
+                          title="Share product"
+                        >
+                          <Share2 size={14} />
+                        </button>
+                      </div>
 
                       {/* Hover overlay */}
                       <div className="bs-card-overlay">

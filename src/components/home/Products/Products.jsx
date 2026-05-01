@@ -85,14 +85,14 @@ const Products = () => {
                     <Link to={`/product/${product.id}`} className="product-img-wrap" style={{ display: 'block' }}>
                       <div className={`product-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
                         <img 
-                          src={getOptimizedImageUrl(product.img, 'w_500,q_auto,f_auto')} 
+                          src={getOptimizedImageUrl(product.img, 'w_800,q_auto,f_auto')} 
                           alt={product.title} 
                           className="product-img main" 
                           loading="lazy" 
                         />
                         {product.gallery && product.gallery.length > 1 && (
                           <img 
-                            src={getOptimizedImageUrl(product.gallery[1], 'w_500,q_auto,f_auto')} 
+                            src={getOptimizedImageUrl(product.gallery[1], 'w_800,q_auto,f_auto')} 
                             alt={product.title} 
                             className="product-img hover" 
                             loading="lazy" 

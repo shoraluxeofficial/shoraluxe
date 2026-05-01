@@ -120,11 +120,22 @@
 .bs-card {
   position: relative;
   background: #fff;
-  animation: bsFadeUp 0.5s ease both;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: bsFadeUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) both;
   animation-delay: var(--delay, 0s);
   display: flex;
   flex-direction: column;
   height: 100%;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  transition: all 0.4s ease;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.bs-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  border-color: rgba(144, 114, 83, 0.1);
 }
 
 @keyframes bsFadeUp {
@@ -162,9 +173,8 @@
 .bs-card-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: 1.5rem;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  object-fit: cover;
+  transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .bs-card-img.hover {
@@ -367,7 +377,7 @@
 
 /* Card Info */
 .bs-card-info {
-  padding: 1.2rem 0 0;
+  padding: 1.25rem 1rem;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -615,7 +625,7 @@
   }
 
   .bs-card-info {
-    padding: 0.8rem 0 0;
+    padding: 1rem 0.8rem;
   }
 
   .bs-card-meta {
