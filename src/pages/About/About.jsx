@@ -52,11 +52,14 @@ const About = () => {
           </div>
           <div className="story-v2-gallery">
             <div className="gallery-main">
-              <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=1000" alt="Shoraluxe Core Collection" />
+              {/* Sunscreen SPF 50+++ — top bestseller */}
+              <img src="https://res.cloudinary.com/dfr0tlcdb/image/upload/w_800,q_90,f_auto/v1777485162/i79vwhurlkuvlrshykra.webp" alt="Shoraluxe Sunscreen SPF 50+++" />
             </div>
             <div className="gallery-sub">
-              <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=500" alt="Pure Serums" />
-              <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=500" alt="Botanical Extracts" />
+              {/* Non-Sticky Moisturizer */}
+              <img src="https://res.cloudinary.com/dfr0tlcdb/image/upload/w_500,q_90,f_auto/v1777485081/xtlfci5xezy4yjuf172l.webp" alt="Non-Sticky Moisturizer" />
+              {/* Charcoal Face Wash */}
+              <img src="https://res.cloudinary.com/dfr0tlcdb/image/upload/w_500,q_90,f_auto/v1777232225/shoraluxe/products/0_fvberx.jpg" alt="Charcoal Face Wash" />
             </div>
           </div>
         </div>
@@ -71,44 +74,42 @@ const About = () => {
         <div className="combos-grid">
           <div className="combo-card">
             <div className="combo-img-box">
-              {/* Image from user: COMPLETE SKINCARE TRIO COMBO */}
-              <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800" alt="Glow Trio" />
+              {/* Complete Skincare Trio (Small) */}
+              <img src="https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/products/combos/1777414313317-58zuln.jpeg" alt="Complete Skincare Trio" />
               <div className="combo-badge">BESTSELLER</div>
             </div>
             <div className="combo-info">
-              <h3>Daily Glow Trio</h3>
+              <h3>Complete Skincare Trio</h3>
               <p>Your complete routine for a radiant, healthy glow every single day.</p>
-              <span className="promo-code">CODE: SL-GLOWTRIO</span>
             </div>
           </div>
           <div className="combo-card">
             <div className="combo-img-box">
-              {/* Image from user: Sunset Skincare Routine */}
-              <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800" alt="Sunset Routine" />
-              <div className="combo-price">₹999</div>
+              {/* Glow Combo */}
+              <img src="https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/products/combos/1777418006678-s14943.jpeg" alt="Glow Combo" />
+              <div className="combo-badge">GLOW</div>
             </div>
             <div className="combo-info">
-              <h3>Sunset Skincare</h3>
-              <p>The perfect evening ritual to repair and nourish after a long day.</p>
+              <h3>Glow Combo</h3>
+              <p>The perfect ritual to brighten and nourish your skin every day.</p>
             </div>
           </div>
           <div className="combo-card">
             <div className="combo-img-box">
-              {/* Image from user: Your Complete Skincare Routine */}
-              <img src="https://images.unsplash.com/photo-1594125356682-3b0d3e0f9b6b?q=80&w=800" alt="Total Routine" />
+              {/* Day + Night Duo */}
+              <img src="https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/products/combos/1777417936532-woedrc.jpeg" alt="Day + Night Duo" />
               <div className="combo-badge">PREMIUM</div>
             </div>
             <div className="combo-info">
-              <h3>Total Transformation</h3>
-              <p>Five steps to luxury skincare, covering every need from AM to PM.</p>
-              <span className="promo-code">CODE: SL-TRIOLUXE</span>
+              <h3>Day + Night Duo</h3>
+              <p>AM to PM care covering every skin need for total transformation.</p>
             </div>
           </div>
           <div className="combo-card">
             <div className="combo-img-box">
-              {/* Image from user: Everyday Protection Combo */}
-              <img src="https://images.unsplash.com/photo-1598440441974-9842a2295551?q=80&w=800" alt="Protection Combo" />
-              <div className="combo-price">₹699</div>
+              {/* Every Day Protection Combo */}
+              <img src="https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/products/combos/1777417584348-f1t17e.png" alt="Every Day Protection Combo" />
+              <div className="combo-badge">PROTECT</div>
             </div>
             <div className="combo-info">
               <h3>Everyday Protection</h3>
