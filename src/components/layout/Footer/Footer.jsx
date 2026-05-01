@@ -1,22 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Mail } from 'lucide-react';
 import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { SiThreads } from 'react-icons/si';
 import './Footer.css';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) return;
+    // Store email locally (can wire to Supabase later)
+    const existing = JSON.parse(localStorage.getItem('sl_newsletter') || '[]');
+    localStorage.setItem('sl_newsletter', JSON.stringify([...existing, { email, date: new Date().toISOString() }]));
+    setSubscribed(true);
+    setEmail('');
+  };
+
   return (
     <footer className="footer-v2">
       {/* BACKGROUND VIDEO */}
       <div className="footer-video-bg">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="f-bg-video"
-        >
+        <video autoPlay muted loop playsInline className="f-bg-video">
           <source src="https://cdn.shopify.com/videos/c/o/v/6f0e395447a147e8b8c5e9f89542b5ff.mp4" type="video/mp4" />
         </video>
         <div className="f-video-overlay"></div>
@@ -29,6 +36,39 @@ const Footer = () => {
             <img src="/Logo.png" alt="Shoraluxe" className="footer-logo-img" />
           </Link>
           <p className="footer-mission-text">Elevating your daily ritual through the science of luxury skincare.</p>
+        </div>
+
+        {/* NEWSLETTER STRIP */}
+        <div className="footer-newsletter">
+          <div className="fnl-left">
+            <span className="fnl-eyebrow">STAY IN THE GLOW</span>
+            <h3 className="fnl-heading">Sign up for exclusive offers &amp; skincare tips</h3>
+          </div>
+          <div className="fnl-right">
+            {subscribed ? (
+              <div className="fnl-success">
+                ✨ You're on the list! Watch your inbox for exclusive updates.
+              </div>
+            ) : (
+              <form className="fnl-form" onSubmit={handleSubscribe}>
+                <div className="fnl-input-wrap">
+                  <Mail size={16} className="fnl-input-icon" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    className="fnl-input"
+                    required
+                  />
+                </div>
+                <button type="submit" className="fnl-btn">
+                  Subscribe <ArrowRight size={15} />
+                </button>
+              </form>
+            )}
+            <p className="fnl-note">No spam, ever. Unsubscribe anytime.</p>
+          </div>
         </div>
 
         {/* MIDDLE LINKS GRID */}
@@ -53,7 +93,7 @@ const Footer = () => {
               <Link to="/shop" className="f-nav-item">All Products</Link>
               <Link to="/shop" className="f-nav-item">New Arrivals</Link>
               <Link to="/shop" className="f-nav-item">Bestsellers</Link>
-              <Link to="/shop?category=combo" className="f-nav-item">Combos & Kits</Link>
+              <Link to="/shop?category=combo" className="f-nav-item">Combos &amp; Kits</Link>
             </nav>
           </div>
 
