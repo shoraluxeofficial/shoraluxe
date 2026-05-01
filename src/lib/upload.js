@@ -48,9 +48,25 @@ export const uploadToCloudinary = async (file) => {
  * @returns {string} Optimized URL
  */
 export const getOptimizedImageUrl = (url, transformations = 'f_auto,q_auto') => {
-  if (!url || !url.includes('cloudinary.com')) return url;
-  if (url.includes(transformations)) return url;
-  return url.replace('/upload/', `/upload/${transformations}/`);
+  if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) return url;
+  try {
+    const parts = url.split('/upload/');
+    if (parts.length !== 2) return url;
+    
+    const [baseUrl, rest] = parts;
+    const segments = rest.split('/');
+    
+    // If the first segment is a transformation block (not a version like v123...)
+    if (segments.length > 0 && !segments[0].match(/^v\d+$/)) {
+      segments[0] = transformations; // Replace existing transformation
+      return `${baseUrl}/upload/${segments.join('/')}`;
+    }
+    
+    // Otherwise insert new transformations
+    return `${baseUrl}/upload/${transformations}/${rest}`;
+  } catch (e) {
+    return url;
+  }
 };
 
 /**
