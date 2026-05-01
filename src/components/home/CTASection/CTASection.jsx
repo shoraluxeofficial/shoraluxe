@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
 import './CTASection.css';
 
 const CTASection = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     tag: 'Limited Edition',
     heading: 'Your Journey to Radiant Skin Starts Here',
@@ -44,7 +46,7 @@ const CTASection = () => {
         <span className="cta-tag">{data.tag}</span>
         <h2 className="cta-heading" dangerouslySetInnerHTML={{ __html: data.heading }}></h2>
         <p className="cta-text">{data.text}</p>
-        <button className="cta-button">
+        <button className="cta-button" onClick={() => navigate('/shop')}>
           {data.buttonText}
           <div className="btn-mirror"></div>
         </button>
