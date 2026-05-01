@@ -69,6 +69,10 @@ const Home = () => {
         <Bestsellers />
       </Suspense>
 
+      <Suspense fallback={<SectionSkeleton height="300px" />}>
+        <VideoBanners />
+      </Suspense>
+
       <Suspense fallback={<SectionSkeleton height="600px" />}>
         <CombosSection />
       </Suspense>
@@ -79,10 +83,6 @@ const Home = () => {
 
       <Suspense fallback={<SectionSkeleton height="450px" />}>
         <WatchAndShop />
-      </Suspense>
-
-      <Suspense fallback={<SectionSkeleton height="300px" />}>
-        <VideoBanners />
       </Suspense>
 
       <Suspense fallback={<SectionSkeleton height="200px" />}>
