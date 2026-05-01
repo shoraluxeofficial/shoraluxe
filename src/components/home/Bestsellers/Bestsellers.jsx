@@ -152,14 +152,14 @@ const Bestsellers = () => {
                     <div className="bs-card-img-wrap">
                       <div className={`bs-card-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
                         <img 
-                          src={getOptimizedImageUrl(product.img, 'w_600,q_auto,f_auto')} 
+                          src={getOptimizedImageUrl(product.img, 'w_1000,q_auto,f_auto')} 
                           alt={product.title} 
                           className="bs-card-img main" 
                           loading="lazy" 
                         />
                         {product.gallery && product.gallery.length > 1 && (
                           <img 
-                            src={getOptimizedImageUrl(product.gallery[1], 'w_600,q_auto,f_auto')} 
+                            src={getOptimizedImageUrl(product.gallery[1], 'w_1000,q_auto,f_auto')} 
                             alt={product.title} 
                             className="bs-card-img hover" 
                             loading="lazy" 
@@ -170,11 +170,13 @@ const Bestsellers = () => {
                       {/* Rank Badge */}
                       <div className="bs-rank-badge">#{index + 1}</div>
 
-                      {/* Sale / New pill */}
-                      {product.promoGroup && <span className="bs-pill promo">B2G1 OFFER</span>}
-                      {product.isBestseller && !product.promoGroup && <span className="bs-pill best">Bestseller</span>}
-                      {product.isSale && !product.promoGroup && <span className="bs-pill sale">Sale</span>}
-                      {product.isNew && !product.isBestseller && !product.promoGroup && <span className="bs-pill new">New</span>}
+                      {/* Pill badges container to prevent overlap */}
+                      <div className="bs-pills-container">
+                        {product.promoGroup && <span className="bs-pill promo">B2G1 OFFER</span>}
+                        {product.isBestseller && !product.promoGroup && <span className="bs-pill best">Bestseller</span>}
+                        {product.isSale && !product.promoGroup && <span className="bs-pill sale">Sale</span>}
+                        {product.isNew && !product.isBestseller && !product.promoGroup && <span className="bs-pill new">New</span>}
+                      </div>
 
                       {/* Floating Actions */}
                       <div className="bs-action-cluster">
