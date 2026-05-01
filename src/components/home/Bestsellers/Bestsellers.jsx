@@ -2,24 +2,26 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Star, ArrowRight, Heart, Share2 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
-// Improved helper for Cloudinary image optimization
+// Improved helper for Cloudinary image optimization — strips ALL old transforms and applies new ones
 const getOptimizedImageUrl = (url, transformations = 'f_auto,q_auto') => {
-  if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) return url;
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes('cloudinary.com')) return url;
   try {
-    const parts = url.split('/upload/');
-    if (parts.length !== 2) return url;
+    // Split at /upload/ to get base and everything after
+    const uploadIndex = url.indexOf('/upload/');
+    if (uploadIndex === -1) return url;
+    const base = url.substring(0, uploadIndex + 8); // includes '/upload/'
+    const afterUpload = url.substring(uploadIndex + 8);
     
-    const [baseUrl, rest] = parts;
-    const segments = rest.split('/');
-    
-    // If the first segment is a transformation block (not a version like v123...)
-    if (segments.length > 0 && !segments[0].match(/^v\d+$/)) {
-      segments[0] = transformations; // Replace existing transformation
-      return `${baseUrl}/upload/${segments.join('/')}`;
+    // Find the version string (v followed by digits)
+    const versionMatch = afterUpload.match(/(v\d+\/.*)/);
+    if (versionMatch) {
+      // Strip everything before the version and replace with our transformations
+      return base + transformations + '/' + versionMatch[1];
     }
     
-    // Otherwise insert new transformations
-    return `${baseUrl}/upload/${transformations}/${rest}`;
+    // No version string found, just prepend transformations
+    return base + transformations + '/' + afterUpload;
   } catch (e) {
     return url;
   }
@@ -168,14 +170,14 @@ const Bestsellers = () => {
                     <div className="bs-card-img-wrap">
                       <div className={`bs-card-img-container ${product.gallery && product.gallery.length > 1 ? 'has-hover' : ''}`}>
                         <img 
-                          src={getOptimizedImageUrl(product.img, 'w_1000,q_auto,f_auto')} 
+                          src={getOptimizedImageUrl(product.img, 'w_800,q_90,f_auto')} 
                           alt={product.title} 
                           className="bs-card-img main" 
                           loading="lazy" 
                         />
                         {product.gallery && product.gallery.length > 1 && (
                           <img 
-                            src={getOptimizedImageUrl(product.gallery[1], 'w_1000,q_auto,f_auto')} 
+                            src={getOptimizedImageUrl(product.gallery[1], 'w_800,q_90,f_auto')} 
                             alt={product.title} 
                             className="bs-card-img hover" 
                             loading="lazy" 
