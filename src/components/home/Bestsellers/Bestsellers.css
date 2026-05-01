@@ -302,14 +302,14 @@
 .bs-card-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.32);
+  background: rgba(0, 0, 0, 0.28);
   display: flex;
   align-items: flex-end;
   padding: 1.2rem 1.2rem 3.5rem;
   z-index: 4;
   opacity: 0;
   transition: opacity 0.3s ease;
-  backdrop-filter: blur(2px);
+  /* REMOVED backdrop-filter: blur — it bleeds through even at opacity:0 on mobile Chrome */
 }
 
 .bs-card:hover .bs-card-overlay {
