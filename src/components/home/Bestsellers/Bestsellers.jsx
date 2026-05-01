@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Star, ArrowRight, Heart, Share2 } from 'lucide-react';
 import { useShop } from '../../../context/ShopContext';
+import { getOptimizedImageUrl } from '../../../lib/upload';
 import './Bestsellers.css';
 
 const Bestsellers = () => {
