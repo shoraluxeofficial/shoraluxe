@@ -749,7 +749,7 @@ const Checkout = () => {
       <div className="checkout-success-container">
         <CheckCircle size={80} className="success-icon" />
         <h2>Thank You!</h2>
-        <p>Your order <strong>#{orderId?.slice(0, 8).toUpperCase()}</strong> is confirmed.</p>
+        <p>Your order <strong>#{orderId?.slice(0, 10).toUpperCase()}</strong> is confirmed.</p>
         <p>We've sent a receipt and order details to your email.</p>
 
         <div className="success-actions">

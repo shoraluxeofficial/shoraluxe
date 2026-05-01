@@ -34,61 +34,62 @@ const OrderTracking = () => {
     setOrder(null);
 
     try {
-      // Build a smart query:
-      // 1. First, try to match by Phone or Email which are text fields
-      let queryBuilder = supabase
-        .from('orders')
-        .select(`
-          *,
-          items:order_items(*)
-        `)
-        .or(`customer_phone.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`);
-
-      // 2. If the searchTerm looks like a UUID (36 chars) or a partial ID (8+ chars), 
-      // we try to match the ID. Since Supabase .or() doesn't support casting UUID to text,
-      // we handle ID search as a fallback if the first query doesn't yield results,
-      // or we try an exact match if it's a valid UUID.
+      // 1. Try exact UUID match if it looks like one
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(searchTerm);
-      
-      let { data, error: err } = await queryBuilder
-        .order('placed_at', { ascending: false })
-        .limit(1);
-
-      if (err) {
-        console.warn('Initial search failed, trying exact ID match...', err);
-        // If the .or failed (likely due to searchTerm in columns), fallback to just ID if valid
-        if (isUUID) {
-          const { data: idData, error: idErr } = await supabase
-            .from('orders')
-            .select(`*, items:order_items(*)`)
-            .eq('id', searchTerm)
-            .single();
-          
-          if (idErr) throw idErr;
-          data = idData ? [idData] : [];
-        } else {
-          throw err;
-        }
-      }
-
-      // 3. If no result from phone/email, and it's a valid UUID, try one more time for ID
-      if ((!data || data.length === 0) && isUUID) {
-        const { data: idData } = await supabase
+      if (isUUID) {
+        const { data, error: idErr } = await supabase
           .from('orders')
           .select(`*, items:order_items(*)`)
           .eq('id', searchTerm)
           .single();
-        if (idData) data = [idData];
+        
+        if (data) {
+          setOrder(data);
+          setLoading(false);
+          return;
+        }
       }
 
-      if (!data || data.length === 0) {
-        setError('No order found. Please check your Order ID, Email, or Phone Number.');
-      } else {
-        setOrder(data[0]);
+      // 2. Try Email/Phone match (these are reliable text matches)
+      const { data: contactData, error: contactErr } = await supabase
+        .from('orders')
+        .select(`*, items:order_items(*)`)
+        .or(`customer_phone.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`)
+        .order('placed_at', { ascending: false })
+        .limit(1);
+
+      if (contactData && contactData.length > 0) {
+        setOrder(contactData[0]);
+        setLoading(false);
+        return;
       }
+
+      // 3. Fallback: Search for partial ID match
+      // Since we can't 'ilike' a UUID column directly, we fetch recent orders and filter in JS
+      // if the searchTerm is a hex-like string (common for our IDs)
+      const isHex = /^[0-9a-fA-F]+$/.test(searchTerm);
+      if (isHex && searchTerm.length >= 6) {
+        const { data: recentOrders } = await supabase
+          .from('orders')
+          .select(`*, items:order_items(*)`)
+          .order('placed_at', { ascending: false })
+          .limit(100); // Check last 100 orders for a partial match
+
+        const partialMatch = recentOrders?.find(o => 
+          o.id.toLowerCase().startsWith(searchTerm.toLowerCase())
+        );
+
+        if (partialMatch) {
+          setOrder(partialMatch);
+          setLoading(false);
+          return;
+        }
+      }
+
+      setError('No order found. Please check your Order ID, Email, or Phone Number.');
     } catch (err) {
       console.error('Search Error:', err);
-      setError('Order not found or query error. Please check your details.');
+      setError('Error searching for order. Please try again.');
     } finally {
       setLoading(false);
     }
