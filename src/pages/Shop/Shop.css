@@ -439,14 +439,9 @@
   flex-direction: column;
   gap: 10px;
   z-index: 10;
-  opacity: 0;
-  transform: translateX(10px);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.product-card:hover .product-card-actions {
   opacity: 1;
-  transform: translateX(0);
+  transform: none;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .wishlist-btn-luxe, .share-btn-luxe {
