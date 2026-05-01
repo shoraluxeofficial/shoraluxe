@@ -330,8 +330,7 @@
 }
 
 .bs-stat-pill {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.92);
   padding: 4px 8px;
   border-radius: 4px;
   display: flex;
@@ -341,6 +340,7 @@
   font-weight: 700;
   color: var(--brand-gold);
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  /* Removed backdrop-filter: blur - leaks through even on hidden elements */
 }
 
 .bs-stat-sep {
@@ -457,6 +457,30 @@
   font-style: italic;
   line-height: 1.4;
 }
+
+
+/* Mobile-only tag row (hidden on desktop, shown on mobile below product name) */
+.bs-mobile-tags {
+  display: none; /* hidden on desktop */
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.bs-mobile-tag {
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: #fff;
+}
+
+.bs-mobile-tag.promo { background: #6d0e2c; }
+.bs-mobile-tag.best  { background: #907253; }
+.bs-mobile-tag.sale  { background: #ab2346; }
+.bs-mobile-tag.new   { background: #2c4a3e; }
 
 .bs-price-row {
   display: flex;
@@ -610,7 +634,23 @@
     margin-bottom: 2.5rem;
   }
 
+  /* Hide crowded overlay elements on mobile */
   .bs-card-overlay {
+    display: none !important;
+  }
+
+  /* Hide pills inside image on mobile - too crowded on small cards */
+  .bs-pills-container {
+    display: none;
+  }
+
+  /* Hide wish/share buttons on mobile */
+  .bs-action-cluster {
+    display: none;
+  }
+
+  /* Hide stats bar on mobile to reduce clutter */
+  .bs-image-stats {
     display: none;
   }
 
@@ -622,22 +662,16 @@
   }
 
   .bs-rank-badge {
-    width: 24px;
-    height: 24px;
-    font-size: 0.6rem;
-    top: 8px;
-    left: 8px;
+    width: 22px;
+    height: 22px;
+    font-size: 0.55rem;
+    top: 6px;
+    left: 6px;
   }
 
-  .bs-pills-container {
-    top: 8px;
-    right: 45px;
-    gap: 4px;
-  }
-
-  .bs-pill {
-    padding: 3px 8px;
-    font-size: 0.5rem;
+  /* Show mobile tags row below product name */
+  .bs-mobile-tags {
+    display: flex;
   }
 
   .bs-card-info {

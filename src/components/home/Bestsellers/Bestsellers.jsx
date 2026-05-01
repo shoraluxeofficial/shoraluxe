@@ -264,6 +264,14 @@ const Bestsellers = () => {
                       )}
                     </Link>
 
+                    {/* Mobile-only tag row - shows below name since image tags are hidden on mobile */}
+                    <div className="bs-mobile-tags">
+                      {product.promoGroup && <span className="bs-mobile-tag promo">B2G1</span>}
+                      {product.isBestseller && !product.promoGroup && <span className="bs-mobile-tag best">★ Bestseller</span>}
+                      {product.isSale && <span className="bs-mobile-tag sale">Sale</span>}
+                      {product.isNew && !product.isBestseller && <span className="bs-mobile-tag new">New</span>}
+                    </div>
+
                     <div className="bs-price-row">
                       <span className="bs-price">₹{Number(product.price).toLocaleString('en-IN')}</span>
                       {product.originalPrice && product.originalPrice > product.price && (
