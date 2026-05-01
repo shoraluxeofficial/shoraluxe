@@ -642,6 +642,29 @@
     font-size: 0.65rem;
   }
 
+  /* Quick Add Mobile Fix */
+  .bs-card-overlay {
+    display: flex; /* Show on mobile but subtly */
+    opacity: 1;
+    background: none;
+    padding: 0;
+    bottom: 8px;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .bs-quick-add {
+    width: auto;
+    min-width: 80px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.55rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    border-radius: 6px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
   .bestsellers-section::before {
     display: none;
   }
