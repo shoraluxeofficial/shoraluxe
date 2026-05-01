@@ -60,10 +60,21 @@ const ProductDetail = () => {
       }
 
       setProduct(foundProduct);
-      const galleryArray = Array.isArray(foundProduct.gallery) ? foundProduct.gallery : (foundProduct.gallery ? foundProduct.gallery.split('\n').filter(Boolean) : []);
-      setActiveImg(galleryArray[0] || foundProduct.img);
+      
+      const parsed = (() => {
+        try { return JSON.parse(foundProduct.size); } catch(e) { return []; }
+      })();
 
-      const sizeChoices = foundProduct.size ? foundProduct.size.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const galleryArray = Array.isArray(foundProduct.gallery) ? foundProduct.gallery : (foundProduct.gallery ? foundProduct.gallery.split('\n').filter(Boolean) : []);
+      
+      // If first variant has a specific image, use it as default
+      if (parsed.length > 0 && parsed[0].variantImg) {
+        setActiveImg(parsed[0].variantImg);
+      } else {
+        setActiveImg(galleryArray[0] || foundProduct.img);
+      }
+
+      const sizeChoices = parsed.length > 0 ? parsed.map(v => v.label) : (foundProduct.size ? foundProduct.size.split(',').map(s => s.trim()).filter(Boolean) : []);
       setSelectedSize(sizeChoices[0] || '');
       window.scrollTo(0, 0);
     }
@@ -425,7 +436,12 @@ const ProductDetail = () => {
                     <div 
                       key={i} 
                       className={`variant-card ${isSelected ? 'selected' : ''}`}
-                      onClick={() => setSelectedSize(v.label)}
+                      onClick={() => {
+                        setSelectedSize(v.label);
+                        if (v.variantImg) {
+                          setActiveImg(v.variantImg);
+                        }
+                      }}
                     >
                       {isSelected && <div className="v-check-icon">✔</div>}
                       {v.badge && <div className="v-badge">{v.badge}</div>}

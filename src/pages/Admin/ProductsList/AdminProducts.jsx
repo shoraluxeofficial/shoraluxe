@@ -135,6 +135,34 @@ const AdminProducts = () => {
     }
   };
 
+  const handleVariantImageUpload = async (e, variantIndex) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const compressedFile = await compressImage(file);
+      const url = await uploadToCloudinary(compressedFile);
+      
+      const newVariants = [...form.variants];
+      newVariants[variantIndex].variantImg = url;
+      
+      setForm(prev => ({
+        ...prev,
+        variants: newVariants,
+        size: JSON.stringify(newVariants)
+      }));
+      
+      notify('Variant image uploaded successfully!', 'success');
+    } catch (err) {
+      console.error('Variant image upload error:', err);
+      notify('Variant image upload failed.', 'error');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
   const deleteOutOfStock = async () => {
     notify('This will PERMANENTLY DELETE all products currently showing as "Out of Stock". Continue?', 'confirm', {
       onConfirm: async () => {
@@ -764,7 +792,7 @@ const AdminProducts = () => {
                               <button 
                                 type="button" 
                                 onClick={() => {
-                                  const newVariants = [...(form.variants || []), { label: '', price: '', mrp: '', discount: '', usp: '', badge: '' }];
+                                  const newVariants = [...(form.variants || []), { label: '', price: '', mrp: '', discount: '', usp: '', badge: '', variantImg: '' }];
                                   setForm({...form, variants: newVariants, size: JSON.stringify(newVariants) });
                                 }}
                                 style={{padding: '0.5rem 1rem', background: '#611C28', color: '#fff', borderRadius: '8px', border: 'none', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(97, 28, 40, 0.2)'}}
@@ -787,6 +815,32 @@ const AdminProducts = () => {
                                       const arr = form.variants.filter((_, idx) => idx !== i);
                                       setForm({...form, variants: arr, size: JSON.stringify(arr)});
                                   }} style={{position: 'absolute', top: '12px', right: '12px', width: '28px', height: '28px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 5}} title="Remove variant">✕</button>
+
+                                  <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem', gridColumn: '1 / -1'}}>
+                                    <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Variant Image (Specific to this pack/size)</label>
+                                    <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                                      {v.variantImg && (
+                                        <div style={{position: 'relative', width: '60px', height: '60px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0'}}>
+                                          <img src={v.variantImg} style={{width: '100%', height: '100%', objectFit: 'cover'}} alt="Variant" />
+                                          <button 
+                                            type="button" 
+                                            onClick={() => {
+                                              const arr = [...form.variants]; arr[i].variantImg = '';
+                                              setForm({...form, variants: arr, size: JSON.stringify(arr)});
+                                            }}
+                                            style={{position: 'absolute', top: 0, right: 0, background: 'rgba(239, 68, 68, 0.9)', color: 'white', border: 'none', padding: '2px 4px', cursor: 'pointer', fontSize: '10px'}}
+                                          >✕</button>
+                                        </div>
+                                      )}
+                                      <div style={{flex: 1}}>
+                                        <label className="pf-upload-zone" style={{padding: '0.5rem', minHeight: 'auto', borderStyle: 'dashed'}}>
+                                          <Upload size={14} />
+                                          <span style={{fontSize: '0.75rem'}}>Upload Variant Image</span>
+                                          <input type="file" accept="image/*" onChange={(e) => handleVariantImageUpload(e, i)} hidden />
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
 
                                   <div style={{display: 'flex', flexDirection: 'column', gap: '0.4rem'}}>
                                     <label style={{fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Label (e.g. 100ml)</label>
