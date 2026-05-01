@@ -9,21 +9,24 @@
   overflow: hidden;
 }
 
-/* Subtle decorative background text */
+/* Decorative background text - Premium Outline Style */
 .bestsellers-section::before {
   content: 'BESTSELLERS';
   position: absolute;
-  top: 2rem;
+  top: 1rem;
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--font-serif), 'Georgia', serif;
-  font-size: 9rem;
-  font-weight: 800;
-  color: rgba(0, 0, 0, 0.025);
-  letter-spacing: 8px;
+  font-size: 11vw;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(144, 114, 83, 0.12);
+  letter-spacing: 0.15em;
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
+  z-index: 0;
+  text-transform: uppercase;
 }
 
 /* ---- Header ---- */
@@ -32,6 +35,8 @@
   margin: 0 auto;
   padding: 0 3rem;
   margin-bottom: 4rem;
+  position: relative;
+  z-index: 2;
 }
 
 .bs-header-inner {
@@ -666,7 +671,8 @@
   }
 
   .bestsellers-section::before {
-    display: none;
+    font-size: 14vw;
+    top: 1rem;
   }
 }
 
