@@ -47,7 +47,13 @@
   padding: 0;
 }
 
-html {
+html, body {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden !important;
+  position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -58,11 +64,22 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   line-height: 1.5;
-  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
 }
 
-img {
+/* Force no horizontal scroll on the app container */
+.app-container, .storefront-app {
+  width: 100%;
   max-width: 100%;
+  overflow-x: hidden !important;
+  position: relative;
+}
+
+/* Prevent image/video overflow */
+img, video {
+  max-width: 100%;
+  height: auto;
   display: block;
 }
 

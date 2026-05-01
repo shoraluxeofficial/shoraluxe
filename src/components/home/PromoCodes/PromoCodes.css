@@ -1,7 +1,7 @@
 .promo-ribbon-container {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
   
   /* Premium Satin Red Gradient (Matches Top Bar) */
   background: var(--satin-red-bg);
