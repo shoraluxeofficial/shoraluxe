@@ -173,7 +173,8 @@
 .bs-card-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #fff; /* Ensure white background for contained images */
   transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
