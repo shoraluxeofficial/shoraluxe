@@ -123,7 +123,8 @@ const Footer = () => {
           <div className="f-col">
             <h4 className="f-col-title">Guest Services</h4>
             <nav className="f-nav">
-              <Link to="/about" className="f-nav-item">About Us / Blog</Link>
+              <Link to="/about" className="f-nav-item">About Us</Link>
+              <Link to="/blogs" className="f-nav-item">Blogs</Link>
               <Link to="/contact" className="f-nav-item">Contact Us</Link>
               <Link to="/policies" className="f-nav-item">Our Policies</Link>
               <Link to="/terms-conditions" className="f-nav-item">Terms and Conditions</Link>

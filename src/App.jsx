@@ -17,6 +17,7 @@ const About = lazy(() => import('./pages/About/About'));
 const Policies = lazy(() => import('./pages/Legal/Policies'));
 const TermsConditions = lazy(() => import('./pages/Legal/TermsConditions'));
 const TermsService = lazy(() => import('./pages/Legal/TermsService'));
+const Blogs = lazy(() => import('./pages/Blogs/Blogs'));
 
 const AdminLayout = lazy(() => import('./pages/Admin/AdminLayout/AdminLayout'));
 const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard/AdminDashboard'));
@@ -161,6 +162,7 @@ function App() {
               <Route path="policies" element={<Policies />} />
               <Route path="terms-conditions" element={<TermsConditions />} />
               <Route path="terms-service" element={<TermsService />} />
+              <Route path="blogs" element={<Blogs />} />
             </Route>
 
             {/* SECURE ADMIN LOGIN */}
