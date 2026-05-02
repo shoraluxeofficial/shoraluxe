@@ -5,12 +5,14 @@ import { useShop } from '../../../context/ShopContext';
 import { supabase } from '../../../lib/supabase';
 import './Navbar.css';
 
-// DUMMY CODES FOR TESTING SLIDER
+// DUMMY CODES FOR ANNOUNCEMENT BAR
 const dummyCodes = [
-  { id: 'd1', code: "SL-SUMMERGLOW1", discount_type: "percentage", discount_value: 15, is_active: true, description: "Get 15% off Summer Essentials!" },
-  { id: 'd2', code: "SL-GLOWTRIO", discount_type: "percentage", discount_value: 20, is_active: true, description: "Get 20% off the Glow Trio Bundle" },
-  { id: 'd3', code: "SL-TRIOLUXE", discount_type: "fixed", discount_value: 500, is_active: true, description: "Flat ₹500 off on Trio Luxe" },
-  { id: 'd4', code: "SL-PMROUTINE", discount_type: "percentage", discount_value: 10, is_active: true, description: "10% off your Night Routine" }
+  { id: 'd1', code: "SHORA20", description: "✨ FLAT 20% OFF ON ALL PRODUCTS | LIMITED TIME ✨" },
+  { id: 'd2', code: "COMBO25", description: "🎁 BUY 2 GET 25% OFF | APPLICABLE ON ALL PRODUCTS 🎁" },
+  { id: 'd3', code: "COMBO30", description: "🛍️ BUY 3 GET 30% OFF | APPLICABLE ON ALL PRODUCTS 🛍️" },
+  { id: 'd4', code: "COMBO35", description: "✨ BUY 4 GET 35% OFF | APPLICABLE ON ALL PRODUCTS ✨" },
+  { id: 'd5', code: "COMBO40", description: "🎁 BUY 5 GET 40% OFF | APPLICABLE ON ALL PRODUCTS 🎁" },
+  { id: 'd6', code: "COMBO45", description: "🔥 BUY 6 GET 45% OFF | APPLICABLE ON ALL PRODUCTS 🔥" }
 ];
 
 const CONCERNS = [
@@ -41,14 +43,13 @@ const Navbar = () => {
         .select('*')
         .eq('is_active', true);
 
+      let activeCodes = [];
       if (!error && data && data.length > 0) {
-        // Filter out expired codes
-        const validCodes = data.filter(c => !c.expires_at || new Date(c.expires_at) > new Date());
-        setPromoCodes(validCodes.length > 0 ? validCodes : dummyCodes);
-      } else {
-        // Fallback to dummy codes for slider checking
-        setPromoCodes(dummyCodes);
+        activeCodes = data.filter(c => !c.expires_at || new Date(c.expires_at) > new Date());
       }
+      
+      // Combine custom dummy announcements with database codes to ensure requested discounts show
+      setPromoCodes([...dummyCodes, ...activeCodes]);
     };
     fetchPromoCodes();
   }, []);
@@ -79,8 +80,7 @@ const Navbar = () => {
                 key={promo.id}
                 className={`promo-slide ${index === currentPromoIndex ? 'active' : ''}`}
               >
-                Use Code <strong className="promo-highlight">{promo.code}</strong>
-                {promo.description ? ` : ${promo.description}` : ` for ${promo.discount_type === 'percentage' ? promo.discount_value + '% OFF' : '₹' + promo.discount_value + ' OFF'}`}
+                {promo.description || `Use Code ${promo.code} for ${promo.discount_type === 'percentage' ? promo.discount_value + '% OFF' : '₹' + promo.discount_value + ' OFF'}`}
               </span>
             ))}
           </div>
