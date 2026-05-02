@@ -51,18 +51,6 @@ const About = () => {
               "Glow effortlessly, live luxuriously, and love your skin unconditionally."
             </p>
           </div>
-          <div className="story-v2-gallery">
-            <div className="gallery-main">
-              {/* Sunscreen SPF 50+++ — top bestseller */}
-              <img src="https://res.cloudinary.com/dfr0tlcdb/image/upload/w_800,q_90,f_auto/v1777485162/i79vwhurlkuvlrshykra.webp" alt="Shoraluxe Sunscreen SPF 50+++" />
-            </div>
-            <div className="gallery-sub">
-              {/* Non-Sticky Moisturizer */}
-              <img src="https://res.cloudinary.com/dfr0tlcdb/image/upload/w_500,q_90,f_auto/v1777485081/xtlfci5xezy4yjuf172l.webp" alt="Non-Sticky Moisturizer" />
-              {/* Charcoal Face Wash */}
-              <img src="https://res.cloudinary.com/dfr0tlcdb/image/upload/w_500,q_90,f_auto/v1777232225/shoraluxe/products/0_fvberx.jpg" alt="Charcoal Face Wash" />
-            </div>
-          </div>
         </div>
       </section>
 
