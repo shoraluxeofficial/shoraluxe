@@ -175,26 +175,29 @@
 }
 
 .concern-pill {
-  padding: 0.6rem 1.4rem;
+  padding: 0.8rem 1.8rem;
   border-radius: 4px;
   border: 1px solid transparent;
   background: transparent;
-  font-size: 0.75rem; font-weight: 600;
+  font-size: 0.9rem; 
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--luxe-text-muted);
+  letter-spacing: 2px;
+  color: var(--luxe-text-sub);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
 }
 
 .concern-pill:hover {
   color: var(--luxe-gold);
+  background: rgba(201, 148, 58, 0.03);
 }
 
 .concern-pill.active {
   color: var(--luxe-burgundy);
-  border-bottom: 2px solid var(--luxe-gold);
+  border-bottom: 3px solid var(--luxe-gold);
+  background: rgba(201, 148, 58, 0.05);
 }
 
 /* ── BREADCRUMBS ─────────────────────────────────────────── */
