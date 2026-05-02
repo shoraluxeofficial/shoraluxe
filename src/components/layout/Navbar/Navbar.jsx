@@ -33,7 +33,7 @@ const Navbar = () => {
   const { cartCount, setIsCartOpen, user, setUser } = useShop();
   const navigate = useNavigate();
 
-  const [promoCodes, setPromoCodes] = useState([]);
+  const [promoCodes, setPromoCodes] = useState(dummyCodes);
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
 
   useEffect(() => {
