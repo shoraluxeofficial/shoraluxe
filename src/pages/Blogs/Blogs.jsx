@@ -50,7 +50,9 @@ const Blogs = () => {
       />
       
       <header className="blogs-hero">
+        <div className="blogs-hero-overlay"></div>
         <div className="blogs-hero-content">
+          <img src="/Logo.png" alt="Shoraluxe Logo" className="blogs-hero-logo" />
           <span className="blogs-subtitle">THE SHORALUXE JOURNALS</span>
           <h1>Expert Skincare Rituals</h1>
           <p>Discover the perfect routine tailored for your skin's unique needs in the Indian climate.</p>
