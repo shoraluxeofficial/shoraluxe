@@ -9,6 +9,7 @@ const About = () => {
       <section className="about-hero-v2">
         <div className="hero-v2-overlay"></div>
         <div className="hero-v2-content">
+          <img src="/Logo.png" alt="Shoraluxe Logo" className="hero-logo-v2" />
           <span className="hero-subtitle">THE SHORALUXE STORY</span>
           <h1 className="hero-title-v2">Shora Luxe - A skincare made especially for Indian skin conditions.</h1>
         </div>

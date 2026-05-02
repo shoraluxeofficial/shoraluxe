@@ -7,12 +7,19 @@
 .about-hero-v2 {
   position: relative;
   height: 100vh;
-  background-color: #1a050b;
+  background: radial-gradient(circle at center, #4a0a1e 0%, #1a050b 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: #fff;
+}
+
+.hero-logo-v2 {
+  height: 100px;
+  width: auto;
+  margin-bottom: 2.5rem;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
 }
 
 .hero-v2-overlay {
