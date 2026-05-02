@@ -282,24 +282,25 @@
 }
 
 .cs-price {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #6d0e2c;
 }
 
 .cs-orig-price {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #94a3b8;
   text-decoration: line-through;
 }
 
 .cs-discount {
-  color: #166534;
+  color: #fff;
   font-size: 0.75rem;
   font-weight: 800;
-  background: #f0fdf4;
-  padding: 2px 8px;
-  border-radius: 4px;
+  background: #166534;
+  padding: 4px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(22, 101, 52, 0.2);
 }
 
 .cs-atc-btn {
