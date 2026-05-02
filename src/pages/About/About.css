@@ -6,7 +6,7 @@
 /* HERO V2 */
 .about-hero-v2 {
   position: relative;
-  height: 60vh;
+  height: 85vh;
   background: url('/about-hero.jpeg') center/cover;
   display: flex;
   align-items: center;
@@ -39,7 +39,7 @@
 
 .hero-title-v2 {
   font-family: var(--font-serif);
-  font-size: 3rem;
+  font-size: 3.5rem;
   line-height: 1.2;
 }
 
