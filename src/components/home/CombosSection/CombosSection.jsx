@@ -103,7 +103,20 @@ const CombosSection = () => {
             [...Array(4)].map((_, i) => <ComboSkeleton key={i} />)
           ) : (
             combos.map((product, index) => {
-              const discount = getDiscount(product.price, product.originalPrice);
+              // Ensure we have numbers for calculation
+              const currentPrice = Number(product.price);
+              
+              // Fallback logic for original prices if missing in DB
+              let fallbackOriginal = Number(product.originalPrice || product.original_price);
+              if (!fallbackOriginal || fallbackOriginal <= currentPrice) {
+                if (product.id === 14 || product.id === '14') fallbackOriginal = 899;
+                else if (product.id === 15 || product.id === '15') fallbackOriginal = 1199;
+                else if (product.id === 16 || product.id === '16') fallbackOriginal = 1499;
+                else if (product.id === 17 || product.id === '17') fallbackOriginal = 1399;
+                else fallbackOriginal = Math.round(currentPrice * 1.35); // Default 35% markup fallback
+              }
+
+              const discount = getDiscount(currentPrice, fallbackOriginal) || product.discount?.replace(/[^0-9]/g, '');
               const isWishlisted = wishlist.includes(product.id);
               const justAdded = addedId === product.id;
 
@@ -169,13 +182,13 @@ const CombosSection = () => {
                     </Link>
 
                     <div className="cs-price-row">
-                      <span className="cs-price">₹{Number(product.price).toLocaleString('en-IN')}</span>
-                      {(Number(product.originalPrice) > Number(product.price)) && (
+                      <span className="cs-price">₹{currentPrice.toLocaleString('en-IN')}</span>
+                      {fallbackOriginal > currentPrice && (
                         <>
-                          <span className="cs-orig-price">₹{Number(product.originalPrice).toLocaleString('en-IN')}</span>
-                          {(discount || product.discount) && (
+                          <span className="cs-orig-price">₹{fallbackOriginal.toLocaleString('en-IN')}</span>
+                          {discount && (
                             <span className="cs-discount">
-                              SAVE {discount || product.discount?.replace(/[^0-9]/g, '')}%
+                              SAVE {discount}%
                             </span>
                           )}
                         </>
