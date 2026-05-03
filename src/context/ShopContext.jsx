@@ -7,7 +7,7 @@ const ShopContext = createContext();
 export const useShop = () => useContext(ShopContext);
 
 export const ShopProvider = ({ children }) => {
-  const [products, setProducts] = useState(fallbackProducts);
+  const [products, setProducts] = useState(fallbackProducts.map(normalizeProduct));
   const [loading, setLoading] = useState(true);
 
   // Auth State (Using sessionStorage for auto-logout on browser close)
@@ -25,18 +25,18 @@ export const ShopProvider = ({ children }) => {
 
   const normalizeProduct = (p) => ({
     ...p,
-    originalPrice: p.original_price,
-    skinType: p.skin_type,
-    howToUse: p.how_to_use,
-    bestFor: p.best_for,
-    reviewsCount: p.reviews_count,
-    isNew: p.is_new,
-    isBestseller: p.is_bestseller,
-    isSale: p.is_sale,
-    netQuantity: p.net_quantity,
-    idealFor: p.ideal_for,
-    cautions: p.cautions,
-    promoCode: p.promo_group,
+    originalPrice: p.original_price || p.originalPrice,
+    skinType: p.skin_type || p.skinType,
+    howToUse: p.how_to_use || p.howToUse,
+    bestFor: p.best_for || p.bestFor,
+    reviewsCount: p.reviews_count || p.reviewsCount,
+    isNew: p.is_new || p.isNew,
+    isBestseller: p.is_bestseller || p.isBestseller,
+    isSale: p.is_sale || p.isSale,
+    netQuantity: p.net_quantity || p.netQuantity,
+    idealFor: p.ideal_for || p.idealFor,
+    cautions: p.cautions || p.cautions,
+    promoCode: p.promo_group || p.promoCode || p.promo_code,
     promoPrice: p.price
   });
 
@@ -60,11 +60,11 @@ export const ShopProvider = ({ children }) => {
       if (data && data.length > 0) {
         setProducts(data.map(normalizeProduct));
       } else {
-        setProducts(fallbackProducts);
+        setProducts(fallbackProducts.map(normalizeProduct));
       }
     } catch (error) {
       console.error('Error fetching products:', error.message);
-      setProducts(fallbackProducts);
+      setProducts(fallbackProducts.map(normalizeProduct));
     } finally {
       if (!isBackground) setLoading(false);
     }
