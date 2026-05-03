@@ -6,6 +6,23 @@ const ShopContext = createContext();
 
 export const useShop = () => useContext(ShopContext);
 
+const normalizeProduct = (p) => ({
+  ...p,
+  originalPrice: p.original_price || p.originalPrice,
+  skinType: p.skin_type || p.skinType,
+  howToUse: p.how_to_use || p.howToUse,
+  bestFor: p.best_for || p.bestFor,
+  reviewsCount: p.reviews_count || p.reviewsCount,
+  isNew: p.is_new || p.isNew,
+  isBestseller: p.is_bestseller || p.isBestseller,
+  isSale: p.is_sale || p.isSale,
+  netQuantity: p.net_quantity || p.netQuantity,
+  idealFor: p.ideal_for || p.idealFor,
+  cautions: p.cautions || p.cautions,
+  promoCode: p.promo_group || p.promoCode || p.promo_code,
+  promoPrice: p.price
+});
+
 export const ShopProvider = ({ children }) => {
   const [products, setProducts] = useState(fallbackProducts.map(normalizeProduct));
   const [loading, setLoading] = useState(true);
@@ -23,22 +40,7 @@ export const ShopProvider = ({ children }) => {
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const normalizeProduct = (p) => ({
-    ...p,
-    originalPrice: p.original_price || p.originalPrice,
-    skinType: p.skin_type || p.skinType,
-    howToUse: p.how_to_use || p.howToUse,
-    bestFor: p.best_for || p.bestFor,
-    reviewsCount: p.reviews_count || p.reviewsCount,
-    isNew: p.is_new || p.isNew,
-    isBestseller: p.is_bestseller || p.isBestseller,
-    isSale: p.is_sale || p.isSale,
-    netQuantity: p.net_quantity || p.netQuantity,
-    idealFor: p.ideal_for || p.idealFor,
-    cautions: p.cautions || p.cautions,
-    promoCode: p.promo_group || p.promoCode || p.promo_code,
-    promoPrice: p.price
-  });
+
 
   // Fetch products from Supabase
   const fetchProducts = async (isBackground = false) => {
