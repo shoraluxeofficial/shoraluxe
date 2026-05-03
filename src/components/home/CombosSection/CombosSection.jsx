@@ -170,10 +170,14 @@ const CombosSection = () => {
 
                     <div className="cs-price-row">
                       <span className="cs-price">₹{Number(product.price).toLocaleString('en-IN')}</span>
-                      {product.originalPrice && product.originalPrice > product.price && (
+                      {(Number(product.originalPrice) > Number(product.price)) && (
                         <>
                           <span className="cs-orig-price">₹{Number(product.originalPrice).toLocaleString('en-IN')}</span>
-                          {discount && <span className="cs-discount">SAVE {discount}%</span>}
+                          {(discount || product.discount) && (
+                            <span className="cs-discount">
+                              SAVE {discount || product.discount?.replace(/[^0-9]/g, '')}%
+                            </span>
+                          )}
                         </>
                       )}
                     </div>
