@@ -22,6 +22,7 @@ import { getOptimizedImageUrl } from '../../lib/upload';
 import SEO from '../../components/SEO/SEO';
 import { useNotify } from '../../components/common/Notification/Notification';
 import { supabase } from '../../lib/supabase';
+import ProductReviews from '../../components/product/ProductReviews/ProductReviews';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -646,7 +647,10 @@ const ProductDetail = () => {
           <h3 className="related-title">Complete Your <em>Routine</em></h3>
           <div className="related-grid">
             {relatedProducts.map(rp => (
-              <div key={rp.id} className="related-card" onClick={() => navigate(`/product/${rp.id}`)}>
+              <div key={rp.id} className="related-card" onClick={() => {
+                window.scrollTo(0, 0);
+                window.location.href = `/product/${rp.id}`;
+              }}>
                 <div className="related-img-wrap">
                   <img src={getOptimizedImageUrl(rp.img, 'w_400,q_auto,f_auto')} alt={rp.title} />
                 </div>
@@ -659,6 +663,9 @@ const ProductDetail = () => {
           </div>
         </div>
       )}
+
+      {/* PRODUCT REVIEWS SECTION */}
+      <ProductReviews productId={product.id} productName={product.title} />
 
       <div ref={footerRef} className="footer-sensor"></div>
     </div>

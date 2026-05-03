@@ -1,0 +1,280 @@
+.product-reviews-section {
+  padding: 80px 0;
+  background: #fdfcfb;
+  border-top: 1px solid #f3f0ed;
+}
+
+.reviews-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.reviews-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: #f5f0e6;
+  color: #c5a028;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  border-radius: 100px;
+  margin-bottom: 12px;
+}
+
+.reviews-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.reviews-title em {
+  color: #6d0e2c;
+  font-style: italic;
+}
+
+.reviews-layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.reviews-summary-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  position: sticky;
+  top: 100px;
+}
+
+.average-rating-box {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.big-avg {
+  display: block;
+  font-size: 4rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.stars-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.total-label {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.rating-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rating-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+}
+
+.star-num {
+  width: 35px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.bar-track {
+  flex: 1;
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #c5a028;
+  border-radius: 10px;
+}
+
+.bar-count {
+  width: 25px;
+  text-align: right;
+  color: #9ca3af;
+}
+
+.reviews-list-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.review-item-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  transition: transform 0.3s ease;
+}
+
+.review-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: #f9fafb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  border: 1px solid #f3f4f6;
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 700;
+  color: #1a1a1a;
+  font-size: 1rem;
+}
+
+.verified-badge {
+  font-size: 0.7rem;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  background: #ecfdf5;
+  padding: 2px 8px;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.review-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.review-content {
+  color: #4b5563;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin: 0 0 15px 0;
+}
+
+.review-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.review-footer:hover {
+  color: #6d0e2c;
+}
+
+.no-reviews-state {
+  text-align: center;
+  padding: 60px;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px dashed #e5e7eb;
+}
+
+.quote-icon {
+  color: #f3f0ed;
+  margin-bottom: 20px;
+}
+
+.no-reviews-state p {
+  color: #4b5563;
+  font-size: 1.1rem;
+  margin: 5px 0;
+}
+
+.no-reviews-state .sub-text {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.reviews-loading {
+  text-align: center;
+  padding: 100px 0;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+@media (max-width: 992px) {
+  .reviews-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .reviews-summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .big-avg {
+    font-size: 3rem;
+  }
+  
+  .reviews-title {
+    font-size: 2rem;
+  }
+}

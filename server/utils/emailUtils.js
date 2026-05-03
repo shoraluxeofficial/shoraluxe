@@ -139,8 +139,11 @@ export const sendStatusUpdateEmail = async (email, orderDetails, status) => {
                             <li><strong>Order ID:</strong> #${orderDetails.id.slice(0, 8).toUpperCase()}</li>
                             ${orderDetails.shiprocket_awb ? `<li><strong>Shiprocket AWB:</strong> ${orderDetails.shiprocket_awb}</li>` : ''}
                         </ul>
-                        <div style="margin-top: 25px; text-align: center;">
-                            <a href="https://shoraluxe.vercel.app/track-order" style="display: inline-block; padding: 14px 28px; background: #6d0e2c; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold;">Track on Website →</a>
+                        <div style="margin-top: 25px; text-align: center; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                            <a href="https://shoraluxe.com/track-order" style="display: inline-block; padding: 12px 24px; background: #6d0e2c; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px;">Track Order →</a>
+                            ${status === 'delivered' ? `
+                            <a href="https://shoraluxe.com/submit-review?order_id=${orderDetails.id}" style="display: inline-block; padding: 12px 24px; background: #c5a028; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px;">Share Feedback ★</a>
+                            ` : ''}
                         </div>
                     </div>
 
