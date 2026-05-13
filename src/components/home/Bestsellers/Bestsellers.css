@@ -19,7 +19,7 @@
   font-family: var(--font-serif), 'Georgia', serif;
   font-size: 11vw;
   font-weight: 900;
-  color: rgba(74, 10, 30, 0.4); /* Significantly darker watermark for high visibility */
+  color: rgba(74, 10, 30, 0.9); /* Significantly darker watermark for high visibility */
   letter-spacing: 0.15em;
   white-space: nowrap;
   pointer-events: none;
@@ -72,34 +72,43 @@
   margin: 0;
 }
 
-.bs-view-all-desktop {
+.bs-view-all-container {
   display: flex;
+  justify-content: center;
+  margin-top: 4rem;
+  position: relative;
+  z-index: 5;
+}
+
+.bs-view-all-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.8rem;
+  background: var(--brand-burgundy);
+  color: #fff;
   text-decoration: none;
-  font-size: 0.75rem;
+  padding: 1rem 2.5rem;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #111;
-  border-bottom: 2px solid #111;
-  padding-bottom: 3px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: all 0.25s;
+  border-radius: 50px;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 10px 20px rgba(109, 14, 44, 0.15);
 }
 
-.bs-view-all-desktop:hover {
-  color: #6d0e2c;
-  border-color: #6d0e2c;
+.bs-view-all-btn:hover {
+  background: var(--logo-red-glow);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(109, 14, 44, 0.25);
 }
 
-.bs-view-all-desktop svg {
-  transition: transform 0.25s;
+.bs-view-all-btn svg {
+  transition: transform 0.3s;
 }
 
-.bs-view-all-desktop:hover svg {
-  transform: translateX(4px);
+.bs-view-all-btn:hover svg {
+  transform: translateX(5px);
 }
 
 /* ---- Grid ---- */

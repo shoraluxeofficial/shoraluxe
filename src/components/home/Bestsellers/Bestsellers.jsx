@@ -142,9 +142,6 @@ const Bestsellers = () => {
           <div className="bs-header-left">
             {/* Header text removed as per user request */}
           </div>
-          <Link to="/shop" className="bs-view-all-desktop">
-            View All Products <ArrowRight size={16} />
-          </Link>
         </div>
       </div>
 
@@ -291,10 +288,10 @@ const Bestsellers = () => {
           )}
         </div>
 
-        {/* Mobile View All */}
-        <div className="bs-view-all-mobile">
+        {/* Desktop & Mobile View All - Centered at bottom */}
+        <div className="bs-view-all-container">
           <Link to="/shop" className="bs-view-all-btn">
-            View All Products <ArrowRight size={15} />
+            View All Products <ArrowRight size={16} />
           </Link>
         </div>
       </div>
