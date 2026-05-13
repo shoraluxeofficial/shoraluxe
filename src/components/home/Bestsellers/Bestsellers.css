@@ -19,7 +19,7 @@
   font-family: var(--font-serif), 'Georgia', serif;
   font-size: 11vw;
   font-weight: 900;
-  color: rgba(74, 10, 30, 0.2); /* Strongly highlighted watermark in brand burgundy */
+  color: rgba(74, 10, 30, 0.4); /* Significantly darker watermark for high visibility */
   letter-spacing: 0.15em;
   white-space: nowrap;
   pointer-events: none;
