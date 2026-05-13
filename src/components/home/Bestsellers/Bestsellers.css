@@ -11,7 +11,7 @@
 
 /* Decorative background text - Premium Outline Style */
 .bestsellers-section::before {
-  content: 'BESTSELLERS';
+  content: 'BEST SELLERS';
   position: absolute;
   top: 1rem;
   left: 50%;
@@ -756,8 +756,9 @@
   }
 
   .bestsellers-section::before {
-    font-size: 14vw;
-    top: 1rem;
+    font-size: 10vw;
+    letter-spacing: 0.20em;
+    top: 2rem;
   }
 }
 
