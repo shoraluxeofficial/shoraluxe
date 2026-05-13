@@ -597,7 +597,7 @@ export const productsData = [
     offer: 'Waitless Hydration',
     rating: 4.7,
     reviewsCount: 89,
-    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291953/civdpvoalqrktfwit3bv.png',
     badge: 'BESTSELLER',
     isNew: false,
     isBestseller: true,
