@@ -40,7 +40,7 @@ const CTASection = () => {
   }, []);
 
   return (
-    <section className="cta-section" style={data.bgImage ? { backgroundImage: `url(${data.bgImage})` } : {}}>
+    <section className="cta-section">
       <div className="cta-overlay"></div>
       <div className="cta-content">
         <span className="cta-tag">{data.tag}</span>
