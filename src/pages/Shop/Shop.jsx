@@ -192,21 +192,29 @@ const Shop = () => {
       const cat = activeCategory.toLowerCase();
       result = result.filter(p => {
         const title = p.title.toLowerCase();
-        const desc = (p.description || '').toLowerCase();
-        const type = (p.skinType || '').toLowerCase();
         const category = (p.category || '').toLowerCase();
 
-        if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser') || category.includes('wash');
-        if (cat === 'serum') return title.includes('serum') || category.includes('serum');
-        if (cat === 'moisturizer') return title.includes('moisturizer') || title.includes('gel') || category.includes('moisturizer');
-        if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf') || category.includes('sunscreen');
-        if (cat === 'body-wash') return title.includes('body wash') || category.includes('body-wash');
-        if (cat === 'day-cream') return title.includes('day cream') || category.includes('day-cream');
-        if (cat === 'night-cream') return title.includes('night cream') || category.includes('night-cream');
-        if (cat === 'body-lotion') return title.includes('body lotion') || category.includes('body-lotion');
-        if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio') || category.includes('combo');
+        // 1. If explicit category matches, return true immediately
+        if (category === cat) return true;
+        
+        // 2. Fallback to keyword matching only if NO explicit category is set
+        if (!category || category === 'none') {
+          if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser');
+          if (cat === 'serum') return title.includes('serum');
+          if (cat === 'moisturizer') {
+            // Exclude face washes that might have 'gel' in title
+            if (title.includes('wash') || title.includes('cleanser')) return false;
+            return title.includes('moisturizer') || title.includes('gel') || title.includes('cream');
+          }
+          if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf');
+          if (cat === 'body-wash') return title.includes('body wash');
+          if (cat === 'day-cream') return title.includes('day cream');
+          if (cat === 'night-cream') return title.includes('night cream');
+          if (cat === 'body-lotion') return title.includes('body lotion');
+          if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio');
+        }
 
-        return title.includes(cat) || desc.includes(cat) || type.includes(cat) || category.includes(cat);
+        return category.includes(cat) || title.includes(cat);
       });
     }
 

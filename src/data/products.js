@@ -190,6 +190,7 @@ export const productsData = [
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients.',
     ingredients: 'Purified Water, Sodium Lauroyl Sarcosinate, Decyl Glucoside, Cocamidopropyl Betaine, Glycerin , Sodium Pyrrolidone Carboxylic Acid, Triethanolamine, Acrylates / C10-30 Alkylacrylate Crosspolymer, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate, Sodium Hyaluronte, Centella Asiatica Extract, Fragrance',
     bestFor: 'Dry and sensitive skin',
+    category: 'face-wash',
     promoGroup: 'B2G1_FACEWASH'
   },
   {
@@ -234,7 +235,7 @@ export const productsData = [
   {
     id: 7,
     brand: 'SHORALUXE',
-    title: 'Brightening day cream with SPF| Skin Brightening| UV Rays Protection| with Niacinamide, Vitamin C, Alpha Arbutin, Ceramide NP, Sunshield | Suitable for all skin types',
+    title: 'Brightening day cream 50gm',
     price: 559,
     originalPrice: 699,
     discount: '20% off',
@@ -267,12 +268,13 @@ export const productsData = [
     ],
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients due to which color and fragrance may change over time. However the product efficacy remains the same.',
     ingredients: 'Purified Water, Paraffinum Liquidum, Glycerin, Polysorbate-20, Glyceryl Stearate, Cetyl Alcohol,Stearic Acid, Dimethicone, Sodium Hyaluronate, Panthenol, Avena Sativa (Oat) Kernel Extract, Glycolic Acid, Salicylic Acid, Hydrolyzed Collagen, Carbomer, Fragrance, Phenoxyethanol, Triethanolamine, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate, Butylated Hydroxy Toluene.',
-    bestFor: 'All skin types'
+    bestFor: 'All skin types',
+    category: 'moisturizer'
   },
   {
     id: 8,
     brand: 'SHORALUXE',
-    title: 'Retinol Night cream| Even Skin tone| Age Spots, Fine lines & Wrinkles Reduction| with Retinol, Bakuchi, Peptides, Hyaluronic Acid, Niacinamide | Suitable for all skin types',
+    title: 'Retinol night cream 50gm',
     price: 559,
     originalPrice: 699,
     discount: '20% off',
@@ -302,12 +304,13 @@ export const productsData = [
     ],
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients due to which colour and fragrance may change over time. However the product efficacy remains the same.',
     ingredients: 'Purified Water, Isopropyl Myristate, Glyceryl Stearate (And) Polyethylene Glycol-100 Stearate, Glycerin, Cyclopentasiloxane & Dimethiconol, Stearic Acid, Cetyl Alcohol, Psoralea Corylifolia Fruit Extract, Sodium Hyaluronate, Glycerin (And) Aqua (And) Butylene Glycol (And) Carbomer (And) Polysorbate 20 (And) Palmitoyl Tripeptide-1 (And) Palmitoyl Tetrapeptide-7, Niacinamide, Sodium Pyrrolidone Carboxylic Acid, Carbomer, Retinol, Panthenol, Phenoxyethanol, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Fragrance, Butylated Hydroxy Toluene, Disodium ethylenediaminetetraactate, Disodium Ethylenediaminetetraacetate, Butylated Hydroxy Toluene, Fragrance.',
-    bestFor: 'Mature skin'
+    bestFor: 'Mature skin',
+    category: 'moisturizer'
   },
   {
     id: 9,
     brand: 'SHORALUXE',
-    title: 'Non-Sticky Moisturizer |with Hyaluronic Acid and Aloe Vera | 100 gm',
+    title: 'Non sticky moisturizer 100gm',
     price: 389,
     originalPrice: 499,
     discount: '22% off',
@@ -346,9 +349,10 @@ export const productsData = [
     ],
     cautions: 'External use only. Store away from sunlight. Discontinue if irritation occurs.',
     ingredients: 'Aqua, Sodium Acylates Copolymer And Lecithin, Glycerin, Shea Butter Xylitylglucoside, Anhydroxylitol, Xylitol, Aloe Vera  Extract, Tocopherol acetate (VIT E), C12-C15 Alkyl Benzoate, Glyceryl Stearate, PEG-100 Stearate, Sunflower Oil, Coco Caprylate, Cetyl Palmitate,Glyceryl Mono  Stearate, Cetyl Alcohol,  Caprylic Capric Triglyceride, Fragrance, Hyloronic Acid, collagen peptides',
-    bestFor: 'All skin types'
+    bestFor: 'All skin types',
+    category: 'moisturizer'
   },
-  {
+{
     id: 10,
     brand: 'SHORALUXE',
     title: 'Sunscreen Cream SPF 50+++ | Broad-spectrum sunscreen for daily UV defense | 50 gm',
@@ -582,5 +586,28 @@ export const productsData = [
     badge: 'NIGHT REPAIR',
     category: 'combo',
     skinType: 'All Skin Types'
+  },
+  {
+    id: 18,
+    brand: 'SHORALUXE',
+    title: 'Non sticky moisturizer 50gm',
+    price: 389,
+    originalPrice: 499,
+    discount: '22% off',
+    offer: 'Waitless Hydration',
+    rating: 4.7,
+    reviewsCount: 89,
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png',
+    badge: 'BESTSELLER',
+    isNew: false,
+    isBestseller: true,
+    size: JSON.stringify([{ label: '50gm', price: 389, mrp: 499, discount: '22% off', usp: '' }]),
+    netQuantity: '50gm',
+    benefit: 'Deep Hydration & Soothing',
+    skinType: 'All Skin Types',
+    category: 'moisturizer',
+    description: 'Give your skin the perfect daily boost with this ultra-light, non-greasy moisturizer. Powered by Hyaluronic Acid, it delivers deep, long-lasting hydration, while Aloe Vera soothes and refreshes the skin.',
+    howToUse: ['Apply evenly on clean face. Use daily, morning and evening.'],
+    bestFor: 'All skin types'
   }
 ];
