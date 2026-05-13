@@ -355,7 +355,7 @@ export const productsData = [
 {
     id: 10,
     brand: 'SHORALUXE',
-    title: 'Sunscreen Cream SPF 50+++ | Broad-spectrum sunscreen for daily UV defense | 50 gm',
+    title: 'Sunscreen cream spf 50+++ 50gm',
     price: 359,
     originalPrice: 499,
     discount: '28% off',
@@ -392,7 +392,8 @@ export const productsData = [
     ],
     cautions: 'For external use only. Avoid contact with eyes. Patch test before use.',
     ingredients: 'Aqua,Allontoin, Glycerin,  propanediol, titanium di oxide,  aloe vera extract , licorice extract, phenoxyethanol & ethylhexylglycerin, sodium acrylates copolymer & lecithin, zinc oxide, Ethylhexyl Methoxycinnamate ,Benzophenone-3 , Phospholipids , 1,3-Butylene Glycol ,Alpha arbutin ,C 12- C 15 Alkyl benzoate ,Dimethicone ,Glyceryl mono stearate ,Tocoheryl acetate  , sunflower oil ,Fragrance  Raspberry Extract |  Cucumber Extract, Hyalauronic acid, Niacinamide, Octinoxate',
-    bestFor: 'All skin types'
+    bestFor: 'All skin types',
+    category: 'sunscreen'
   },
   {
     id: 11,
@@ -608,6 +609,29 @@ export const productsData = [
     category: 'moisturizer',
     description: 'Give your skin the perfect daily boost with this ultra-light, non-greasy moisturizer. Powered by Hyaluronic Acid, it delivers deep, long-lasting hydration, while Aloe Vera soothes and refreshes the skin.',
     howToUse: ['Apply evenly on clean face. Use daily, morning and evening.'],
+    bestFor: 'All skin types'
+  },
+  {
+    id: 19,
+    brand: 'SHORALUXE',
+    title: 'Sunscreen cream spf 50+++ 100gm',
+    price: 489,
+    originalPrice: 649,
+    discount: '25% off',
+    offer: 'Best Value Protection',
+    rating: 4.8,
+    reviewsCount: 124,
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291989/zpydqrjuxpycj4irgl2j.png',
+    badge: 'BESTSELLER',
+    isNew: false,
+    isBestseller: true,
+    size: JSON.stringify([{ label: '100gm', price: 489, mrp: 649, discount: '25% off', usp: 'Best Value' }]),
+    netQuantity: '100gm',
+    benefit: 'SPF 50+++ Protection',
+    skinType: 'All Skin Types',
+    category: 'sunscreen',
+    description: 'Protect your skin every day with this lightweight, non-greasy sunscreen powered with SPF 50+++ for advanced, broad-spectrum protection.',
+    howToUse: ['Apply generously 15 mins before sun exposure.'],
     bestFor: 'All skin types'
   }
 ];
