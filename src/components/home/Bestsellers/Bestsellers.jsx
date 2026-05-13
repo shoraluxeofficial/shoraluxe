@@ -140,11 +140,7 @@ const Bestsellers = () => {
       <div className="bs-header-wrap">
         <div className="bs-header-inner">
           <div className="bs-header-left">
-            <p className="bs-eyebrow">Customer Favourites</p>
-            <h2 className="bs-heading">Bestsellers</h2>
-            <p className="bs-subtext">
-              Loved by thousands — our most-repurchased formulas for radiant, healthy skin.
-            </p>
+            {/* Header text removed as per user request */}
           </div>
           <Link to="/shop" className="bs-view-all-desktop">
             View All Products <ArrowRight size={16} />

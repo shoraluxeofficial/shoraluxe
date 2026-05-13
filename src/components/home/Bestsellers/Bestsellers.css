@@ -19,8 +19,7 @@
   font-family: var(--font-serif), 'Georgia', serif;
   font-size: 11vw;
   font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(144, 114, 83, 0.12);
+  color: rgba(74, 10, 30, 0.2); /* Strongly highlighted watermark in brand burgundy */
   letter-spacing: 0.15em;
   white-space: nowrap;
   pointer-events: none;
@@ -34,7 +33,7 @@
   max-width: 1540px;
   margin: 0 auto;
   padding: 0 3rem;
-  margin-bottom: 4rem;
+  margin-bottom: 8rem; /* Increased to give the watermark more breathing room */
   position: relative;
   z-index: 2;
 }
@@ -127,14 +126,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   transition: all 0.4s ease;
-  border: 1px solid rgba(0,0,0,0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .bs-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   border-color: rgba(144, 114, 83, 0.1);
 }
 
@@ -188,7 +187,8 @@
   left: 0;
   opacity: 0;
   transform: scale(1.05);
-  background: #f8f6f3; /* Match wrap background to prevent flicker */
+  background: #f8f6f3;
+  /* Match wrap background to prevent flicker */
 }
 
 .bs-card:hover .bs-card-img-container.has-hover .bs-card-img.main {
@@ -271,7 +271,8 @@
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.bs-wish-btn, .bs-share-btn {
+.bs-wish-btn,
+.bs-share-btn {
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -284,10 +285,11 @@
   color: #555;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.bs-wish-btn:hover, .bs-share-btn:hover {
+.bs-wish-btn:hover,
+.bs-share-btn:hover {
   background: var(--brand-burgundy, #6d0e2c);
   color: #fff;
   transform: scale(1.1);
@@ -339,7 +341,7 @@
   font-size: 0.65rem;
   font-weight: 700;
   color: var(--brand-gold);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   /* Removed backdrop-filter: blur - leaks through even on hidden elements */
 }
 
@@ -461,7 +463,8 @@
 
 /* Mobile-only tag row (hidden on desktop, shown on mobile below product name) */
 .bs-mobile-tags {
-  display: none; /* hidden on desktop */
+  display: none;
+  /* hidden on desktop */
   flex-wrap: wrap;
   gap: 4px;
   margin-bottom: 0.5rem;
@@ -477,10 +480,21 @@
   color: #fff;
 }
 
-.bs-mobile-tag.promo { background: #6d0e2c; }
-.bs-mobile-tag.best  { background: #907253; }
-.bs-mobile-tag.sale  { background: #ab2346; }
-.bs-mobile-tag.new   { background: #2c4a3e; }
+.bs-mobile-tag.promo {
+  background: #6d0e2c;
+}
+
+.bs-mobile-tag.best {
+  background: #907253;
+}
+
+.bs-mobile-tag.sale {
+  background: #ab2346;
+}
+
+.bs-mobile-tag.new {
+  background: #2c4a3e;
+}
 
 .bs-price-row {
   display: flex;
@@ -709,7 +723,8 @@
 
   /* Quick Add Mobile Fix */
   .bs-card-overlay {
-    display: flex; /* Show on mobile but subtly */
+    display: flex;
+    /* Show on mobile but subtly */
     opacity: 1;
     background: none;
     padding: 0;
@@ -727,7 +742,7 @@
     backdrop-filter: blur(4px);
     border-radius: 6px;
     white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .bestsellers-section::before {
