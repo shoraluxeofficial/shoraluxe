@@ -33,7 +33,7 @@
   max-width: 1540px;
   margin: 0 auto;
   padding: 0 3rem;
-  margin-bottom: 8rem; /* Increased to give the watermark more breathing room */
+  margin-bottom: 10rem; /* Significantly increased to give the large watermark more breathing room */
   position: relative;
   z-index: 2;
 }
