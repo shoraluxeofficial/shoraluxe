@@ -145,6 +145,14 @@ const Bestsellers = () => {
         </div>
       </div>
 
+      {/* View All Text - Positioned in the gap on the right */}
+      <div className="bs-view-all-text-wrap">
+        <Link to="/shop" className="bs-view-all-text">
+          View All Products <ArrowRight size={16} />
+        </Link>
+      </div>
+
+
       {/* Product Grid */}
       <div className="bs-container">
         <div className="bs-grid">
@@ -286,13 +294,6 @@ const Bestsellers = () => {
               );
             })
           )}
-        </div>
-
-        {/* Desktop & Mobile View All - Centered at bottom */}
-        <div className="bs-view-all-container">
-          <Link to="/shop" className="bs-view-all-btn">
-            View All Products <ArrowRight size={16} />
-          </Link>
         </div>
       </div>
     </section>

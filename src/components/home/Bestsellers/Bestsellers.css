@@ -72,43 +72,44 @@
   margin: 0;
 }
 
-.bs-view-all-container {
+.bs-view-all-text-wrap {
+  max-width: 1540px;
+  margin: 0 auto 2rem;
+  padding: 0 3rem;
   display: flex;
-  justify-content: center;
-  margin-top: 4rem;
+  justify-content: flex-end;
   position: relative;
   z-index: 5;
 }
 
-.bs-view-all-btn {
-  display: inline-flex;
+.bs-view-all-text {
+  display: flex;
   align-items: center;
-  gap: 0.8rem;
-  background: var(--brand-burgundy);
-  color: #fff;
+  gap: 0.6rem;
   text-decoration: none;
-  padding: 1rem 2.5rem;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  border-radius: 50px;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 10px 20px rgba(109, 14, 44, 0.15);
+  color: #111;
+  border-bottom: 2px solid #111;
+  padding-bottom: 3px;
+  white-space: nowrap;
+  transition: all 0.25s;
 }
 
-.bs-view-all-btn:hover {
-  background: var(--logo-red-glow);
-  transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(109, 14, 44, 0.25);
+.bs-view-all-text:hover {
+  color: var(--brand-burgundy);
+  border-color: var(--brand-burgundy);
+  transform: translateX(3px);
 }
 
-.bs-view-all-btn svg {
-  transition: transform 0.3s;
+.bs-view-all-text svg {
+  transition: transform 0.25s;
 }
 
-.bs-view-all-btn:hover svg {
-  transform: translateX(5px);
+.bs-view-all-text:hover svg {
+  transform: translateX(4px);
 }
 
 /* ---- Grid ---- */
