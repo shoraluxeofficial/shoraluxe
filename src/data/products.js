@@ -40,6 +40,7 @@ export const productsData = [
     cautions: 'For external use only. Avoid eye area. Patch test is recommended. Store in cool place.',
     ingredients: 'Aqua, Strawberry extract, Disodium EDTA, Acylates Copolymer, Glycerine, Glycolic Acid, Salicylic Acid, Sodium Laureth Sulfate, Xanthan Gum, Cocamidopropyl Betaine, DMDM Hydantoin, Sodium Hydroxide, Beads, Fresh Juicy Mangoes Fragrance, Ethyl Ascorbic Acid',
     bestFor: 'Oily and acne-prone skin types',
+    category: 'face-wash',
     promoGroup: 'B2G1_FACEWASH'
   },
   {
@@ -79,6 +80,7 @@ export const productsData = [
     cautions: 'For external use only. Avoid eye area. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients.',
     ingredients: 'Purified Water, Sodium Lauroyl Sarcosinate, Decyl Glucoside, Cocamidopropyl Betaine, Glycerin, Triethanolamine, Acrylates / C10-30 Alkylacrylate Crosspolymer, (Bamboo) Charcoal Powder, Melaleuca Alternifolia (Tea Tree) Leaf Extract, Salicylic Acid, Sodium Bicarbonate, Aloe Barbadensis Leaf Extract, Sodium Pyrrolidone Carboxylic Acid, Fragrance, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate',
     bestFor: 'Oily and combination skin',
+    category: 'face-wash',
     promoGroup: 'B2G1_FACEWASH'
   },
   {
@@ -115,6 +117,7 @@ export const productsData = [
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients.',
     ingredients: 'Purified Water, Sodium Lauroyl Sarcosinate, Decyl Glucoside, Cocamidopropyl Betaine, Glycerin, Triethanolamine, Acrylates / C10-30 Alkylacrylate Crosspolymer, Glycol Stearate, Sodium Pyrrolidone Carboxylic Acid, Fragrance, Oryza Sativa (Rice) Bran Extract, Niacinamide, Allantoin, Panthenol, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate',
     bestFor: 'Normal, Dry, Oily/Combination, Sensitive',
+    category: 'face-wash',
     promoGroup: 'B2G1_FACEWASH'
   },
   {
@@ -153,6 +156,7 @@ export const productsData = [
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients.',
     ingredients: 'Purified Water, Sodium Lauroyl Sarcosinate, Decyl Glucoside, Cocamidopropyl Betaine, Glycerin, Triethanolamine, Acrylates / C10-30 Alkylacrylate Crosspolymer, Sodium Pyrrolidone Carboxylic Acid, Fragrance, 3-O-Ethyl Ascorbic Acid, Curcuma Longa (Turmeric) Root Extract, Glycyrrhiza Glabra (Licorice) Root Extract, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate',
     bestFor: 'All skin types',
+    category: 'face-wash',
     promoGroup: 'B2G1_FACEWASH'
   },
   {
@@ -230,7 +234,8 @@ export const productsData = [
     ],
     cautions: 'External use only. Avoid contact with eyes. Patch test recommended. Discontinue if irritation occurs.',
     ingredients: 'Aqua, Sodium Gluconate, Sodium Hyaluronate, Ethyl Ascorbic Acid, Propanediol, Glycerin, Propylene Glycol, Betaine, Copper Tripeptide-1, Palmitoyl Tripeptide-1, Palmitoyl Tetrapeptide-7, Licorice Extract, Aloe Vera Extract, Pineapple Extract, Orange Liquid Extract, Niacinamide, Alpha Arbutin, Perfume, Xanthan Gum, Phenoxyethanol (and) Ethylhexylglycerin, Hydrolyzed Collagen, Hyaluronic Acid, Ferulic Acid, Peach Extract, Vit- E Glutathione.',
-    bestFor: 'All skin types'
+    bestFor: 'All skin types',
+    category: 'serum'
   },
   {
     id: 7,
@@ -269,7 +274,7 @@ export const productsData = [
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients due to which color and fragrance may change over time. However the product efficacy remains the same.',
     ingredients: 'Purified Water, Paraffinum Liquidum, Glycerin, Polysorbate-20, Glyceryl Stearate, Cetyl Alcohol,Stearic Acid, Dimethicone, Sodium Hyaluronate, Panthenol, Avena Sativa (Oat) Kernel Extract, Glycolic Acid, Salicylic Acid, Hydrolyzed Collagen, Carbomer, Fragrance, Phenoxyethanol, Triethanolamine, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate, Butylated Hydroxy Toluene.',
     bestFor: 'All skin types',
-    category: 'moisturizer'
+    category: 'moisturizer day-cream'
   },
   {
     id: 8,
@@ -305,7 +310,7 @@ export const productsData = [
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients due to which colour and fragrance may change over time. However the product efficacy remains the same.',
     ingredients: 'Purified Water, Isopropyl Myristate, Glyceryl Stearate (And) Polyethylene Glycol-100 Stearate, Glycerin, Cyclopentasiloxane & Dimethiconol, Stearic Acid, Cetyl Alcohol, Psoralea Corylifolia Fruit Extract, Sodium Hyaluronate, Glycerin (And) Aqua (And) Butylene Glycol (And) Carbomer (And) Polysorbate 20 (And) Palmitoyl Tripeptide-1 (And) Palmitoyl Tetrapeptide-7, Niacinamide, Sodium Pyrrolidone Carboxylic Acid, Carbomer, Retinol, Panthenol, Phenoxyethanol, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Fragrance, Butylated Hydroxy Toluene, Disodium ethylenediaminetetraactate, Disodium Ethylenediaminetetraacetate, Butylated Hydroxy Toluene, Fragrance.',
     bestFor: 'Mature skin',
-    category: 'moisturizer'
+    category: 'moisturizer night-cream'
   },
   {
     id: 9,
@@ -429,7 +434,8 @@ export const productsData = [
     ],
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients due to which colour and fragrance may change over time. However the product efficacy remains the same.',
     ingredients: 'Purified Water, Sodium Lauroyl Sarcosinate, Lauryl Glucoside, Cocamidopropyl Betaine, Glycerin, Polyethylene Glycol-150 Distearate, Polyquaternium-7, Cocamide diethanolamine, Citric Acid, Fragrance, Lavandula Angustifolia (Lavender) Flower Extract, Aloe Barbadensis Leaf Extract Chamomilla Recutita (Matricaria) Flower Extract, Panthenol, Polyquaternium-10, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate permitted color',
-    bestFor: 'All skin types'
+    bestFor: 'All skin types',
+    category: 'body-wash'
   },
   {
     id: 12,
@@ -466,6 +472,7 @@ export const productsData = [
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients due to which color and fragrance may change over time. However the product efficacy remains the same.',
     ingredients: 'Purified Water, Paraffinum Liquidum, Glycerin, Polysorbate-20, Glyceryl Stearate, Cetyl Alcohol,Stearic Acid, Dimethicone, Sodium Hyaluronate, Panthenol, Avena Sativa (Oat) Kernel Extract, Glycolic Acid, Salicylic Acid, Hydrolyzed Collagen, Carbomer, Fragrance, Phenoxyethanol, Triethanolamine, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate, Butylated Hydroxy Toluene.',
     bestFor: 'Dry and dehydrated body skin',
+    category: 'body-lotion',
     promoGroup: 'B2G1_LOTION'
   },
   {
@@ -503,6 +510,7 @@ export const productsData = [
     cautions: 'For external use only. Avoid broken skin. Discontinue if irritation occurs.',
     ingredients: 'Purified Water, Polyacrylamide (and) C13-14 Isoparaffin (and) Laureth-7, Glycerin, Caprylic/Capric Triglyceride, Cetostearyl Alcohol, Dimethicone, Tapioca Starch, Phenoxyethanol and Ethylhexylglycerin, Butyrospermum Parkii (Shea) Butter, Tocopherol, Ceramide NP, Squalane, Azelaic Acid, Fragrance, Xanthan Gum, Disodium Ethylenediaminetetraacetate',
     bestFor: 'All skin types',
+    category: 'body-lotion',
     promoGroup: 'B2G1_LOTION'
   },
   {

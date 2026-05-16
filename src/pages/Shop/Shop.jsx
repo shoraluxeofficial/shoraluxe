@@ -190,31 +190,29 @@ const Shop = () => {
 
     if (activeCategory) {
       const cat = activeCategory.toLowerCase();
+      const catSpaced = cat.replace(/-/g, ' ');
+      
       result = result.filter(p => {
         const title = p.title.toLowerCase();
         const category = (p.category || '').toLowerCase();
 
-        // 1. If explicit category matches, return true immediately
-        if (category === cat) return true;
+        // 1. Explicit category match (supports space-separated categories like 'moisturizer day-cream')
+        if (category.includes(cat)) return true;
         
-        // 2. Fallback to keyword matching only if NO explicit category is set
-        if (!category || category === 'none') {
-          if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser');
-          if (cat === 'serum') return title.includes('serum');
-          if (cat === 'moisturizer') {
-            // Exclude face washes that might have 'gel' in title
-            if (title.includes('wash') || title.includes('cleanser')) return false;
-            return title.includes('moisturizer') || title.includes('gel') || title.includes('cream');
-          }
-          if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf');
-          if (cat === 'body-wash') return title.includes('body wash');
-          if (cat === 'day-cream') return title.includes('day cream');
-          if (cat === 'night-cream') return title.includes('night cream');
-          if (cat === 'body-lotion') return title.includes('body lotion');
-          if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio');
-        }
+        // 2. Fallback to keyword matching
+        // Check for hyphenated and spaced versions
+        if (title.includes(cat) || title.includes(catSpaced)) return true;
 
-        return category.includes(cat) || title.includes(cat);
+        // 3. Special cases for specific categories
+        if (cat === 'face-wash') return title.includes('wash') || title.includes('cleanser');
+        if (cat === 'moisturizer') {
+          if (title.includes('wash') || title.includes('cleanser')) return false;
+          return title.includes('moisturizer') || title.includes('gel') || title.includes('cream');
+        }
+        if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf');
+        if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio');
+
+        return false;
       });
     }
 
