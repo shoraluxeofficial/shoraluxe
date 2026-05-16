@@ -641,5 +641,28 @@ export const productsData = [
     description: 'Protect your skin every day with this lightweight, non-greasy sunscreen powered with SPF 50+++ for advanced, broad-spectrum protection.',
     howToUse: ['Apply generously 15 mins before sun exposure.'],
     bestFor: 'All skin types'
+  },
+  {
+    id: 149,
+    brand: 'SHORALUXE',
+    title: 'Salicylic acid face wash 100gm',
+    price: 303,
+    originalPrice: 379,
+    discount: '20% off',
+    offer: 'Deep Pore Cleansing',
+    rating: 4.8,
+    reviewsCount: 93,
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291865/ozy4pn5a42m3iuixbvvq.jpg',
+    badge: 'BEST VALUE',
+    isNew: false,
+    isBestseller: true,
+    size: JSON.stringify([{ label: '100ml', price: 303, mrp: 379, discount: '20% off', usp: 'Best Value' }]),
+    netQuantity: '100ml',
+    benefit: 'Acne & Pore Clearing',
+    skinType: 'Oily & Acne-Prone',
+    category: 'face-wash',
+    description: 'Our best-selling Salicylic Acid Face Wash in a larger 100ml value pack. Penetrates deep to remove impurities and exfoliate dead skin cells.',
+    howToUse: ['Wet face, apply, massage gently and rinse off.'],
+    bestFor: 'Oily and acne-prone skin types'
   }
 ];
