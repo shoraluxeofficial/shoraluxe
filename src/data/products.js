@@ -274,7 +274,7 @@ export const productsData = [
     cautions: 'For external use only. A patch test is recommended before use. Store in a cool, dry place. This product contains natural ingredients due to which color and fragrance may change over time. However the product efficacy remains the same.',
     ingredients: 'Purified Water, Paraffinum Liquidum, Glycerin, Polysorbate-20, Glyceryl Stearate, Cetyl Alcohol,Stearic Acid, Dimethicone, Sodium Hyaluronate, Panthenol, Avena Sativa (Oat) Kernel Extract, Glycolic Acid, Salicylic Acid, Hydrolyzed Collagen, Carbomer, Fragrance, Phenoxyethanol, Triethanolamine, Dimethyl-Dimethyl Hydantoin (And) Methylchloroisothiazolinone (And) Methylisothiazolinone, Disodium Ethylenediaminetetraacetate, Butylated Hydroxy Toluene.',
     bestFor: 'All skin types',
-    category: 'moisturizer day-cream'
+    category: 'moisturizer day-cream sunscreen'
   },
   {
     id: 8,
@@ -357,7 +357,7 @@ export const productsData = [
     bestFor: 'All skin types',
     category: 'moisturizer'
   },
-{
+  {
     id: 10,
     brand: 'SHORALUXE',
     title: 'Sunscreen cream spf 50+++ 50gm',

@@ -209,7 +209,12 @@ const Shop = () => {
           if (title.includes('wash') || title.includes('cleanser')) return false;
           return title.includes('moisturizer') || title.includes('gel') || title.includes('cream');
         }
-        if (cat === 'sunscreen') return title.includes('sunscreen') || title.includes('spf');
+        if (cat === 'sunscreen') {
+          return title.includes('sunscreen') || 
+                 title.includes('spf') || 
+                 (p.description || '').toLowerCase().includes('spf') ||
+                 (p.benefits || '').toLowerCase().includes('spf');
+        }
         if (cat === 'combo') return title.includes('combo') || title.includes('bundle') || title.includes('trio');
 
         return false;
