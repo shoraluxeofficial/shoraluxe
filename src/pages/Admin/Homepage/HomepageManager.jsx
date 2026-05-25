@@ -124,7 +124,7 @@ const HomepageManager = () => {
         try {
           f = await imageCompression(file, {
             maxSizeMB: 2.5,  /* Increased from 0.4MB to preserve HD quality */
-            maxWidthOrHeight: 2560, /* Increased from 1200px to allow ultra-wide 4K displays */
+            maxWidthOrHeight: 4050, /* Allow massive 4050px mobile banners without shrinking */
             useWebWorker: true,
             fileType: 'image/webp',
             initialQuality: 0.95 /* Increased from 0.8 to keep it sharp */
@@ -299,8 +299,8 @@ const HomepageManager = () => {
           <div className="builder-section">
             <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#111827', margin: '0 0 1rem 0', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.5rem' }}>1. Upload Banner Media (Image or Video)</h4>
             <div className="hm-field-grid" style={{ gap: '1.5rem' }}>
-              {renderVisualUpload('desktopImg', 'Desktop Media (16:6 | Image or MP4 Video)')}
-              {renderVisualUpload('mobileImg', 'Mobile Media (4:5 | Image or MP4 Video)', true)}
+              {renderVisualUpload('desktopImg', 'Desktop Media (2560 x 960 pixels | Image or MP4)')}
+              {renderVisualUpload('mobileImg', 'Mobile Media (3240 x 4050 pixels | Image or MP4)', true)}
             </div>
           </div>
 
