@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../../lib/supabase';
 import { Droplets, Sparkles, Sun, Hourglass, Leaf, Waves, Wind, Shield } from 'lucide-react';
 import { getOptimizedImageUrl } from '../../../lib/upload';
 import './ShopByConcern.css';
@@ -114,8 +115,44 @@ const concernData = [
 const ShopByConcern = () => {
   const [active, setActive] = useState(0);
   const [hoveredProduct, setHoveredProduct] = useState(null);
+  const [dbProducts, setDbProducts] = useState([]);
   const navigate = useNavigate();
-  const current = concernData[active];
+
+  useEffect(() => {
+    const fetchProds = async () => {
+      const { data } = await supabase.from('products').select('id, title, img, size');
+      if (data) setDbProducts(data);
+    };
+    fetchProds();
+  }, []);
+
+  const hydratedData = useMemo(() => {
+    if (!dbProducts.length) return concernData;
+    return concernData.map(c => ({
+      ...c,
+      products: c.products.map(p => {
+        const dbMatch = dbProducts.find(db => db.title.toLowerCase().includes(p.name.toLowerCase()));
+        let sizesStr = p.sizes;
+        if (dbMatch && dbMatch.size) {
+          try {
+            if (dbMatch.size.startsWith('[')) {
+              sizesStr = JSON.parse(dbMatch.size).map(s => s.label).join(' · ');
+            } else {
+              sizesStr = dbMatch.size;
+            }
+          } catch(e) {}
+        }
+        return {
+          ...p,
+          dbId: dbMatch ? dbMatch.id : null,
+          img: dbMatch ? dbMatch.img : p.img,
+          sizes: sizesStr
+        };
+      })
+    }));
+  }, [dbProducts]);
+
+  const current = hydratedData[active];
 
   // Show hovered product image, else show first
   const featuredImg = hoveredProduct !== null
@@ -171,7 +208,7 @@ const ShopByConcern = () => {
                 style={{ animationDelay: `${i * 0.06}s` }}
                 onMouseEnter={() => setHoveredProduct(i)}
                 onMouseLeave={() => setHoveredProduct(null)}
-                onClick={() => navigate('/shop')}
+                onClick={() => navigate(p.dbId ? `/product/${p.dbId}` : '/shop')}
               >
                 {/* tiny thumbnail */}
                 <div className="sbc-row-thumb">
@@ -220,7 +257,7 @@ const ShopByConcern = () => {
                 className={`sbc-thumb ${hoveredProduct === i ? 'sbc-thumb--active' : ''}`}
                 onMouseEnter={() => setHoveredProduct(i)}
                 onMouseLeave={() => setHoveredProduct(null)}
-                onClick={() => navigate('/shop')}
+                onClick={() => navigate(p.dbId ? `/product/${p.dbId}` : '/shop')}
                 title={p.name}
               >
                 <img src={getOptimizedImageUrl(p.img, 'w_100,q_auto,f_auto')} alt={p.name} />
