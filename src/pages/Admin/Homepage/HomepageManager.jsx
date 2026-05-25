@@ -23,12 +23,25 @@ const WATCH_SHOP_DEFAULTS = [
   { title: 'Brand Story', video: '/watch&shop/WhatsApp%20Video%202026-04-29%20at%207.44.12%20PM.mp4' },
 ];
 
+const CATEGORY_DEFAULTS = [
+  { name: 'Face Washes', slug: 'face-wash', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291808/xy5kaacehvnqb239cr5f.jpg' },
+  { name: 'Face Serums', slug: 'serum', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291809/uneg1od3vx5vg0yefgx7.png' },
+  { name: 'Moisturizers', slug: 'moisturizer', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291810/qs6s904ntxkmvvpdaife.jpg' },
+  { name: 'Sunscreens', slug: 'sunscreen', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291811/tsa4j57bhrcmhvypztnw.png' },
+  { name: 'Body Washes', slug: 'body-wash', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291813/wo65bumhqty40zffhcpb.png' },
+  { name: 'Day Creams', slug: 'day-cream', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291813/e8xvygltdxw2dlhzybel.png' },
+  { name: 'Night Creams', slug: 'night-cream', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291814/f3ktzl7tlgowlua2ghkw.png' },
+  { name: 'Body Lotions', slug: 'body-lotion', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291815/mybmliwa7ysfwsjci2ov.png' },
+  { name: 'Combos', slug: 'combo', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291816/hjbdu4qn8fzts6kn7qmg.jpg' },
+];
+
 const TABS = [
   { key: 'hero', label: 'Hero Banners', icon: ImageIcon, type: 'array' },
   { key: 'cta', label: 'CTA Section', icon: LayoutDashboard, type: 'object' },
   { key: 'quiz', label: 'Quiz Section', icon: FileText, type: 'object' },
   { key: 'videoBanners', label: 'Video Banners', icon: Video, type: 'array' },
   { key: 'watchAndShop', label: 'Video Stories', icon: Video, type: 'array' },
+  { key: 'categories', label: 'Categories', icon: ShoppingBag, type: 'array' },
 ];
 
 // ── INLINE EDIT MODAL ────────────────────────────────────────────────────────
@@ -54,7 +67,7 @@ const EditModal = ({ isOpen, onClose, onSave, children, title }) => {
 const HomepageManager = () => {
   const [sections, setSections] = useState({
     hero: HERO_DEFAULTS, cta: CTA_DEFAULTS, quiz: QUIZ_DEFAULTS,
-    brandPromise: [], videoBanners: VIDEO_DEFAULTS, watchAndShop: WATCH_SHOP_DEFAULTS
+    brandPromise: [], videoBanners: VIDEO_DEFAULTS, watchAndShop: WATCH_SHOP_DEFAULTS, categories: CATEGORY_DEFAULTS
   });
   const [loading, setLoading] = useState(true);
   const { products } = useShop();
@@ -82,6 +95,7 @@ const HomepageManager = () => {
           videoBanners: db.videoBanners ?? VIDEO_DEFAULTS,
           watchAndShop: db.watchAndShop ?? WATCH_SHOP_DEFAULTS,
           brandPromise: db.brandPromise ?? [],
+          categories: db.categories ?? CATEGORY_DEFAULTS,
         });
       }
     } catch (e) { console.error(e); }
@@ -171,6 +185,7 @@ const HomepageManager = () => {
       hero: { desktopImg: '', mobileImg: '', url: '', alt: '' },
       videoBanners: { url: '', title: '', desc: '' },
       watchAndShop: { title: '', video: '' },
+      categories: { name: '', slug: '', img: '' },
     };
     const currentTabObj = TABS.find(t => t.key === activeTab);
     const tabLabel = currentTabObj.label.replace(/s$/, ''); // e.g. "Hero Banner"
@@ -518,6 +533,24 @@ const HomepageManager = () => {
         </div>
       </div>
     );
+
+    if (activeTab === 'categories') return (
+      <div className="hm-edit-fields">
+        <div className="hm-field-grid">
+          <div className="hm-field">
+            <label>Category Name</label>
+            <input type="text" value={d.name || ''} onChange={e => upd('name', e.target.value)} placeholder="e.g. Face Washes" />
+          </div>
+          <div className="hm-field">
+            <label>URL Slug</label>
+            <input type="text" value={d.slug || ''} onChange={e => upd('slug', e.target.value)} placeholder="e.g. face-wash" />
+          </div>
+        </div>
+        <div className="hm-field">
+          {renderVisualUpload('img', 'Category Image')}
+        </div>
+      </div>
+    );
   };
 
   // ── HELPER: EXTRACT SLIDE TITLE ───────────────────────────────────────────
@@ -635,6 +668,27 @@ const HomepageManager = () => {
         </div>
         <div className="hm-card-actions">
           <button className="hm-action-btn hm-btn-edit" title="Edit" onClick={() => openEdit(index, 'Video Story')}><Pencil size={14} /></button>
+          <button className="hm-action-btn hm-btn-delete" title="Delete" onClick={() => handleDelete(index)}><Trash2 size={14} /></button>
+        </div>
+      </div>
+    );
+
+    if (activeTab === 'categories') return (
+      <div className="hm-card" key={index}>
+        <div className="hm-card-preview">
+          <div className="hm-card-video-thumb">
+            {item.img
+              ? <img src={item.img} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : <ImageIcon size={22} color="#9ca3af" />
+            }
+          </div>
+          <div className="hm-card-info">
+            <p className="hm-card-title">{item.name || 'Unnamed Category'}</p>
+            <span className="hm-chip hm-chip-blue">{item.slug || 'no-slug'}</span>
+          </div>
+        </div>
+        <div className="hm-card-actions">
+          <button className="hm-action-btn hm-btn-edit" title="Edit" onClick={() => openEdit(index, 'Category')}><Pencil size={14} /></button>
           <button className="hm-action-btn hm-btn-delete" title="Delete" onClick={() => handleDelete(index)}><Trash2 size={14} /></button>
         </div>
       </div>

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getOptimizedImageUrl } from '../../../lib/upload';
+import { supabase } from '../../../lib/supabase';
 import './Categories.css';
 
-const categoryData = [
+const DEFAULT_CATEGORIES = [
   { name: 'Face Washes',   slug: 'face-wash',   img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291808/xy5kaacehvnqb239cr5f.jpg' },
   { name: 'Face Serums',   slug: 'serum',       img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291809/uneg1od3vx5vg0yefgx7.png' },
   { name: 'Moisturizers',  slug: 'moisturizer', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291810/qs6s904ntxkmvvpdaife.jpg' },
@@ -16,12 +17,33 @@ const categoryData = [
 ];
 
 const Categories = () => {
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('homepage_sections')
+          .select('content')
+          .eq('section_name', 'categories')
+          .maybeSingle();
+          
+        if (data && data.content && data.content.length > 0) {
+          setCategories(data.content);
+        }
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <section className="categories-section">
       <div className="categories-inner">
         <h2 className="categories-heading">Shop by Category</h2>
         <div className="categories-grid">
-          {categoryData.map((cat, index) => (
+          {categories.map((cat, index) => (
             <Link to={`/shop?category=${cat.slug}`} key={index} className="category-item">
               <div className="category-img-wrap">
                 <img 
