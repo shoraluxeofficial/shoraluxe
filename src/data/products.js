@@ -207,16 +207,16 @@ export const productsData = [
     offer: 'Radiant & Youthful Glow',
     rating: 4.3,
     reviewsCount: 128,
-    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291907/shtcmpj4cucedvppiale.jpg',
+    img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/1.webp',
     gallery: [
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291907/shtcmpj4cucedvppiale.jpg',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291914/crisgxlz7gcxbe7po5en.png',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291917/clopc8dxjpvez05oe305.png',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291921/g4uul3okw4yo5lcjuoow.png',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291925/mbqjfhid9hgxuqkops10.png',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291929/achac03ruou6xnsmuttq.png',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291932/qlkgtlvzqadgbzni2jdu.png',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291936/n2zwh4yr0mybzfjzrm0d.png'
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/1.webp',
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/2.webp',
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/3.webp',
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/4.webp',
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/5.webp',
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/6.webp',
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/7.webp',
+      'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/p6/8.webp'
     ],
     badge: 'GLOW',
     isNew: false,
@@ -546,10 +546,7 @@ export const productsData = [
     ],
     cautions: 'For external use only. Patch test recommended. Avoid eye area.',
     ingredients: 'See individual product pages for full ingredient lists.',
-    bestFor: 'All skin types',
-    promoCode: 'SL-SUMMERGLOW1',
-    promoPrice: 699,
-    promoGroup: 'COMBO_SUMMER'
+    bestFor: 'All skin types'
   },
   {
     id: 15,

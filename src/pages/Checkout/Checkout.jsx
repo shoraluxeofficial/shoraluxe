@@ -261,11 +261,56 @@ const Checkout = () => {
     calculateShipping(null, null);
   }, [cartTotal, discountAmount]);
 
+  const COMBO_PROMOS = [
+    { code: 'SL-SUMMERGLOW1', price: 699, reqs: [{ title: 'sunscreen', size: '100' }, { title: 'face wash', size: '50' }] },
+    { code: 'SL-PMROUTINE', price: 999, reqs: [{ title: 'face wash', size: '100' }, { title: 'serum', size: '30' }, { title: 'moisturizer', size: '50' }] },
+    { code: 'SL-TRIOLUXE', price: 1099, reqs: [{ title: 'face wash', size: '100' }, { title: 'moisturizer', size: '100' }, { title: 'sunscreen', size: '100' }] },
+    { code: 'SL-GLOWTRIO', price: 799, reqs: [{ title: 'face wash', size: '50' }, { title: 'moisturizer', size: '50' }, { title: 'sunscreen', size: '50' }] }
+  ];
+
   const applyPromoCode = async (overrideCode) => {
     const code = (overrideCode || promoInput).trim().toUpperCase();
     if (!code) return;
     setPromoError('');
     setPromoLoading(true);
+
+    const comboPromo = COMBO_PROMOS.find(p => p.code === code);
+    if (comboPromo) {
+      const missingItems = [];
+      let totalNormalPrice = 0;
+
+      for (const req of comboPromo.reqs) {
+        const item = cartItems.find(i => 
+          i.title.toLowerCase().includes(req.title) && 
+          i.size && String(i.size).toLowerCase().includes(req.size)
+        );
+        if (!item || item.quantity < 1) {
+          missingItems.push(`${req.title} (${req.size})`);
+        } else {
+          totalNormalPrice += item.price;
+        }
+      }
+
+      if (missingItems.length > 0) {
+        setPromoError(`Missing items for this combo: ${missingItems.join(', ')}`);
+        setPromoLoading(false);
+        setAppliedPromo(null);
+        return;
+      }
+
+      const discountValue = totalNormalPrice - comboPromo.price;
+      
+      setAppliedPromo({
+        code: code,
+        promo_type: 'combo',
+        discount_type: 'fixed',
+        discount_value: Math.max(0, discountValue),
+        description: 'Special Combo Discount'
+      });
+      notify(`🎉 Combo Promo code "${code}" applied!`, 'success');
+      setPromoLoading(false);
+      return;
+    }
     const { data, error } = await supabase
       .from('promo_codes')
       .select('*')

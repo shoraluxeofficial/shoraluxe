@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, Plus, Trash2, Upload, Eye, Pencil, Video, Image as ImageIcon, LayoutDashboard, FileText, ShoppingBag, X, Check, AlertCircle, Star } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
-import { uploadToCloudinary } from '../../../lib/upload';
+import { uploadImage } from '../../../lib/upload';
 import { useNotify } from '../../../components/common/Notification/Notification';
 import { useShop } from '../../../context/ShopContext';
 import ConfirmModal from '../../../components/common/ConfirmModal/ConfirmModal';
@@ -128,7 +128,7 @@ const HomepageManager = () => {
         }
       }
 
-      const url = await uploadToCloudinary(f);
+      const url = await uploadImage(f);
       setEditModal(prev => ({ ...prev, draft: { ...prev.draft, [field]: url } }));
       notify('File uploaded!', 'success');
     } catch (err) {

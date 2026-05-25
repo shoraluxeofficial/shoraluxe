@@ -5,7 +5,7 @@ import imageCompression from 'browser-image-compression';
 import { useShop } from '../../../context/ShopContext';
 import { useNotify } from '../../../components/common/Notification/Notification';
 import ConfirmModal from '../../../components/common/ConfirmModal/ConfirmModal';
-import { uploadToCloudinary, getOptimizedImageUrl } from '../../../lib/upload';
+import { uploadImage, getOptimizedImageUrl } from '../../../lib/upload';
 import './AdminProducts.css';
 
 const EMPTY_FORM = {
@@ -88,13 +88,13 @@ const AdminProducts = () => {
       setUploading(true);
       // We still compress locally first to save user bandwidth, but Cloudinary will do final optimization
       const compressedFile = await compressImage(file);
-      const url = await uploadToCloudinary(compressedFile);
+      const url = await uploadImage(compressedFile);
       setForm(prev => ({ ...prev, img: url }));
-      notify('Product image uploaded to Cloudinary successfully!', 'success');
+      notify('Product image uploaded to Supabase successfully!', 'success');
     } catch (err) {
       console.error('Upload error:', err);
       if (err.message === 'File too large') return;
-      notify('Upload failed. Check Cloudinary settings.', 'error');
+      notify('Upload failed. Check Supabase connection.', 'error');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -115,7 +115,7 @@ const AdminProducts = () => {
       const uploadedUrls = [];
       for (let i = 0; i < files.length; i++) {
         const compressedFile = await compressImage(files[i]);
-        const url = await uploadToCloudinary(compressedFile);
+        const url = await uploadImage(compressedFile);
         uploadedUrls.push(url);
       }
 
@@ -124,7 +124,7 @@ const AdminProducts = () => {
         const combined = [...existing, ...uploadedUrls];
         return { ...prev, gallery: combined.join('\n') };
       });
-      notify(`${files.length} gallery images uploaded to Cloudinary!`, 'success');
+      notify(`${files.length} gallery images uploaded to Supabase!`, 'success');
     } catch (err) {
       console.error('Gallery upload error:', err);
       if (err.message === 'File too large') return;
@@ -142,7 +142,7 @@ const AdminProducts = () => {
     try {
       setUploading(true);
       const compressedFile = await compressImage(file);
-      const url = await uploadToCloudinary(compressedFile);
+      const url = await uploadImage(compressedFile);
       
       const newVariants = [...form.variants];
       newVariants[variantIndex].variantImg = url;

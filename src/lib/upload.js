@@ -1,49 +1,52 @@
 import { supabase } from './supabase';
 
 /**
- * Uploads a file to Cloudinary and returns the optimized secure URL.
+ * Uploads a file directly to Supabase storage.
  * @param {File} file The file to upload
- * @returns {Promise<string>} The optimized URL
+ * @param {string} bucket The storage bucket
+ * @param {string} folder The folder inside the bucket
+ * @returns {Promise<string>} The public URL
  */
-export const uploadToCloudinary = async (file) => {
+export const uploadImage = async (file, bucket = 'brand-assets', folder = 'products') => {
   if (!file) throw new Error('No file provided');
 
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  // Preserve the file extension
+  let fileExt = file.name.split('.').pop();
+  // If we are passing a blob that was compressed, it might not have a name, default to webp
+  if (!fileExt || fileExt === file.name) {
+      if (file.type === 'image/webp') fileExt = 'webp';
+      else if (file.type === 'image/jpeg') fileExt = 'jpeg';
+      else if (file.type === 'image/png') fileExt = 'png';
+      else fileExt = 'webp'; // fallback
+  }
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+  const filePath = folder ? `${folder}/${fileName}` : fileName;
 
-  try {
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
-      {
-        method: 'POST',
-        body: formData,
-      }
-    );
+  const { error } = await supabase.storage
+    .from(bucket)
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type // Ensure proper content type
+    });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Cloudinary upload failed');
-    }
-
-    const data = await response.json();
-    
-    // Return optimized URL by default: auto format, auto quality
-    // We insert 'f_auto,q_auto' into the URL
-    // For videos, this enables adaptive streaming/optimization
-    return data.secure_url.replace('/upload/', '/upload/f_auto,q_auto/');
-  } catch (error) {
-    console.error('Cloudinary Upload Error:', error);
+  if (error) {
+    console.error('Supabase Upload error:', error);
     throw error;
   }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(filePath);
+
+  return publicUrl;
 };
 
 /**
- * Helper to get optimized Cloudinary URLs with custom transformations
- * @param {string} url Original Cloudinary URL
+ * Helper to get optimized Cloudinary URLs with custom transformations.
+ * Kept to ensure legacy Cloudinary URLs already in the DB still load properly.
+ * @param {string} url Original URL (Cloudinary or Supabase)
  * @param {string} transformations e.g. 'w_800,c_fill'
  * @returns {string} Optimized URL
  */
@@ -67,33 +70,4 @@ export const getOptimizedImageUrl = (url, transformations = 'f_auto,q_auto') => 
   } catch (e) {
     return url;
   }
-};
-
-/**
- * Uploads a file to Supabase storage (Fallback/Legacy)
- */
-export const uploadFile = async (file, bucket = 'brand-assets', folder = '') => {
-  if (!file) throw new Error('No file provided');
-
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-  const filePath = folder ? `${folder}/${fileName}` : fileName;
-
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false
-    });
-
-  if (error) {
-    console.error('Supabase Upload error:', error);
-    throw error;
-  }
-
-  const { data: { publicUrl } } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(filePath);
-
-  return publicUrl;
 };
