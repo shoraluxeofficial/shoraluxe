@@ -24,15 +24,15 @@ const WATCH_SHOP_DEFAULTS = [
 ];
 
 const CATEGORY_DEFAULTS = [
-  { name: 'Face Washes', slug: 'face-wash', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291808/xy5kaacehvnqb239cr5f.jpg' },
-  { name: 'Face Serums', slug: 'serum', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291809/uneg1od3vx5vg0yefgx7.png' },
-  { name: 'Moisturizers', slug: 'moisturizer', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291810/qs6s904ntxkmvvpdaife.jpg' },
-  { name: 'Sunscreens', slug: 'sunscreen', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291811/tsa4j57bhrcmhvypztnw.png' },
-  { name: 'Body Washes', slug: 'body-wash', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291813/wo65bumhqty40zffhcpb.png' },
-  { name: 'Day Creams', slug: 'day-cream', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291813/e8xvygltdxw2dlhzybel.png' },
-  { name: 'Night Creams', slug: 'night-cream', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291814/f3ktzl7tlgowlua2ghkw.png' },
-  { name: 'Body Lotions', slug: 'body-lotion', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291815/mybmliwa7ysfwsjci2ov.png' },
-  { name: 'Combos', slug: 'combo', img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777291816/hjbdu4qn8fzts6kn7qmg.jpg' },
+  { name: 'Face Washes', slug: 'face-wash', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733593868-5kbw1ob8rfa.jpeg' },
+  { name: 'Face Serums', slug: 'serum', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733614054-n1xsowuict.jpeg' },
+  { name: 'Moisturizers', slug: 'moisturizer', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733651513-w18jdt2vh.jpeg' },
+  { name: 'Sunscreens', slug: 'sunscreen', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733676196-1y498qkxue7.jpeg' },
+  { name: 'Body Washes', slug: 'body-wash', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733571192-5qs6w6d5no5.jpeg' },
+  { name: 'Day Creams', slug: 'day-cream', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733702714-qrbzqj0v5lp.jpeg' },
+  { name: 'Night Creams', slug: 'night-cream', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733726711-hivqsanrda.jpg' },
+  { name: 'Body Lotions', slug: 'body-lotion', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733521199-hp1kj9lq03i.jpeg' },
+  { name: 'Combos', slug: 'combo', img: 'https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779733957148-2xcwjgqj5x3.jpeg' },
 ];
 
 const TABS = [

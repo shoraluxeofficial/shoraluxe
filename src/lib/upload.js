@@ -44,30 +44,13 @@ export const uploadImage = async (file, bucket = 'brand-assets', folder = 'produ
 };
 
 /**
- * Helper to get optimized Cloudinary URLs with custom transformations.
- * Kept to ensure legacy Cloudinary URLs already in the DB still load properly.
- * @param {string} url Original URL (Cloudinary or Supabase)
- * @param {string} transformations e.g. 'w_800,c_fill'
- * @returns {string} Optimized URL
+ * Helper to get optimized URLs.
+ * Since we no longer use Cloudinary, this simply returns the raw URL.
+ * Supabase handles our image delivery and resizing perfectly.
+ * @param {string} url Original URL 
+ * @param {string} transformations (ignored)
+ * @returns {string} URL
  */
-export const getOptimizedImageUrl = (url, transformations = 'f_auto,q_auto') => {
-  if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) return url;
-  try {
-    const parts = url.split('/upload/');
-    if (parts.length !== 2) return url;
-    
-    const [baseUrl, rest] = parts;
-    const segments = rest.split('/');
-    
-    // If the first segment is a transformation block (not a version like v123...)
-    if (segments.length > 0 && !segments[0].match(/^v\d+$/)) {
-      segments[0] = transformations; // Replace existing transformation
-      return `${baseUrl}/upload/${segments.join('/')}`;
-    }
-    
-    // Otherwise insert new transformations
-    return `${baseUrl}/upload/${transformations}/${rest}`;
-  } catch (e) {
-    return url;
-  }
+export const getOptimizedImageUrl = (url, transformations = '') => {
+  return url;
 };
