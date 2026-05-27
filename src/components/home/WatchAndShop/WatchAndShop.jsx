@@ -51,8 +51,8 @@ const StoryCard = ({ story }) => {
           <video
             ref={videoRef}
             className="story-video"
-            src={getOptimizedImageUrl(story.video, 'q_auto:eco,w_400,vc_h264:baseline,br_1m')}
-            poster={getOptimizedImageUrl(story.video, 'f_jpg,so_auto,w_400,q_auto:eco')}
+            src={story.video}
+            poster=""
             muted
             loop
             playsInline
@@ -66,45 +66,18 @@ const StoryCard = ({ story }) => {
   );
 };
 
+const localStories = [
+  { video: '/videos/moisturizer.mp4' },
+  { video: '/videos/serum.mp4' },
+  { video: '/videos/face-wash.mp4' },
+  { video: '/videos/sunscreen-50gm.mp4' },
+  { video: '/videos/sunscreen-100gm.mp4' },
+  { video: '/videos/moisturizer-1.mp4' }
+];
+
 const WatchAndShop = () => {
   const scrollRef = useRef(null);
-  const [stories, setStories] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('homepage_sections')
-          .select('content')
-          .eq('section_name', 'watchAndShop')
-          .single();
-        
-        if (data && data.content && data.content.length > 0) {
-          setStories(data.content);
-        } else {
-          setStories([]); // No videos found
-        }
-      } catch (e) {
-        console.error('WatchAndShop fetch error:', e);
-        setStories([]);
-      }
-    };
-    fetchData();
-
-    const subscription = supabase
-      .channel('public:watchAndShop')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.watchAndShop" }, (payload) => {
-        if (payload.new && payload.new.content) {
-          setStories(prev => {
-            if (JSON.stringify(prev) === JSON.stringify(payload.new.content)) return prev;
-            return payload.new.content;
-          });
-        }
-      })
-      .subscribe();
-
-    return () => supabase.removeChannel(subscription);
-  }, []);
+  const [stories, setStories] = useState(localStories);
 
   const scroll = (direction) => {
     if (scrollRef.current) {

@@ -25,51 +25,48 @@ const defaultVideos = [
   }
 ];
 
+const localBanners = [
+  {
+    id: 1,
+    url: '/videos/moisturizer.mp4',
+    title: 'Pure Texture',
+    desc: 'The science of silky hydration.'
+  },
+  {
+    id: 2,
+    url: '/videos/serum.mp4',
+    title: 'Radiant Glow',
+    desc: 'Unlock your natural luminosity safely.'
+  },
+  {
+    id: 3,
+    url: '/videos/face-wash.mp4', 
+    title: 'Sustainably Sourced',
+    desc: 'The best of nature, bottled for you.'
+  },
+  {
+    id: 4,
+    url: '/videos/moisturizer-1.mp4',
+    title: 'Deep Hydration',
+    desc: 'All-day moisture lock.'
+  },
+  {
+    id: 5,
+    url: '/videos/sunscreen-50gm.mp4',
+    title: 'Daily Defense',
+    desc: 'Broad spectrum protection.'
+  },
+  {
+    id: 6,
+    url: '/videos/sunscreen-100gm.mp4',
+    title: 'Complete Shield',
+    desc: 'Lightweight, non-greasy formula.'
+  }
+];
+
 const VideoBanners = () => {
-  const [banners, setBanners] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const [banners, setBanners] = React.useState(localBanners);
   const navigate = useNavigate();
-
-  React.useEffect(() => {
-    fetchBanners();
-
-    const subscription = supabase
-      .channel('public:videoBanners')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.videoBanners" }, (payload) => {
-        if (payload.new && payload.new.content) {
-          setBanners(payload.new.content);
-        }
-      })
-      .subscribe();
-
-    return () => supabase.removeChannel(subscription);
-  }, []);
-
-  const fetchBanners = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('homepage_sections')
-        .select('content')
-        .eq('section_name', 'videoBanners')
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-
-      if (data && data.content) {
-        setBanners(data.content);
-      } else {
-        setBanners(defaultVideos);
-      }
-    } catch (error) {
-      console.error('Error fetching video banners:', error);
-      setBanners(defaultVideos);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) return null;
 
   return (
     <section className="video-banners-section">
@@ -87,8 +84,8 @@ const VideoBanners = () => {
               playsInline 
               preload="metadata"
               className="banner-video"
+              src={v.url}
             >
-              <source src={v.url} type="video/mp4" />
             </video>
             <div className="video-overlay">
               <div className="video-info">

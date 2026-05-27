@@ -10,7 +10,6 @@ const Products = lazy(() => import('../components/home/Products/Products'));
 const Bestsellers = lazy(() => import('../components/home/Bestsellers/Bestsellers'));
 const CombosSection = lazy(() => import('../components/home/CombosSection/CombosSection'));
 const ShopByConcern = lazy(() => import('../components/home/ShopByConcern/ShopByConcern'));
-const WatchAndShop = lazy(() => import('../components/home/WatchAndShop/WatchAndShop'));
 const VideoBanners = lazy(() => import('../components/home/VideoBanners/VideoBanners'));
 const BrandPromise = lazy(() => import('../components/home/BrandPromise/BrandPromise'));
 const CTASection = lazy(() => import('../components/home/CTASection/CTASection'));
@@ -81,9 +80,7 @@ const Home = () => {
         <ShopByConcern />
       </Suspense>
 
-      <Suspense fallback={<SectionSkeleton height="450px" />}>
-        <WatchAndShop />
-      </Suspense>
+
 
       <Suspense fallback={<SectionSkeleton height="200px" />}>
         <BrandPromise />
