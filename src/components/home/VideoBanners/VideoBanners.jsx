@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../../lib/supabase';
 import { getOptimizedImageUrl } from '../../../lib/upload';
@@ -64,9 +64,91 @@ const localBanners = [
   }
 ];
 
+const VideoItem = ({ v, navigate }) => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!videoRef.current) return;
+        if (entry.isIntersecting) {
+          const playPromise = videoRef.current.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Auto-play was prevented by browser
+            });
+          }
+        } else {
+          videoRef.current.pause();
+        }
+      },
+      { 
+        threshold: 0.5, // Play when 50% visible
+        rootMargin: '0px' 
+      }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) observer.unobserve(videoRef.current);
+    };
+  }, []);
+
+  return (
+    <div className="video-banner-item">
+      <video 
+        ref={videoRef}
+        muted 
+        loop 
+        playsInline 
+        preload="metadata"
+        className="banner-video"
+        src={v.url}
+      >
+      </video>
+      <div className="video-overlay">
+        <div className="video-info">
+          <h3 className="v-title">{v.title}</h3>
+          <p className="v-desc">{v.desc}</p>
+          <button className="v-cta" onClick={() => navigate('/shop')}>EXPLORE RITUAL</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const VideoBanners = () => {
   const [banners, setBanners] = React.useState(localBanners);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchVideoBanners = async () => {
+      const { data, error } = await supabase
+        .from('homepage_sections')
+        .select('content')
+        .eq('section_name', 'videoBanners')
+        .single();
+      
+      if (data && data.content && data.content.length > 0) {
+        setBanners(data.content);
+      }
+    };
+    fetchVideoBanners();
+
+    const subscription = supabase
+      .channel('public:videoBanners')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_sections', filter: "section_name=eq.videoBanners" }, (payload) => {
+        if (payload.new && payload.new.content) {
+          setBanners(payload.new.content);
+        }
+      })
+      .subscribe();
+
+    return () => supabase.removeChannel(subscription);
+  }, []);
 
   return (
     <section className="video-banners-section">
@@ -76,25 +158,7 @@ const VideoBanners = () => {
       
       <div className="video-scroll-container">
         {banners.map((v, index) => (
-          <div key={v.id || index} className="video-banner-item">
-            <video 
-              autoPlay 
-              muted 
-              loop 
-              playsInline 
-              preload="metadata"
-              className="banner-video"
-              src={v.url}
-            >
-            </video>
-            <div className="video-overlay">
-              <div className="video-info">
-                <h3 className="v-title">{v.title}</h3>
-                <p className="v-desc">{v.desc}</p>
-                <button className="v-cta" onClick={() => navigate('/shop')}>EXPLORE RITUAL</button>
-              </div>
-            </div>
-          </div>
+          <VideoItem key={v.id || index} v={v} navigate={navigate} />
         ))}
       </div>
     </section>
