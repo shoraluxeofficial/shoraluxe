@@ -104,7 +104,7 @@ const VideoItem = ({ v, navigate }) => {
         muted 
         loop 
         playsInline 
-        preload="metadata"
+        preload="none"
         className="banner-video"
         src={v.url}
       >

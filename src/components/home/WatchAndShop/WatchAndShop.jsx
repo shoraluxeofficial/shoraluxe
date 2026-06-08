@@ -56,7 +56,7 @@ const StoryCard = ({ story }) => {
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
           />
         ) : (
           <div className="no-video-placeholder">No Video</div>
