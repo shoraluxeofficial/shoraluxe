@@ -13,6 +13,9 @@
 .checkout-right {
   width: 400px;
   flex-shrink: 0;
+  position: sticky;
+  top: 130px;
+  height: fit-content;
 }
 
 .checkout-page-container h2 {
@@ -323,8 +326,6 @@
   background: #f9f9f9;
   padding: 1.5rem;
   border-radius: 8px;
-  position: sticky;
-  top: 100px;
 }
 
 .order-summary-box h3 {
