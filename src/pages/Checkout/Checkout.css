@@ -129,14 +129,14 @@
 .payment-options {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 1rem;
 }
 
 .pay-option {
   display: flex;
   align-items: center;
   padding: 1rem 1.25rem;
-  border: 2px solid var(--brand-burgundy);
+  border: 2px solid #e2e8f0;
   border-radius: 12px;
   cursor: pointer;
   background: white;

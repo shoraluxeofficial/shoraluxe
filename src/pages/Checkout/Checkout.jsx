@@ -612,23 +612,28 @@ const Checkout = () => {
 
     try {
       console.log("Starting FINAL Audited Checkout Process...");
-      if (formData.paymentMethod !== 'razorpay') {
+      if (formData.paymentMethod !== 'razorpay' && formData.paymentMethod !== 'cod') {
         throw new Error("Invalid payment method selected");
       }
 
-      // 1. Initiate Razorpay FIRST
-      console.log("Initiating Razorpay Payment Modal...");
-      let paymentId;
-      try {
-        paymentId = await processRazorpay();
-      } catch (payErr) {
-        console.warn("Payment modal closed or failed:", payErr.message);
-        throw payErr; // Stop here, nothing is saved to DB
+      // 1. Initiate Razorpay FIRST if payment method is razorpay
+      let paymentId = null;
+      let paymentStatus = 'paid';
+
+      if (formData.paymentMethod === 'razorpay') {
+        console.log("Initiating Razorpay Payment Modal...");
+        try {
+          paymentId = await processRazorpay();
+        } catch (payErr) {
+          console.warn("Payment modal closed or failed:", payErr.message);
+          throw payErr; // Stop here, nothing is saved to DB
+        }
+        if (!paymentId) throw new Error("Payment incomplete");
+      } else {
+        paymentStatus = 'pending';
       }
 
-      if (!paymentId) throw new Error("Payment incomplete");
-
-      // 2. Construct Main Order Payload (NOW WITH PAID STATUS)
+      // 2. Construct Main Order Payload
       const shipping_address = {
         flat_no: formData.flatNo,
         address_line1: formData.address1,
@@ -649,23 +654,26 @@ const Checkout = () => {
         shipping_charge: shippingFee,
         discount_amount: discountAmount,
         total_amount: finalTotal,
-        payment_status: 'paid', // Saved directly as paid
+        payment_status: paymentStatus,
         payment_method: formData.paymentMethod,
         order_status: 'placed',
         razorpay_order_id: null, // Will be filled if needed, or left null
         razorpay_payment_id: paymentId,
       };
 
-      // 3. Create Order record in Supabase (ONLY ON SUCCESS)
-      console.log("Payment Success! Saving Order to Supabase...");
+      // 3. Create Order record in Supabase
+      console.log("Saving Order to Supabase...");
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert([orderPayload])
         .select();
 
       if (orderError) {
-        console.error("CRITICAL: Payment successful but DB save failed:", orderError);
-        throw new Error(`Database Error: ${orderError.message}. Please contact support with Payment ID: ${paymentId}`);
+        console.error("CRITICAL: Saving Order to Supabase failed:", orderError);
+        const errMsg = paymentId 
+          ? `Database Error: ${orderError.message}. Please contact support with Payment ID: ${paymentId}`
+          : `Database Error: ${orderError.message}. Please try again.`;
+        throw new Error(errMsg);
       }
 
       const dbOrderId = orderData[0].id;
@@ -998,8 +1006,14 @@ const Checkout = () => {
               <h3>4. Payment Method</h3>
             </div>
             <div className="payment-options">
-              <label className="pay-option selected">
-                <input type="radio" name="paymentMethod" value="razorpay" checked={true} readOnly />
+              <label className={`pay-option ${formData.paymentMethod === 'razorpay' ? 'selected' : ''}`}>
+                <input 
+                  type="radio" 
+                  name="paymentMethod" 
+                  value="razorpay" 
+                  checked={formData.paymentMethod === 'razorpay'} 
+                  onChange={handleChange} 
+                />
                 <div className="pay-details">
                   <strong>Online Payment</strong>
                   <span>UPI &nbsp;·&nbsp; Cards &nbsp;·&nbsp; Netbanking &nbsp;·&nbsp; Wallets</span>
@@ -1010,12 +1024,31 @@ const Checkout = () => {
                 </div>
               </label>
 
+              <label className={`pay-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}>
+                <input 
+                  type="radio" 
+                  name="paymentMethod" 
+                  value="cod" 
+                  checked={formData.paymentMethod === 'cod'} 
+                  onChange={handleChange} 
+                />
+                <div className="pay-details">
+                  <strong>Cash on Delivery (COD)</strong>
+                  <span>Pay with cash upon delivery</span>
+                </div>
+              </label>
             </div>
 
           </div>
 
           <button type="submit" className="pay-button" disabled={loading}>
-            {loading ? 'Processing Securely...' : <><ShieldCheck size={20} /> Securely Pay ₹{finalTotal.toLocaleString('en-IN')}</>}
+            {loading ? 'Processing...' : (
+              formData.paymentMethod === 'cod' ? (
+                <><ShieldCheck size={20} /> Place COD Order: ₹{finalTotal.toLocaleString('en-IN')}</>
+              ) : (
+                <><ShieldCheck size={20} /> Securely Pay ₹{finalTotal.toLocaleString('en-IN')}</>
+              )
+            )}
           </button>
         </form>
       </div>
