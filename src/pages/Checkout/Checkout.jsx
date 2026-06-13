@@ -592,7 +592,7 @@ const Checkout = () => {
     if (!formData.firstName) newErrors.firstName = 'First Name is required';
     if (!formData.lastName) newErrors.lastName = 'Last Name is required';
     if (!formData.email) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is valid';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Valid Email is required';
     if (!formData.phone || formData.phone.length < 10) newErrors.phone = 'Valid Phone number is required';
     if (!formData.flatNo) newErrors.flatNo = 'House/Flat No is required';
     if (!formData.address1) newErrors.address1 = 'Street address is required';
@@ -606,7 +606,19 @@ const Checkout = () => {
 
   const handleCheckout = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      setTimeout(() => {
+        const firstErrorEl = document.querySelector('.error-input, .error-text');
+        if (firstErrorEl) {
+          firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const input = firstErrorEl.tagName === 'INPUT' || firstErrorEl.tagName === 'SELECT'
+            ? firstErrorEl
+            : firstErrorEl.parentElement.querySelector('input, select');
+          if (input) input.focus();
+        }
+      }, 50);
+      return;
+    }
 
     setLoading(true);
 
@@ -839,11 +851,12 @@ const Checkout = () => {
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} className={errors.email ? 'error-input' : ''} />
-                {errors.email && <span className="error-text">{errors.email}</span>}
-              </div>
+            <div className="form-group">
+              <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} className={errors.email ? 'error-input' : ''} />
+              {errors.email && <span className="error-text">{errors.email}</span>}
+            </div>
+
+            <div className="form-row" style={{ marginTop: '1rem' }}>
               <div className="form-group">
                 <input type="tel" name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange} className={errors.phone ? 'error-input' : ''} />
                 {errors.phone && <span className="error-text">{errors.phone}</span>}
