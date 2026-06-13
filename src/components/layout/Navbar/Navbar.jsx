@@ -30,8 +30,17 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [concernOpen, setConcernOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const { cartCount, setIsCartOpen, user, setUser } = useShop();
   const navigate = useNavigate();
+
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (searchValue.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchValue.trim())}`);
+      setSearchOpen(false);
+    }
+  };
 
   const [promoCodes, setPromoCodes] = useState(dummyCodes);
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
@@ -189,11 +198,20 @@ const Navbar = () => {
         {searchOpen && (
           <div className="search-layer">
             <div className="search-layer-inner">
-              <div className="search-input-wrap">
+              <form onSubmit={handleSearchSubmit} className="search-input-wrap">
                 <Search size={18} className="search-icon-inside" />
-                <input type="text" placeholder="Search for products..." autoFocus />
-              </div>
-              <button className="close-search-btn" onClick={() => setSearchOpen(false)}>
+                <input 
+                  type="text" 
+                  placeholder="Search for products..." 
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  autoFocus 
+                />
+              </form>
+              <button className="nav-search-submit-btn" onClick={handleSearchSubmit}>
+                SEARCH
+              </button>
+              <button className="close-search-btn" onClick={() => { setSearchOpen(false); setSearchValue(''); }}>
                 <X size={20} />
               </button>
             </div>

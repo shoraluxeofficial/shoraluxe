@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import shippingRoutes from './routes/shippingRoutes.js';
@@ -11,6 +12,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy for rate limiting (essential for Vercel/Render/Nginx proxy headers)
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
 
@@ -20,9 +24,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/payment', paymentRoutes);
+// Rate Limiting Middlewares
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 15, // limit each IP to 15 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    status: 429,
+    message: 'Too many authentication attempts. Please try again after 15 minutes.'
+  }
+});
+
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    status: 429,
+    message: 'Too many payment requests. Please try again after 15 minutes.'
+  }
+});
+
+// Apply rate limiters to routes
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/payment', paymentLimiter, paymentRoutes);
 app.use('/api/shipping', shippingRoutes);
 
 // Fallback direct routes (ensure OAuth endpoints are available)

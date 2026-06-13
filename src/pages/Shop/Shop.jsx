@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { SlidersHorizontal, ShoppingBag, Heart, Star, X, ChevronDown, ArrowRight, Search, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { supabase } from '../../lib/supabase';
@@ -56,6 +56,7 @@ const Shop = () => {
   const { products, addToCart, loading } = useShop();
   const shopGridRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const initialConcern = queryParams.get('concern') || 'all';
   const initialCategory = queryParams.get('category') || '';
@@ -73,7 +74,7 @@ const Shop = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [wishlist, setWishlist] = useState([]);
   const [addedToCart, setAddedToCart] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(queryParams.get('search') || '');
   const [activeSlide, setActiveSlide] = useState(0);
   const [heroBanners, setHeroBanners] = useState(HERO_BANNERS_FALLBACK);
 
@@ -112,9 +113,10 @@ const Shop = () => {
     setActiveConcern(queryParams.get('concern') || 'all');
     setActiveCategory(queryParams.get('category') || '');
     setActivePromo(queryParams.get('promo') || '');
+    setSearchQuery(queryParams.get('search') || '');
 
     // Scroll to products if we have a filter applied from URL
-    if (queryParams.get('concern') || queryParams.get('category')) {
+    if (queryParams.get('concern') || queryParams.get('category') || queryParams.get('search')) {
       setTimeout(() => {
         shopGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 300);
@@ -274,11 +276,20 @@ const Shop = () => {
 
   const hasActiveFilters = activeConcern !== 'all' || activeType !== 'All' || searchQuery.trim();
 
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    const params = new URLSearchParams(location.search);
+    params.delete('search');
+    const newSearch = params.toString();
+    navigate(`${location.pathname}${newSearch ? '?' + newSearch : ''}`);
+  };
+
   const clearAllFilters = () => {
     setActiveConcern('all');
     setActiveCategory('');
     setActiveType('All');
     setSearchQuery('');
+    navigate('/shop');
   };
 
     const SkinSkeleton = () => (
@@ -532,6 +543,12 @@ const Shop = () => {
               <span className="active-chip">
                 {activeType}
                 <button onClick={() => setActiveType('All')}><X size={11} /></button>
+              </span>
+            )}
+            {searchQuery.trim() && (
+              <span className="active-chip">
+                Search: "{searchQuery}"
+                <button onClick={handleClearSearch}><X size={11} /></button>
               </span>
             )}
             <button className="clear-all-btn" onClick={clearAllFilters}>Clear All Selection</button>
