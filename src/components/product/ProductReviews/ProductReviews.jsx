@@ -21,14 +21,15 @@ const ProductReviews = ({ productId, productName }) => {
         .from('reviews')
         .select('*')
         .eq('product_id', productId)
-        .eq('approved', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
       if (data) {
-        setReviews(data);
-        calculateStats(data);
+        // Filter approved reviews using JS to support both local and production DB schemas seamlessly
+        const approvedReviews = data.filter(r => r.approved === true || r.is_approved === true);
+        setReviews(approvedReviews);
+        calculateStats(approvedReviews);
       }
     } catch (err) {
       console.error('Error fetching reviews:', err);
