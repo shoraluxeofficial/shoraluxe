@@ -523,10 +523,9 @@ export const productsData = [
     offer: 'Sun Protection & Daily Cleanse',
     rating: 4.9,
     reviewsCount: 0,
-    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292025/h3mv6myclxvwnemtzbl2.png',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291989/zpydqrjuxpycj4irgl2j.png',
     gallery: [
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292025/h3mv6myclxvwnemtzbl2.png',
-      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291994/b0nwg2fjqk7gzssy0hmm.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291989/zpydqrjuxpycj4irgl2j.png',
       'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291865/ozy4pn5a42m3iuixbvvq.jpg'
     ],
     badge: 'COMBO DEAL',
@@ -558,7 +557,12 @@ export const productsData = [
     offer: 'Daily Essential Set',
     rating: 4.8,
     reviewsCount: 45,
-    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777292025/dmfsfzcf1ohz3jbz6oo6.jpg',
+    img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291884/dmfsfzcf1ohz3jbz6oo6.jpg',
+    gallery: [
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291884/dmfsfzcf1ohz3jbz6oo6.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291989/zpydqrjuxpycj4irgl2j.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291953/civdpvoalqrktfwit3bv.png'
+    ],
     badge: 'BEST VALUE',
     category: 'combo',
     skinType: 'All Skin Types'
@@ -574,6 +578,11 @@ export const productsData = [
     rating: 5.0,
     reviewsCount: 32,
     img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png',
+    gallery: [
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291949/pytxmjbmiqabjo9omnjl.png',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291893/peh6ewngoo2nkl6rv2au.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291946/aqjhfpko6sqpwbighl0s.jpg'
+    ],
     badge: 'PREMIUM',
     category: 'combo',
     skinType: 'All Skin Types'
@@ -589,6 +598,10 @@ export const productsData = [
     rating: 4.9,
     reviewsCount: 56,
     img: 'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291946/aqjhfpko6sqpwbighl0s.jpg',
+    gallery: [
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291946/aqjhfpko6sqpwbighl0s.jpg',
+      'https://res.cloudinary.com/dfr0tlcdb/image/upload/f_auto,q_auto/v1777291884/dmfsfzcf1ohz3jbz6oo6.jpg'
+    ],
     badge: 'NIGHT REPAIR',
     category: 'combo',
     skinType: 'All Skin Types'

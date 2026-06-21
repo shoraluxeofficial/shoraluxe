@@ -246,8 +246,7 @@ const AdminProducts = () => {
   const filtered = products.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = !categoryFilter || p.skinType === categoryFilter;
-    const isNotCombo = p.category !== 'combo';
-    return matchesSearch && matchesCategory && isNotCombo;
+    return matchesSearch && matchesCategory;
   });
 
   // ── OPEN MODAL ────────────────────────────────────────────────────────────

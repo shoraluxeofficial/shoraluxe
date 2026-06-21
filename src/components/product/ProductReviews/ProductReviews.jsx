@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Star, User, Calendar, MessageSquare, Quote } from 'lucide-react';
+import { Star, User, Calendar, MessageSquare, Quote, Check } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import './ProductReviews.css';
 
@@ -69,8 +69,7 @@ const ProductReviews = ({ productId, productName }) => {
         {reviews.length === 0 ? (
           <div className="no-reviews-state">
             <Quote size={40} className="quote-icon" />
-            <p>Be the first to share your experience with this product.</p>
-            <p className="sub-text">Once you purchase, you'll receive a link to leave a review.</p>
+            <p>We'd love to hear from you! Share your experience, feedback, or suggestions. Your comments help us continue improving our services.</p>
           </div>
         ) : (
           <div className="reviews-layout">

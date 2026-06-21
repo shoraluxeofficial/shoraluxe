@@ -8,7 +8,7 @@ const BLOG_POSTS = [
     category: "Serum",
     title: "Why Our Niacinamide Serum is a Must for Indian Skin",
     excerpt: "Indian skin often deals with high humidity and pollution, leading to enlarged pores and uneven texture. Our 10% Niacinamide serum is specifically formulated to refine pores and strengthen the skin barrier without feeling heavy.",
-    image: "https://res.cloudinary.com/dfr0tlcdb/image/upload/v1777232225/shoraluxe/products/0_fvberx.jpg", // Placeholder - will adjust to actual serum if found
+    image: "https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779729621723-pleuxvkya7f.png", // Serum
     author: "Dr. Ananya Sharma",
     tips: ["Apply on damp skin for better absorption", "Follow with a lightweight moisturizer", "Use twice daily for best results"]
   },
@@ -17,7 +17,7 @@ const BLOG_POSTS = [
     category: "Sunscreen",
     title: "The Science of SPF 50+++ in the Tropical Sun",
     excerpt: "Protecting your skin from UV rays is the most important step in any anti-aging routine. Our sunscreen offers broad-spectrum protection with a ultra-light, non-greasy finish that's perfect for the Indian climate.",
-    image: "https://res.cloudinary.com/dfr0tlcdb/image/upload/w_800,q_90,f_auto/v1777485162/i79vwhurlkuvlrshykra.webp",
+    image: "https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779731104465-jewo2kxlenn.png",
     author: "Rohan Mehra",
     tips: ["Apply two-finger lengths for full coverage", "Reapply every 3 hours outdoors", "Don't forget your ears and neck"]
   },
@@ -26,7 +26,7 @@ const BLOG_POSTS = [
     category: "Moisturizer",
     title: "Hydration vs. Moisture: The Non-Sticky Secret",
     excerpt: "Many people skip moisturizer because they fear the stickiness in humid weather. Our Non-Sticky Moisturizer uses Hyaluronic Acid to hydrate deeply while leaving a velvet-matte finish that lasts all day.",
-    image: "https://res.cloudinary.com/dfr0tlcdb/image/upload/w_500,q_90,f_auto/v1777485081/xtlfci5xezy4yjuf172l.webp",
+    image: "https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779731642195-lrtl195juyb.jpeg",
     author: "Shoraluxe Team",
     tips: ["Focus on dry patches around the nose and mouth", "Use a pea-sized amount for the entire face", "Lock in your serum with this moisturizer"]
   },
@@ -35,7 +35,7 @@ const BLOG_POSTS = [
     category: "Face Wash",
     title: "Deep Cleansing Without Stripping Your Glow",
     excerpt: "A good face wash should remove pollution and oil without damaging your natural moisture barrier. Our Charcoal Face Wash detoxifies while Ubtan extracts soothe and brighten your complexion instantly.",
-    image: "https://res.cloudinary.com/dfr0tlcdb/image/upload/w_500,q_90,f_auto/v1777232225/shoraluxe/products/0_fvberx.jpg",
+    image: "https://zahdxekcwdlcbzfsnaej.supabase.co/storage/v1/object/public/brand-assets/products/1779729997900-0tfgo19p6fmr.png",
     author: "Beauty Expert",
     tips: ["Massage for at least 60 seconds", "Use lukewarm water, never hot", "Double cleanse in the evening if wearing makeup"]
   }
