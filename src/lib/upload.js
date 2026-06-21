@@ -52,5 +52,16 @@ export const uploadImage = async (file, bucket = 'brand-assets', folder = 'produ
  * @returns {string} URL
  */
 export const getOptimizedImageUrl = (url, transformations = '') => {
-  return url;
+  if (!url) return '';
+  // Do not process local assets or already processed URLs
+  if (url.startsWith('/') || url.includes('wsrv.nl')) return url;
+
+  let widthParams = '';
+  if (transformations.includes('w_')) {
+    const match = transformations.match(/w_(\d+)/);
+    if (match) widthParams = `&w=${match[1]}`;
+  }
+
+  // Use a free, high-performance image CDN to instantly compress, cache, and convert to WebP
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}${widthParams}&output=webp&q=80`;
 };
