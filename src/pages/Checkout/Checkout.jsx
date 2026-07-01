@@ -657,8 +657,18 @@ const Checkout = () => {
         alternate_phone: formData.alternatePhone
       };
 
+      const generateUUID = () => {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+          return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      };
+
       const orderPayload = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         customer_name: `${formData.firstName} ${formData.lastName}`,
         customer_phone: formData.phone,
         customer_email: formData.email,
