@@ -658,6 +658,7 @@ const Checkout = () => {
       };
 
       const orderPayload = {
+        id: crypto.randomUUID(),
         customer_name: `${formData.firstName} ${formData.lastName}`,
         customer_phone: formData.phone,
         customer_email: formData.email,
