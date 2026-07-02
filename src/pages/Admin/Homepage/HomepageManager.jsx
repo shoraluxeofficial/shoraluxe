@@ -108,7 +108,11 @@ const HomepageManager = () => {
       { section_name: key, content, updated_at: new Date() },
       { onConflict: 'section_name' }
     );
-    if (error) { notify('Failed to save. Check your Supabase connection.', 'error'); return false; }
+    if (error) { 
+      console.error('Supabase Save Error:', error);
+      notify(`Failed to save: ${error.message || 'Check your Supabase connection.'}`, 'error'); 
+      return false; 
+    }
     notify('Changes published successfully! 🎉', 'success');
     return true;
   };
