@@ -104,13 +104,35 @@ const HomepageManager = () => {
 
   // ── SAVE TO DB ────────────────────────────────────────────────────────────
   const saveSection = async (key, content) => {
-    const { error } = await supabase.from('homepage_sections').upsert(
-      { section_name: key, content, updated_at: new Date() },
-      { onConflict: 'section_name' }
-    );
-    if (error) { 
-      console.error('Supabase Save Error:', error);
-      notify(`Failed to save: ${error.message || 'Check your Supabase connection.'}`, 'error'); 
+    const { data: existing, error: fetchErr } = await supabase
+      .from('homepage_sections')
+      .select('id')
+      .eq('section_name', key)
+      .maybeSingle();
+
+    if (fetchErr) {
+      console.error('Supabase Fetch Error:', fetchErr);
+      notify(`Failed to save: ${fetchErr.message}`, 'error');
+      return false;
+    }
+
+    let saveErr;
+    if (existing) {
+      const { error } = await supabase
+        .from('homepage_sections')
+        .update({ content, updated_at: new Date() })
+        .eq('section_name', key);
+      saveErr = error;
+    } else {
+      const { error } = await supabase
+        .from('homepage_sections')
+        .insert({ section_name: key, content, updated_at: new Date() });
+      saveErr = error;
+    }
+
+    if (saveErr) { 
+      console.error('Supabase Save Error:', saveErr);
+      notify(`Failed to save: ${saveErr.message || 'Check your Supabase connection.'}`, 'error'); 
       return false; 
     }
     notify('Changes published successfully! 🎉', 'success');
