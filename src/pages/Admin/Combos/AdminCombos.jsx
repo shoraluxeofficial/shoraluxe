@@ -141,13 +141,13 @@ const AdminCombos = () => {
 
     try {
       const { error: uploadError } = await supabase.storage
-        .from('products')
+        .from('brand-assets')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('products')
+        .from('brand-assets')
         .getPublicUrl(filePath);
 
       setForm(prev => ({ ...prev, img: publicUrl }));
