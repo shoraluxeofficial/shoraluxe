@@ -63,7 +63,10 @@ const ProductDetail = () => {
       setProduct(foundProduct);
       
       const parsed = (() => {
-        try { return JSON.parse(foundProduct.size); } catch(e) { return []; }
+        try { 
+          const result = JSON.parse(foundProduct.size); 
+          return Array.isArray(result) ? result : [];
+        } catch(e) { return []; }
       })();
 
       const galleryArray = Array.isArray(foundProduct.gallery) ? foundProduct.gallery : (foundProduct.gallery ? foundProduct.gallery.split('\n').filter(Boolean) : []);

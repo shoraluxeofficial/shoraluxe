@@ -104,7 +104,7 @@ const Hero = () => {
                       alt={banner.alt} 
                       className="hero-slide-img" 
                       loading={index === 0 ? "eager" : "lazy"}
-                      fetchpriority={index === 0 ? "high" : "auto"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
                       decoding="async"
                     />
                   )}
@@ -125,7 +125,7 @@ const Hero = () => {
                       alt={banner.alt} 
                       className="hero-slide-img" 
                       loading={index === 0 ? "eager" : "lazy"}
-                      fetchpriority={index === 0 ? "high" : "auto"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
                       decoding="async"
                     />
                   )}
