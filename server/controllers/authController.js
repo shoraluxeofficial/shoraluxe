@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { supabase } from '../config/db.js';
 import { hashPasscode, verifyPasscode, generateToken, validatePasscodeFormat } from '../utils/authUtils.js';
 import { sendEmailOTP } from '../utils/emailUtils.js';
@@ -23,7 +24,7 @@ export const registerUser = async (req, res) => {
 
         const { data, error } = await supabase
             .from('users')
-            .insert([{ name, mobile, email, passcode_hash: passcodeHash, mobile_verified: true }])
+            .insert([{ id: crypto.randomUUID(), name, mobile, email, passcode_hash: passcodeHash, mobile_verified: true }])
             .select()
             .single();
 
@@ -79,7 +80,7 @@ export const loginWithPasscode = async (req, res) => {
         await supabase.from('users').update({ failed_login_attempts: 0, locked_until: null }).eq('id', user.id);
 
         const { data: device } = await supabase.from('devices').select('*').eq('user_id', user.id).eq('device_id', deviceId).single();
-        if (!device) await supabase.from('devices').insert([{ user_id: user.id, device_id: deviceId, is_trusted: true }]);
+        if (!device) await supabase.from('devices').insert([{ id: crypto.randomUUID(), user_id: user.id, device_id: deviceId, is_trusted: true }]);
 
         const token = generateToken(user.id, deviceId);
         res.status(200).json({ token, user: { id: user.id, name: user.name, email: user.email, mobile: user.mobile } });
@@ -110,7 +111,7 @@ export const loginWithEmail = async (req, res) => {
         await supabase.from('users').update({ failed_login_attempts: 0, locked_until: null }).eq('id', user.id);
 
         const { data: device } = await supabase.from('devices').select('*').eq('user_id', user.id).eq('device_id', deviceId).single();
-        if (!device) await supabase.from('devices').insert([{ user_id: user.id, device_id: deviceId, is_trusted: true }]);
+        if (!device) await supabase.from('devices').insert([{ id: crypto.randomUUID(), user_id: user.id, device_id: deviceId, is_trusted: true }]);
 
         const token = generateToken(user.id, deviceId);
         res.status(200).json({ token, user: { id: user.id, name: user.name, email: user.email, mobile: user.mobile } });
@@ -140,7 +141,7 @@ export const oauthLogin = async (req, res) => {
             user = { ...existing, name };
         } else {
             const dummyMobile = `+9199${Math.floor(10000000 + Math.random() * 90000000)}`;
-            const { data: inserted, error: insertError } = await supabase.from('users').insert([{ name, email, mobile: dummyMobile, mobile_verified: true }]).select().single();
+            const { data: inserted, error: insertError } = await supabase.from('users').insert([{ id: crypto.randomUUID(), name, email, mobile: dummyMobile, mobile_verified: true }]).select().single();
             if (insertError) throw new Error(`Insert failed: ${insertError.message}`);
             user = inserted;
         }
@@ -184,7 +185,7 @@ export const oauthCallback = async (req, res) => {
             await supabase.from('users').update({ name, mobile_verified: true }).eq('id', existing.id);
             user = { ...existing, name };
         } else {
-            const { data: inserted } = await supabase.from('users').insert([{ name, email, mobile: null, mobile_verified: true }]).select().single();
+            const { data: inserted } = await supabase.from('users').insert([{ id: crypto.randomUUID(), name, email, mobile: null, mobile_verified: true }]).select().single();
             user = inserted;
         }
         const token = generateToken(user.id, null);
@@ -203,7 +204,7 @@ export const forgotPasscodeSendEmailOTP = async (req, res) => {
         if (!user) return res.status(404).json({ error: 'Email not found' });
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expiry = new Date(Date.now() + 5 * 60000);
-        await supabase.from('otp_logs').insert({ user_id: user.id, type: 'email', otp_code: otp, expiry_time: expiry });
+        await supabase.from('otp_logs').insert({ id: crypto.randomUUID(), user_id: user.id, type: 'email', otp_code: otp, expiry_time: expiry });
         await sendEmailOTP(email, otp);
         res.status(200).json({ message: 'OTP sent to email', userId: user.id });
     } catch (error) {
@@ -235,7 +236,7 @@ export const sendOTP = async (req, res) => {
     try {
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expiry = new Date(Date.now() + 5 * 60000);
-        const { error } = await supabase.from('otp_logs').insert({ type: 'sms', otp_code: otp, expiry_time: expiry, attempts: 0 });
+        const { error } = await supabase.from('otp_logs').insert({ id: crypto.randomUUID(), type: 'sms', otp_code: otp, expiry_time: expiry, attempts: 0 });
         if (error) throw error;
         const cleanMobile = mobile.replace('+91', '').trim();
         await sendSMS_OTP(cleanMobile, otp);
