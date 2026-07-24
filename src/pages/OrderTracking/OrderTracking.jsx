@@ -34,56 +34,83 @@ const OrderTracking = () => {
     setOrder(null);
 
     try {
+      let matchedOrder = null;
+
       // 1. Try exact UUID match if it looks like one
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(searchTerm);
       if (isUUID) {
-        const { data, error: idErr } = await supabase
+        const { data } = await supabase
           .from('orders')
-          .select(`*, items:order_items(*)`)
+          .select(`*`)
           .eq('id', searchTerm)
           .single();
         
-        if (data) {
-          setOrder(data);
-          setLoading(false);
-          return;
-        }
+        if (data) matchedOrder = data;
       }
 
       // 2. Try Email/Phone match (these are reliable text matches)
-      const { data: contactData, error: contactErr } = await supabase
-        .from('orders')
-        .select(`*, items:order_items(*)`)
-        .or(`customer_phone.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`)
-        .order('placed_at', { ascending: false })
-        .limit(1);
+      if (!matchedOrder) {
+        const { data: contactData } = await supabase
+          .from('orders')
+          .select(`*`)
+          .or(`customer_phone.ilike.%${searchTerm}%,customer_email.ilike.%${searchTerm}%`)
+          .order('placed_at', { ascending: false })
+          .limit(1);
 
-      if (contactData && contactData.length > 0) {
-        setOrder(contactData[0]);
-        setLoading(false);
-        return;
+        if (contactData && contactData.length > 0) {
+          matchedOrder = contactData[0];
+        }
       }
 
       // 3. Fallback: Search for partial ID match
-      // Since we can't 'ilike' a UUID column directly, we fetch recent orders and filter in JS
-      // if the searchTerm is a hex-like string (common for our IDs)
-      const isHex = /^[0-9a-fA-F]+$/.test(searchTerm);
-      if (isHex && searchTerm.length >= 6) {
-        const { data: recentOrders } = await supabase
-          .from('orders')
-          .select(`*, items:order_items(*)`)
-          .order('placed_at', { ascending: false })
-          .limit(100); // Check last 100 orders for a partial match
+      if (!matchedOrder) {
+        const isHex = /^[0-9a-fA-F-]+$/.test(searchTerm);
+        if (isHex && searchTerm.length >= 6) {
+          const { data: partialMatchData } = await supabase
+            .from('orders')
+            .select(`*`)
+            .ilike('id', `${searchTerm}%`)
+            .order('placed_at', { ascending: false })
+            .limit(1);
 
-        const partialMatch = recentOrders?.find(o => 
-          o.id.toLowerCase().startsWith(searchTerm.toLowerCase())
-        );
-
-        if (partialMatch) {
-          setOrder(partialMatch);
-          setLoading(false);
-          return;
+          if (partialMatchData && partialMatchData.length > 0) {
+            matchedOrder = partialMatchData[0];
+          }
         }
+      }
+
+      if (matchedOrder) {
+        // Fetch order items separately to avoid PGRST200 foreign key join error
+        const { data: items } = await supabase
+          .from('order_items')
+          .select('*')
+          .eq('order_id', matchedOrder.id);
+          
+        if (items && items.length > 0) {
+          const productIds = items.map(item => item.product_id);
+          const { data: products } = await supabase
+            .from('products')
+            .select('id, brand, category, net_quantity, original_price, discount')
+            .in('id', productIds);
+            
+          if (products) {
+            items.forEach(item => {
+              const p = products.find(prod => prod.id === item.product_id);
+              if (p) {
+                item.brand = p.brand;
+                item.category = p.category;
+                item.net_quantity = p.net_quantity;
+                item.original_price = p.original_price;
+                item.discount = p.discount;
+              }
+            });
+          }
+        }
+          
+        matchedOrder.items = items || [];
+        setOrder(matchedOrder);
+        setLoading(false);
+        return;
       }
 
       setError('No order found. Please check your Order ID, Email, or Phone Number.');
@@ -124,21 +151,15 @@ const OrderTracking = () => {
       </div>
 
       <div className="tracking-body">
-        {/* ERROR */}
-        {error && (
-          <div className="tracking-error">
-            <AlertCircle size={20} /> {error}
-          </div>
-        )}
+        {error && <div className="tracking-error">{error}</div>}
 
-        {/* RESULT */}
-        {order && (
+        {order && !error && (
           <div className="tracking-result">
             {/* ORDER META */}
             <div className="tracking-meta">
               <div className="meta-item">
                 <span className="meta-label">Order ID</span>
-                <span className="meta-val">#{order.id.slice(0, 10).toUpperCase()}</span>
+                <span className="meta-val">#{order.id.split('-')[0].toUpperCase()}</span>
               </div>
               <div className="meta-item">
                 <span className="meta-label">Placed On</span>
@@ -210,10 +231,25 @@ const OrderTracking = () => {
               <div className="item-list">
                 {(order.items || []).map((item, i) => (
                   <div className="tracking-item-row" key={i}>
-                    <img src={item.img || item.gallery?.[0]} alt={item.title} />
+                    <img src={item.product_img || item.gallery?.[0]} alt={item.product_title} />
                     <div>
-                      <p className="item-title">{item.title}</p>
-                      <p className="item-meta">Qty: {item.quantity} · ₹{item.price?.toLocaleString('en-IN')}</p>
+                      <p className="item-title">{item.product_title}</p>
+                      
+                      {/* NEW: EXTRA PRODUCT DETAILS */}
+                      <div className="item-extra-details" style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px', marginBottom: '4px' }}>
+                        {item.brand && <span><strong>Brand:</strong> {item.brand} <br/></span>}
+                        {item.category && <span style={{textTransform: 'capitalize'}}><strong>Category:</strong> {item.category} <br/></span>}
+                        {item.net_quantity && <span><strong>Net Qty:</strong> {item.net_quantity} <br/></span>}
+                      </div>
+
+                      <p className="item-meta">
+                        Qty: {item.quantity} · ₹{item.price?.toLocaleString('en-IN')} 
+                        {item.original_price && item.original_price > item.price && (
+                          <span style={{ fontSize: '0.8rem', color: '#999', marginLeft: '6px' }}>
+                            (Originally <del>₹{item.original_price}</del> {item.discount && `- ${item.discount} applied`})
+                          </span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 ))}

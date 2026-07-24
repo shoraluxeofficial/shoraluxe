@@ -25,7 +25,7 @@ const MyOrders = () => {
 
     const fetchOrders = async () => {
       try {
-        let query = supabase.from('orders').select('*, order_items(*)');
+        let query = supabase.from('orders').select('*');
         
         // If user has email, use it. If not, fallback to mobile.
         if (user.email) {
@@ -36,7 +36,23 @@ const MyOrders = () => {
 
         const { data, error } = await query.order('placed_at', { ascending: false });
 
-        if (!error && data) {
+        if (error) {
+          console.error("Supabase Error fetching orders:", error);
+        } else if (data) {
+          // Fetch order items separately to avoid PGRST200 foreign key join error
+          const orderIds = data.map(o => o.id);
+          if (orderIds.length > 0) {
+            const { data: allItems, error: itemsErr } = await supabase
+              .from('order_items')
+              .select('*')
+              .in('order_id', orderIds);
+              
+            if (!itemsErr && allItems) {
+              data.forEach(order => {
+                order.order_items = allItems.filter(item => item.order_id === order.id);
+              });
+            }
+          }
           setOrders(data);
         }
       } catch (err) {
@@ -131,7 +147,21 @@ const MyOrders = () => {
                                  <img src={item.product_img} alt={item.product_title} />
                                  <div className="mo-item-details">
                                     <p className="mo-item-title">{item.product_title}</p>
-                                    <p className="mo-item-meta">Qty: {item.quantity} <span>|</span> ₹{item.price?.toLocaleString('en-IN')}</p>
+                                    
+                                    <div className="item-extra-details" style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px', marginBottom: '4px' }}>
+                                      {item.brand && <span><strong>Brand:</strong> {item.brand} <br/></span>}
+                                      {item.category && <span style={{textTransform: 'capitalize'}}><strong>Category:</strong> {item.category} <br/></span>}
+                                      {item.net_quantity && <span><strong>Net Qty:</strong> {item.net_quantity} <br/></span>}
+                                    </div>
+
+                                    <p className="mo-item-meta">
+                                      Qty: {item.quantity} <span>|</span> ₹{item.price?.toLocaleString('en-IN')}
+                                      {item.original_price && item.original_price > item.price && (
+                                        <span style={{ fontSize: '0.8rem', color: '#999', marginLeft: '6px' }}>
+                                          (Originally <del>₹{item.original_price}</del> {item.discount && `- ${item.discount} applied`})
+                                        </span>
+                                      )}
+                                    </p>
                                  </div>
                               </div>
                            ))
