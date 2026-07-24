@@ -24,7 +24,7 @@ const UserLayout = () => {
       </main>
       <CartSidebar />
       <ScrollToTop />
-      {pathname !== '/account' && <Footer />}
+      {pathname !== '/account' && pathname !== '/track-order' && <Footer />}
     </div>
   );
 };
